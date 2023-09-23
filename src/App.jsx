@@ -1,28 +1,45 @@
-import { useState, useEffect } from 'react';
-import { supabase } from './supabaseClient';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import AuthWrapper from './AuthWrapper';
-import Upload from './Upload';
+import Login from './pages/Login';
+import LandingPage from './pages/LandingPage';
+import Error from './pages/Error';
+import Dashboard from './pages/Dashboard';
+import Main from './layouts/Main';
+
+import { AuthProvider } from './contexts/auth';
 
 function App() {
-	const [session, setSession] = useState(null);
-
-	useEffect(() => {
-		supabase.auth.getSession().then(({ data: { session } }) => {
-			setSession(session);
-		});
-
-		supabase.auth.onAuthStateChange((_event, session) => {
-			setSession(session);
-		});
-	}, []);
+	const router = createBrowserRouter([
+		{
+			path: '/',
+			element: <Main />,
+			children: [
+				{
+					index: true,
+					element: <LandingPage />,
+				},
+				{
+					path: 'login',
+					element: <Login />,
+				},
+				{
+					path: 'dashboard',
+					element: <Dashboard />,
+				},
+				{
+					path: '*',
+					element: <Error />,
+				},
+			],
+		},
+	]);
 
 	return (
-		<AuthWrapper session={session}>
-			<h1>Main App</h1>
-			<button onClick={() => supabase.auth.signOut()}>Sign Out</button>
-			<Upload />
-		</AuthWrapper>
+		<div>
+			<AuthProvider>
+				<RouterProvider router={router} />
+			</AuthProvider>
+		</div>
 	);
 }
 
