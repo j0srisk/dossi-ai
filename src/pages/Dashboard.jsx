@@ -1,5 +1,5 @@
 import useRequireAuth from '../hooks/useRequireAuth';
-import { useAuth } from '../contexts/auth';
+import useAuth from '../hooks/useAuth';
 
 const Dashboard = () => {
 	const user = useRequireAuth();

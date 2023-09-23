@@ -1,15 +1,17 @@
 import { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/auth';
+import useAuth from '../hooks/useAuth';
+import useRequireUnauth from '../hooks/useRequireUnauth';
 
 const Login = () => {
 	const emailRef = useRef();
 	const passwordRef = useRef();
 
-	const { user } = useAuth();
 	const { logIn } = useAuth();
 
 	const navigate = useNavigate();
+
+	const user = useRequireUnauth();
 
 	async function handleLogIn(e) {
 		e.preventDefault();
@@ -25,12 +27,6 @@ const Login = () => {
 			navigate('/dashboard');
 		}
 	}
-
-	useEffect(() => {
-		if (user) {
-			navigate('/dashboard');
-		}
-	}, [user]);
 
 	return (
 		<div className="">

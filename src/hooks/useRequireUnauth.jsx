@@ -1,19 +1,17 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import useAuth from '../hooks/useAuth';
+import useAuth from './useAuth';
 
-const useRequireAuth = () => {
+const useRequireUnauth = () => {
 	const { user } = useAuth();
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (!user) {
-			navigate('/');
+		if (user) {
+			navigate('/dashboard');
 		}
 	}, [user, navigate]);
-
-	return user;
 };
 
-export default useRequireAuth;
+export default useRequireUnauth;
