@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import useRequireAuth from '../hooks/useRequireAuth';
 import useAuth from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 import Collection from '../components/Collection';
 
@@ -8,6 +9,7 @@ const Dashboard = () => {
 	const [activeCollection, setActiveCollection] = useState(null);
 	const user = useRequireAuth();
 	const { signOut } = useAuth();
+	const navigate = useNavigate();
 
 	if (!user) {
 		return null;
@@ -41,7 +43,10 @@ const Dashboard = () => {
 							setActiveCollection={setActiveCollection}
 						/>
 					</div>
-					<button className="border-t border-neutral-500 p-5">
+					<button
+						className="border-t border-neutral-500 p-5"
+						onClick={() => navigate(`/${user.id}`)}
+					>
 						<p className=" text-center text-base font-bold text-white">{user.email}</p>
 					</button>
 					<button className="rounded-md  bg-rose-600 p-3 hover:bg-rose-700" onClick={handleSignOut}>
