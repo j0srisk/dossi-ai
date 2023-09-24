@@ -29,31 +29,35 @@ const Login = () => {
 	}
 
 	return (
-		<div className="">
-			<div className="">
-				<h1 className="">Supabase + React</h1>
-				<p className="">Sign in via your email & password below</p>
-				<form className="" onSubmit={handleLogIn}>
+		<div className="m-40 w-96">
+			<div className="flex flex-col gap-3 ">
+				<h1 className="text-center text-xl font-bold text-white">Welcome Back</h1>
+				<form className="flex flex-col gap-3" onSubmit={handleLogIn}>
 					<div>
 						<input
-							className=""
+							className="focus:border-1 w-full rounded-md border border-white bg-transparent p-3 text-neutral-300 placeholder-neutral-300 focus:border-rose-600 focus:border-transparent focus:outline-none"
 							type="email"
-							placeholder="Your email"
+							placeholder="Email Address"
 							ref={emailRef}
 							required={true}
 						/>
 					</div>
 					<div>
 						<input
-							className=""
+							className="focus:border-1 w-full rounded-md border border-white bg-transparent p-3 text-neutral-300 placeholder-neutral-300 focus:border-rose-600 focus:border-transparent focus:outline-none"
 							type="password"
-							placeholder="Your Password"
+							placeholder="Password"
 							ref={passwordRef}
 							required={true}
 						/>
 					</div>
 					<div>
-						<button type="submit">Sign In</button>
+						<button
+							className="w-full flex-1 rounded-md bg-rose-600 p-3 hover:bg-rose-700"
+							type="submit"
+						>
+							<p className="text-center text-base font-bold text-white"> Log In </p>
+						</button>
 					</div>
 				</form>
 			</div>
