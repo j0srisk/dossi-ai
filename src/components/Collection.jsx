@@ -2,17 +2,19 @@ import { useState, useRef } from 'react';
 import Document from './Document';
 import Upload from './Upload';
 import Documents from './Documents';
+import { useNavigate } from 'react-router-dom';
 
 import { supabase } from '../services/supabase';
 
-const Collection = ({ id, name, activeCollection, setActiveCollection, fetchCollections }) => {
+const Collection = ({ id, name, activeCollection, fetchCollections }) => {
 	const [collectionName, setCollectionName] = useState(name);
 	const [editing, setEditing] = useState(false);
 
 	const inputRef = useRef(null);
+	const navigate = useNavigate();
 
 	const handleClick = () => {
-		setActiveCollection(id);
+		navigate(`/c/${id}`);
 	};
 
 	const updateCollectionName = async () => {
@@ -33,27 +35,27 @@ const Collection = ({ id, name, activeCollection, setActiveCollection, fetchColl
 		if (error) {
 			alert(error.message);
 		} else {
-			setActiveCollection(null);
+			navigate(`/c`);
 			fetchCollections();
 		}
 	};
 
 	return (
 		<div
-			className={`gap p flex flex-col rounded-md p-1 text-white hover:cursor-pointer ${
+			className={`flex flex-col  rounded-md text-white hover:cursor-pointer ${
 				id === activeCollection ? 'bg-zinc-700' : ' '
 			}`}
 			onClick={handleClick}
 		>
 			{id === activeCollection && (
-				<div className="m-2 flex flex-1 items-center gap-2">
+				<div className="flex w-full flex-1 items-center justify-center gap-2 p-2">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
 						strokeWidth={1.5}
 						stroke="currentColor"
-						className="h-5 w-5"
+						className="h-4 w-4 flex-shrink-0"
 					>
 						<path
 							strokeLinecap="round"
@@ -61,24 +63,31 @@ const Collection = ({ id, name, activeCollection, setActiveCollection, fetchColl
 							d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
 						/>
 					</svg>
+					{editing && (
+						<input
+							ref={inputRef}
+							className="w-full flex-1 bg-transparent text-base font-bold focus:outline-none"
+							value={collectionName}
+							disabled={!editing}
+							onBlur={() => {
+								setEditing(false);
+								updateCollectionName();
+							}}
+							onChange={(e) => setCollectionName(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key === 'Enter') {
+									inputRef.current.blur();
+								}
+							}}
+						/>
+					)}
 
-					<input
-						ref={inputRef}
-						className="w-full flex-1 bg-transparent text-base font-bold focus:outline-none"
-						value={collectionName}
-						disabled={!editing}
-						onBlur={() => {
-							setEditing(false);
-							updateCollectionName();
-						}}
-						onChange={(e) => setCollectionName(e.target.value)}
-						onKeyDown={(e) => {
-							if (e.key === 'Enter') {
-								inputRef.current.blur();
-							}
-						}}
-					/>
-
+					{!editing && (
+						<div className="relative w-full overflow-hidden ">
+							<p className="whitespace-nowrap text-base font-bold">{collectionName}</p>
+							<div className="absolute right-0 top-0 h-full w-5 bg-gradient-to-l from-zinc-700"></div>
+						</div>
+					)}
 					<div className="flex gap-1">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -120,14 +129,14 @@ const Collection = ({ id, name, activeCollection, setActiveCollection, fetchColl
 			)}
 
 			{id != activeCollection && (
-				<div className="m-2 flex flex-1 items-center gap-2">
+				<div className="flex w-full flex-1 items-center gap-2 overflow-visible p-2">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
 						strokeWidth={1.5}
 						stroke="currentColor"
-						className="h-5 w-5"
+						className="h-4 w-4 flex-shrink-0"
 					>
 						<path
 							strokeLinecap="round"
@@ -136,12 +145,15 @@ const Collection = ({ id, name, activeCollection, setActiveCollection, fetchColl
 						/>
 					</svg>
 
-					<p className="flex-1 text-base font-bold">{collectionName}</p>
+					<div className="relative w-full overflow-hidden ">
+						<p className="whitespace-nowrap text-base font-bold">{collectionName}</p>
+						<div className="absolute right-0 top-0 h-full w-5 bg-gradient-to-l from-neutral-800"></div>
+					</div>
 				</div>
 			)}
 
 			{id === activeCollection && (
-				<div className="flex flex-1 flex-col gap-1 rounded-md p-1">
+				<div className="flex flex-1 flex-col gap-1 rounded-md p-1 ">
 					<Documents collection={id} />
 				</div>
 			)}

@@ -1,14 +1,19 @@
 import { useState, useRef } from 'react';
 import { supabase } from '../services/supabase';
+import { useNavigate } from 'react-router-dom';
 
-const Document = ({ id, name, activeDocument, setActiveDocument, fetchDocuments }) => {
+const Document = ({ id, name, collection, activeDocument, setActiveDocument, fetchDocuments }) => {
 	const [documentName, setDocumentName] = useState(name);
 	const [editing, setEditing] = useState(false);
 
 	const inputRef = useRef(null);
 
-	const handleClick = () => {
+	const navigate = useNavigate();
+
+	const handleClick = (event) => {
+		event.stopPropagation();
 		setActiveDocument(id);
+		navigate(`/c/${collection}/${id}`);
 	};
 
 	const updateDocumentName = async () => {
@@ -28,6 +33,7 @@ const Document = ({ id, name, activeDocument, setActiveDocument, fetchDocuments 
 		} else {
 			setActiveDocument(null);
 			fetchDocuments();
+			navigate(`/c/${collection}`);
 		}
 	};
 
@@ -97,10 +103,10 @@ const Document = ({ id, name, activeDocument, setActiveDocument, fetchDocuments 
 
 			{id != activeDocument && (
 				<button
-					className="flex rounded-md border-2 border-transparent bg-transparent p-2"
+					className="flex w-full overflow-hidden rounded-md border-2 border-transparent bg-transparent p-2"
 					onClick={handleClick}
 				>
-					<p className="text-left text-base">{documentName}</p>
+					<p className="whitespace-nowrap text-left text-base">{documentName}</p>
 				</button>
 			)}
 		</>

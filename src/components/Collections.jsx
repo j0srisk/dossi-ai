@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import useRequireAuth from '../hooks/useRequireAuth';
 import { supabase } from '../services/supabase';
 import Collection from './Collection';
+import { useParams } from 'react-router-dom';
+
 const Collections = () => {
 	const [activeCollection, setActiveCollection] = useState(null);
 	const [collections, setCollections] = useState(null);
@@ -9,8 +11,9 @@ const Collections = () => {
 
 	const user = useRequireAuth();
 
+	let { collectionId } = useParams();
+
 	async function fetchCollections() {
-		console.log('querying collections');
 		const res = await supabase
 			.from('collections')
 			.select('*')
@@ -25,6 +28,10 @@ const Collections = () => {
 			fetchCollections();
 		}
 	}, [user]);
+
+	useEffect(() => {
+		setActiveCollection(collectionId);
+	}, [collectionId]);
 
 	async function handleCreateCollection() {
 		const { error } = await supabase
@@ -54,7 +61,6 @@ const Collections = () => {
 								id={collection.id}
 								name={collection.name}
 								activeCollection={activeCollection}
-								setActiveCollection={setActiveCollection}
 								fetchCollections={fetchCollections}
 							/>
 						);
