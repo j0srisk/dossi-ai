@@ -34,7 +34,7 @@ const PdfViewer = ({ url }) => {
 	}, []);
 
 	return (
-		<div className="w-full" ref={refContainer}>
+		<div className="w-full h-fit relative" ref={refContainer}>
 			<Document
 				file={url}
 				onLoadSuccess={onDocumentLoadSuccess}
@@ -44,6 +44,7 @@ const PdfViewer = ({ url }) => {
 					<Page key={`page_${index + 1}`} pageNumber={index + 1} width={width} />
 				))}
 			</Document>
+			<div className={`w-[${width}] aspect-[8.5/11] bg-white rounded-md`}></div>
 		</div>
 	);
 };

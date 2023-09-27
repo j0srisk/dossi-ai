@@ -14,6 +14,8 @@ const PdfContainer = () => {
 
 	const { collectionId, documentId } = useParams();
 
+	console.log(documentId);
+
 	const searchCollection = useCallback(async () => {
 		const currentCollection = await collections.find(
 			(collection) => collection.id === collectionId,
@@ -77,16 +79,26 @@ const PdfContainer = () => {
 			downloadDocument();
 		} else {
 			setDocumentUrl(null);
+			setDownloading(false);
 		}
 	}, [document, downloadDocument]);
 
 	return (
 		<div className="flex flex-col w-full h-full">
-			<div className="flex w-full flex-col p-3 bg-neutral-800 border border-neutral-800 rounded-t-md">
+			<div
+				className={`flex w-full flex-col p-3 bg-neutral-800 justify-center border border-neutral-800 rounded-t-md ${
+					!document && !downloading ? 'rounded-b-md h-full' : ''
+				}`}
+			>
 				{document && <p className="text-center text-base font-bold text-white">{document.name}</p>}
+				{!document && !downloading && (
+					<p className="text-center text-base font-bold text-white">
+						Chating with all Documents in Collection
+					</p>
+				)}
 			</div>
 			{document && documentUrl && !downloading && (
-				<div className="flex h-fit w-full flex-col overflow-scroll">
+				<div className="flex h-fit min-h-full w-full flex-col overflow-scroll">
 					<div className="flex flex-col rounded-b-md bg-neutral-800 p-2">
 						<PdfViewer url={documentUrl} />
 					</div>
