@@ -33,7 +33,7 @@ const Collection = ({ collection, documents }) => {
 	return (
 		<div
 			className={`flex flex-col rounded-md text-white hover:cursor-pointer whitespace-nowrap text-base font-bold p-2 gap-2 border ${
-				isActive ? 'bg-zinc-700 border-neutral-500' : ' border-neutral-800 '
+				isActive ? 'bg-zinc-700 border-neutral-500 shadow-md' : ' border-neutral-800 '
 			}`}
 			onClick={handleClick}
 		>
