@@ -2,14 +2,6 @@ import PropTypes from 'prop-types';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-Document.propTypes = {
-	collection: PropTypes.object.isRequired,
-	document: PropTypes.object.isRequired,
-	activeDocument: PropTypes.string.isRequired,
-	handleUpdateDocument: PropTypes.func.isRequired,
-	handleDeleteDocument: PropTypes.func.isRequired,
-};
-
 const Document = ({
 	collection,
 	document,
@@ -114,5 +106,15 @@ const Document = ({
 		</div>
 	);
 };
+
+/*
+Document.propTypes = {
+	collection: PropTypes.object.isRequired,
+	document: PropTypes.object.isRequired,
+	activeDocument: PropTypes.string.isRequired,
+	handleUpdateDocument: PropTypes.func.isRequired,
+	handleDeleteDocument: PropTypes.func.isRequired,
+};
+*/
 
 export default Document;

@@ -1,3 +1,4 @@
+import Content from '../components/Content';
 import AccountInfo from '../components/sidebar/AccountInfo';
 import CollectionManager from '../components/sidebar/CollectionManager';
 import useAuth from '../hooks/useAuth';

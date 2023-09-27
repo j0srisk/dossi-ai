@@ -46,7 +46,6 @@ const CollectionManager = () => {
 			.eq('created_by', user.id)
 			.in('collection', collectionIds)
 			.order('created_at', { ascending: false });
-
 		if (error) {
 			console.log('error fetching documents');
 			alert(error.message);

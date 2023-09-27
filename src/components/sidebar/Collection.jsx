@@ -3,18 +3,6 @@ import PropTypes from 'prop-types';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-Collection.propTypes = {
-	collection: PropTypes.object.isRequired,
-	documents: PropTypes.array.isRequired,
-	activeCollection: PropTypes.string.isRequired,
-	activeDocument: PropTypes.string.isRequired,
-	handleUpdateCollection: PropTypes.func.isRequired,
-	handleDeleteCollection: PropTypes.func.isRequired,
-	handleCreateDocument: PropTypes.func.isRequired,
-	handleUpdateDocument: PropTypes.func.isRequired,
-	handleDeleteDocument: PropTypes.func.isRequired,
-};
-
 const Collection = ({
 	collection,
 	documents,
@@ -181,5 +169,19 @@ const Collection = ({
 		</div>
 	);
 };
+
+/*
+Collection.propTypes = {
+	collection: PropTypes.object.isRequired,
+	documents: PropTypes.array.isRequired,
+	activeCollection: PropTypes.string.isRequired,
+	activeDocument: PropTypes.string.isRequired,
+	handleUpdateCollection: PropTypes.func.isRequired,
+	handleDeleteCollection: PropTypes.func.isRequired,
+	handleCreateDocument: PropTypes.func.isRequired,
+	handleUpdateDocument: PropTypes.func.isRequired,
+	handleDeleteDocument: PropTypes.func.isRequired,
+};
+*/
 
 export default Collection;

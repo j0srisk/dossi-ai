@@ -1,8 +1,8 @@
+import Content from './components/Content';
+import DocumentContainer from './components/DocumentContainer';
 import { AuthProvider } from './contexts/auth';
 import Dashboard from './layouts/Dashboard';
 import Main from './layouts/Main';
-import CollectionContainer from './pages/CollectionContainer';
-import DocumentContainer from './pages/DocumentContainer';
 import Error from './pages/Error';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
@@ -33,7 +33,7 @@ function App() {
 					children: [
 						{
 							path: ':collectionId',
-							element: <CollectionContainer />,
+							element: <Content />,
 							loader: async ({ params }) => {
 								return await supabase
 									.from('collections')
