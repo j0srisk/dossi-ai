@@ -14,8 +14,6 @@ const PdfContainer = () => {
 
 	const { collectionId, documentId } = useParams();
 
-	console.log(documentId);
-
 	const searchCollection = useCallback(async () => {
 		const currentCollection = await collections.find(
 			(collection) => collection.id === collectionId,

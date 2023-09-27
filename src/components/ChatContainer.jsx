@@ -1,8 +1,64 @@
+import { CollectionsContext } from '../contexts/collections';
 import Bubble from './chat/Bubble';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 const ChatContainer = () => {
+	const [collection, setCollection] = useState(null);
+	const [document, setDocument] = useState(null);
+	const { collections, documents } = useContext(CollectionsContext);
+	const [searching, setSearching] = useState(true);
+
+	const { collectionId, documentId } = useParams();
+
+	const searchCollection = useCallback(async () => {
+		console.log(collectionId);
+		const currentCollection = await collections.find(
+			(collection) => collection.id === collectionId,
+		);
+		console.log(currentCollection);
+		setCollection(currentCollection);
+		setSearching(false);
+	}, [collections, collectionId]);
+
+	const searchDocument = useCallback(async () => {
+		const currentDocument = await documents.find((document) => document.id === documentId);
+		setDocument(currentDocument);
+		setSearching(false);
+	}, [documents, documentId]);
+
+	useEffect(() => {
+		if (collections.length > 0) {
+			searchCollection();
+		}
+	}, [collections, searchCollection]);
+
+	useEffect(() => {
+		if (documents.length > 0) {
+			searchDocument();
+		}
+	}, [documents, searchDocument]);
+
 	return (
 		<div className="w-full h-full flex flex-col">
+			{!searching && (
+				<>
+					{document && (
+						<div className="flex flex-row items-center justify-center gap-1">
+							<p className="text-center text-base font-bold text-white">Chatting with:</p>
+							<p className="text-center text-base text-cyan-500 font-bold">{document.name}</p>
+						</div>
+					)}
+					{!document && (
+						<div className="flex flex-row items-center justify-center gap-2">
+							<div className="flex flex-row items-center justify-center gap-1">
+								<p className="text-center text-base font-bold text-white">Chatting with:</p>
+								<p className="text-center text-base text-cyan-500 font-bold">{collection.name}</p>
+							</div>
+						</div>
+					)}
+				</>
+			)}
 			<div className="flex flex-1 flex-col items-start justify-start gap-4">
 				<Bubble message={'Program Message'} user={false} />
 				<Bubble message={'User Message'} user={true} />
