@@ -1,17 +1,13 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
-import Login from './pages/Login';
-import LandingPage from './pages/LandingPage';
-import Error from './pages/Error';
-import Dashboard from './pages/Dashboard';
-import Account from './pages/Account';
+import { AuthProvider } from './contexts/auth';
+import Dashboard from './layouts/Dashboard';
+import Main from './layouts/Main';
 import CollectionContainer from './pages/CollectionContainer';
 import DocumentContainer from './pages/DocumentContainer';
-import Main from './layouts/Main';
-import TestLayout from './layouts/TestLayout';
-
-import { AuthProvider } from './contexts/auth';
+import Error from './pages/Error';
+import LandingPage from './pages/LandingPage';
+import Login from './pages/Login';
 import { supabase } from './services/supabase';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 function App() {
 	const router = createBrowserRouter([
@@ -28,24 +24,12 @@ function App() {
 					element: <Login />,
 				},
 				{
-					path: 'dashboard',
-					element: <Dashboard />,
-				},
-				{
 					path: '*',
 					element: <Error />,
 				},
-				/*
-				{
-					path: ':id',
-					element: <Account />,
-					loader: async ({ params }) => {
-						return supabase.from('profiles').select('*').eq('id', params.id).single();
-					},
-				},*/
 				{
 					path: 'c',
-					element: <TestLayout />,
+					element: <Dashboard />,
 					children: [
 						{
 							path: ':collectionId',

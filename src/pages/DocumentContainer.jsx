@@ -1,15 +1,13 @@
-import { useLoaderData, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import { supabase } from '../services/supabase';
+import { useEffect, useState } from 'react';
+import { useLoaderData, useParams } from 'react-router-dom';
+
 const DocumentContainer = () => {
 	const [documentUrl, setDocumentUrl] = useState(null);
 
 	const loaderData = useLoaderData();
 
 	const { documentId } = useParams();
-
-	console.log(loaderData.data.name);
-	console.log(loaderData.data.url);
 
 	const photoUrl = loaderData.data.url;
 
