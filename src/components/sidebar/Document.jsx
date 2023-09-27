@@ -1,32 +1,30 @@
-import PropTypes from 'prop-types';
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { CollectionsContext } from '../../contexts/collections';
+import { useState, useEffect, useRef, useContext } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const Document = ({
-	collection,
-	document,
-	activeDocument,
-	handleUpdateDocument,
-	handleDeleteDocument,
-}) => {
+const Document = ({ collection, document }) => {
 	const [isActive, setIsActive] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
 	const [name, setName] = useState(document.name);
 
+	const { handleUpdateDocument, handleDeleteDocument } = useContext(CollectionsContext);
+
 	const inputRef = useRef(null);
 
+	const { documentId } = useParams();
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (activeDocument === document.id) {
+		if (documentId === document.id) {
 			setIsActive(true);
 		} else {
 			setIsActive(false);
 		}
-	}, [activeDocument, document.id]);
+	}, [documentId, document.id]);
 
 	const handleClick = (e) => {
 		e.stopPropagation();
+		console.log('clicked document: ', document.name);
 		navigate(`/c/${collection.id}/${document.id}`);
 	};
 
@@ -106,15 +104,5 @@ const Document = ({
 		</div>
 	);
 };
-
-/*
-Document.propTypes = {
-	collection: PropTypes.object.isRequired,
-	document: PropTypes.object.isRequired,
-	activeDocument: PropTypes.string.isRequired,
-	handleUpdateDocument: PropTypes.func.isRequired,
-	handleDeleteDocument: PropTypes.func.isRequired,
-};
-*/
 
 export default Document;

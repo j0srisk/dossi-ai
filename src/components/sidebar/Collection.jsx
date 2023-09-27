@@ -1,38 +1,32 @@
+import { CollectionsContext } from '../../contexts/collections';
 import Document from './Document';
-import PropTypes from 'prop-types';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-const Collection = ({
-	collection,
-	documents,
-	activeCollection,
-	activeDocument,
-	handleUpdateCollection,
-	handleDeleteCollection,
-	handleCreateDocument,
-	handleUpdateDocument,
-	handleDeleteDocument,
-}) => {
+const Collection = ({ collection, documents }) => {
 	const [isActive, setIsActive] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
 	const [name, setName] = useState(collection.name);
+
+	const { handleUpdateCollection, handleDeleteCollection, handleCreateDocument } =
+		useContext(CollectionsContext);
 
 	const inputRef = useRef(null);
 
 	const navigate = useNavigate();
 
-	const { documentId } = useParams();
+	const { collectionId, documentId } = useParams();
 
 	useEffect(() => {
-		if (activeCollection === collection.id) {
+		if (collectionId === collection.id) {
 			setIsActive(true);
 		} else {
 			setIsActive(false);
 		}
-	}, [activeCollection, collection.id]);
+	}, [collectionId, collection.id]);
 
 	const handleClick = () => {
+		console.log('clicked collection: ', collection.name);
 		navigate(`/c/${collection.id}`);
 	};
 
@@ -127,19 +121,10 @@ const Collection = ({
 					</div>
 				)}
 			</div>
-			{activeCollection === collection.id && (
+			{collectionId === collection.id && (
 				<div className="flex flex-col w-full gap-2">
 					{documents.map((document) => {
-						return (
-							<Document
-								key={document.id}
-								collection={collection}
-								document={document}
-								activeDocument={activeDocument}
-								handleUpdateDocument={handleUpdateDocument}
-								handleDeleteDocument={handleDeleteDocument}
-							/>
-						);
+						return <Document key={document.id} collection={collection} document={document} />;
 					})}
 					<div className="relative w-full">
 						<button className="flex w-full items-center justify-center gap-1 rounded-md border border-dashed border-neutral-500 p-2 text-neutral-500">
@@ -169,19 +154,5 @@ const Collection = ({
 		</div>
 	);
 };
-
-/*
-Collection.propTypes = {
-	collection: PropTypes.object.isRequired,
-	documents: PropTypes.array.isRequired,
-	activeCollection: PropTypes.string.isRequired,
-	activeDocument: PropTypes.string.isRequired,
-	handleUpdateCollection: PropTypes.func.isRequired,
-	handleDeleteCollection: PropTypes.func.isRequired,
-	handleCreateDocument: PropTypes.func.isRequired,
-	handleUpdateDocument: PropTypes.func.isRequired,
-	handleDeleteDocument: PropTypes.func.isRequired,
-};
-*/
 
 export default Collection;

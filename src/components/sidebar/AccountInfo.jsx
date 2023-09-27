@@ -8,10 +8,18 @@ const AccountInfo = () => {
 
 	const user = useRequireAuth();
 
+	console.log('user: ', user);
+
 	const fetchUserProfileData = useCallback(async () => {
-		const res = await supabase.from('profiles').select('*').eq('id', user.id).single();
-		setUserProfile(res.data);
-		setLoading(false);
+		console.log('fetching user profile data');
+		const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+		if (error) {
+			alert(error.message);
+		} else {
+			console.log('user profile data: ', data);
+			setUserProfile(data);
+			setLoading(false);
+		}
 	}, [user]);
 
 	useEffect(() => {

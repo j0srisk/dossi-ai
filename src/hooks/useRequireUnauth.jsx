@@ -1,7 +1,6 @@
+import useAuth from './useAuth';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import useAuth from './useAuth';
 
 const useRequireUnauth = () => {
 	const { user } = useAuth();
@@ -9,7 +8,7 @@ const useRequireUnauth = () => {
 
 	useEffect(() => {
 		if (user) {
-			navigate('/dashboard');
+			navigate('');
 		}
 	}, [user, navigate]);
 };

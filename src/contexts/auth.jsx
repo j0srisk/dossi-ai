@@ -1,10 +1,10 @@
-import { createContext, useState, useEffect, useContext } from 'react';
 import { supabase } from '../services/supabase';
+import { createContext, useState, useEffect } from 'react';
 
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-	const [session, setSession] = useState();
+	//const [session, setSession] = useState();
 	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(true);
 
@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
 		let gotSession = localStorage.getItem('authSession');
 		if (gotSession) {
 			//console.log('Retrieved: ', gotSession);
-			setSession(JSON.parse(gotSession));
+			//setSession(JSON.parse(gotSession));
 			setUser(JSON.parse(gotSession));
 		}
 		async function getSession() {
@@ -22,11 +22,11 @@ export function AuthProvider({ children }) {
 					//console.log('New session: ', session);
 					setUser(session.user);
 					localStorage.setItem('authSession', JSON.stringify(session));
-					setSession(session);
+					//setSession(session);
 				} else {
 					console.log('No session');
 					localStorage.removeItem('authSession');
-					setSession(null);
+					//setSession(null);
 					setUser(null);
 				}
 				setLoading(false);
