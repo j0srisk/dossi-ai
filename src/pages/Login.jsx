@@ -35,7 +35,7 @@ const Login = () => {
 				<form className="flex flex-col gap-3" onSubmit={handleLogIn}>
 					<div>
 						<input
-							className="focus:border-1 w-full rounded-md border border-white bg-transparent p-3 text-neutral-300 placeholder-neutral-300 focus:border-rose-600 focus:border-transparent focus:outline-none"
+							className="focus:border-1 w-full rounded-md border border-white bg-transparent p-3 text-neutral-300 placeholder-neutral-300 focus:border-white focus:outline-none"
 							type="email"
 							placeholder="Email Address"
 							ref={emailRef}
@@ -44,7 +44,7 @@ const Login = () => {
 					</div>
 					<div>
 						<input
-							className="focus:border-1 w-full rounded-md border border-white bg-transparent p-3 text-neutral-300 placeholder-neutral-300 focus:border-rose-600 focus:border-transparent focus:outline-none"
+							className="focus:border-1 w-full rounded-md border border-white bg-transparent p-3 text-neutral-300 placeholder-neutral-300 focus:border-white focus:outline-none"
 							type="password"
 							placeholder="Password"
 							ref={passwordRef}
@@ -53,7 +53,7 @@ const Login = () => {
 					</div>
 					<div>
 						<button
-							className="w-full flex-1 rounded-md bg-rose-600 p-3 hover:bg-rose-700"
+							className="w-full flex-1 rounded-md bg-blue-500 p-3 hover:bg-blue-600 hover:bg-opacity-90  hover:shadow-md"
 							type="submit"
 						>
 							<p className="text-center text-base font-bold text-white"> Log In </p>

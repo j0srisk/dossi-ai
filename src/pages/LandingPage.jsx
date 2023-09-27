@@ -13,14 +13,13 @@ const LandingPage = () => {
 				<div className="flex w-full gap-3">
 					<button
 						onClick={() => navigate('login')}
-						className="flex-1 rounded-md
-                        bg-rose-600 p-3 hover:bg-rose-700"
+						className="flex-1 rounded-md bg-blue-500 p-3 hover:bg-blue-600 hover:bg-opacity-90  hover:shadow-md"
 					>
-						<p className="text-center text-base font-bold text-white"> Log In </p>
+						<p className="text-center text-base font-bold text-white">Log In</p>
 					</button>
 					<button
 						onClick={() => navigate('login')}
-						className="flex-1 rounded-md bg-rose-600 p-3 hover:bg-rose-700"
+						className="flex-1 rounded-md bg-blue-500 p-3 hover:bg-blue-600 hover:bg-opacity-90  hover:shadow-md"
 					>
 						<p className="text-center text-base font-bold text-white">Sign Up </p>
 					</button>
