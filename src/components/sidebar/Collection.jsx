@@ -26,7 +26,6 @@ const Collection = ({ collection, documents }) => {
 	}, [collectionId, collection.id]);
 
 	const handleClick = () => {
-		console.log('clicked collection: ', collection.name);
 		navigate(`/c/${collection.id}`);
 	};
 
@@ -145,6 +144,7 @@ const Collection = ({ collection, documents }) => {
 							type="file"
 							id="file"
 							name="file"
+							accept=".pdf"
 							className="absolute top-0 h-full w-full rounded-md opacity-0"
 							onChange={(e) => handleCreateDocument(e)}
 						/>

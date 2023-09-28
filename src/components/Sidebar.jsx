@@ -10,7 +10,6 @@ const Sidebar = () => {
 	const { signOut } = useAuth();
 
 	const handleSignOut = async () => {
-		console.log('Signing out');
 		await signOut();
 	};
 

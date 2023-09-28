@@ -1,41 +1,10 @@
-import { CollectionsContext } from '../contexts/collections';
 import { supabase } from '../services/supabase';
-import { useEffect, useState, useCallback, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import PdfViewer from './PdfViewer';
+import { useCallback, useEffect, useState } from 'react';
 
-const DocumentContainer = () => {
-	const [collection, setCollection] = useState([]);
-	const [document, setDocument] = useState(null);
+const DocumentContainer = ({ document }) => {
 	const [documentUrl, setDocumentUrl] = useState(null);
 	const [downloading, setDownloading] = useState(true);
-
-	const { collections, documents } = useContext(CollectionsContext);
-
-	const { collectionId, documentId } = useParams();
-
-	const searchCollection = useCallback(async () => {
-		const currentCollection = await collections.find(
-			(collection) => collection.id === collectionId,
-		);
-		setCollection(currentCollection);
-	}, [collections, collectionId]);
-
-	const searchDocument = useCallback(async () => {
-		const currentDocument = await documents.find((document) => document.id === documentId);
-		setDocument(currentDocument);
-	}, [documents, documentId]);
-
-	useEffect(() => {
-		if (collections.length > 0) {
-			searchCollection();
-		}
-	}, [collections, searchCollection]);
-
-	useEffect(() => {
-		if (documents.length > 0) {
-			searchDocument();
-		}
-	}, [documents, searchDocument]);
 
 	const downloadDocument = useCallback(async () => {
 		console.log('downloading document: ', document.name);
@@ -72,25 +41,15 @@ const DocumentContainer = () => {
 
 	useEffect(() => {
 		setDownloading(true);
-		if (document) {
-			downloadDocument();
-		} else {
-			setDocumentUrl(null);
-		}
+		downloadDocument();
 	}, [document, downloadDocument]);
 
 	return (
 		<>
-			{document && documentUrl && !downloading && (
-				<div className="flex h-full w-full flex-col gap-8 p-8">
-					<div className=" flex h-fit w-full flex-col gap-2 rounded-md bg-neutral-800 p-2">
-						<img src={documentUrl} alt="document" className="rounded-md" />
-						<p className="text-center text-base font-bold text-white">{document.name}</p>
-						<p className="text-center text-base font-bold text-white">{collection.name}</p>
-					</div>
-					<div className=" flex h-fit w-full flex-col gap-2 rounded-md bg-neutral-800 p-2">
-						<img src={documentUrl} alt="document" className="rounded-md" />
-						<p className="text-center text-base font-bold text-white">{document.name}</p>
+			{documentUrl && !downloading && (
+				<div className="flex h-full min-h-full w-full flex-col overflow-scroll relative">
+					<div className="flex flex-col gap-2 bg-neutral-800">
+						<PdfViewer url={documentUrl} />
 					</div>
 				</div>
 			)}

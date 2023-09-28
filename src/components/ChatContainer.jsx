@@ -3,7 +3,7 @@ import Bubble from './chat/Bubble';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-const ChatContainer = () => {
+const ChatContainer = ({ loadDocument }) => {
 	const [collection, setCollection] = useState(null);
 	const [document, setDocument] = useState(null);
 	const { collections, documents } = useContext(CollectionsContext);
@@ -12,11 +12,9 @@ const ChatContainer = () => {
 	const { collectionId, documentId } = useParams();
 
 	const searchCollection = useCallback(async () => {
-		console.log(collectionId);
 		const currentCollection = await collections.find(
 			(collection) => collection.id === collectionId,
 		);
-		console.log(currentCollection);
 		setCollection(currentCollection);
 		setSearching(false);
 	}, [collections, collectionId]);
@@ -58,8 +56,8 @@ const ChatContainer = () => {
 				</div>
 			)}
 			<div className="w-full flex flex-1 flex-col items-start justify-start gap-4">
-				<Bubble message={'Program Message'} user={false} />
-				<Bubble message={'User Message'} user={true} />
+				<Bubble message={'Program Message '} user={false} loadDocument={loadDocument} />
+				<Bubble message={'User Message '} user={true} loadDocument={loadDocument} />
 			</div>
 			<div className="flex flex-row items-center justify-center gap-2 w-full">
 				<input
@@ -68,7 +66,7 @@ const ChatContainer = () => {
 					className="w-full flex-1 rounded-md p-2 bg-transparent border-neutral-500 border outline-none text-white"
 					style={{ overflowY: 'auto', resize: 'none' }}
 				/>
-				<button className="h-full rounded-md bg-gradient-to-r from-cyan-500 to-blue-500 p-2  hover:from-cyan-600 hover:to-blue-600 hover:bg-opacity-90 hover:shadow-md px-6">
+				<button className="h-full rounded-md bg-gradient-to-r from-cyan-500 to-blue-500 p-2 text-white hover:from-cyan-600 hover:to-blue-600 hover:bg-opacity-90 hover:shadow-md px-6">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"

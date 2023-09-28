@@ -8,15 +8,12 @@ const AccountInfo = () => {
 
 	const user = useRequireAuth();
 
-	console.log('user: ', user);
-
 	const fetchUserProfileData = useCallback(async () => {
-		console.log('fetching user profile data');
 		const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
 		if (error) {
+			console.log('error fetching user profile data');
 			alert(error.message);
 		} else {
-			console.log('user profile data: ', data);
 			setUserProfile(data);
 			setLoading(false);
 		}

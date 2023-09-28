@@ -17,7 +17,6 @@ export const CollectionsProvider = ({ children }) => {
 
 	const fetchCollections = useCallback(async () => {
 		console.log('querying collections');
-		console.log('user: ', user.id);
 		const { data, error } = await supabase
 			.from('collections')
 			.select('*')

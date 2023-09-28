@@ -24,7 +24,6 @@ const Document = ({ collection, document }) => {
 
 	const handleClick = (e) => {
 		e.stopPropagation();
-		console.log('clicked document: ', document.name);
 		navigate(`/c/${collection.id}/${document.id}`);
 	};
 
