@@ -82,27 +82,15 @@ const PdfContainer = () => {
 	}, [document, downloadDocument]);
 
 	return (
-		<div className="flex flex-col w-full h-full">
-			<div
-				className={`flex w-full flex-col p-3 bg-neutral-800 justify-center border border-neutral-800 rounded-t-md ${
-					!document && !downloading ? 'rounded-b-md h-full' : ''
-				}`}
-			>
-				{document && <p className="text-center text-base font-bold text-white">{document.name}</p>}
-				{!document && !downloading && (
-					<p className="text-center text-base font-bold text-white">
-						Chating with all Documents in Collection
-					</p>
-				)}
-			</div>
+		<>
 			{document && documentUrl && !downloading && (
 				<div className="flex h-fit min-h-full w-full flex-col overflow-scroll">
-					<div className="flex flex-col rounded-b-md bg-neutral-800 p-2">
+					<div className="flex flex-col gap-2 bg-neutral-800">
 						<PdfViewer url={documentUrl} />
 					</div>
 				</div>
 			)}
-		</div>
+		</>
 	);
 };
 

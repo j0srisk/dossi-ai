@@ -40,30 +40,28 @@ const ChatContainer = () => {
 	}, [documents, searchDocument]);
 
 	return (
-		<div className="w-full h-full flex flex-col">
+		<div className="w-full h-full flex flex-col gap-2 items-center max-w-screen-md">
 			{!searching && (
-				<>
+				<div className="w-full flex flex-row items-center justify-center gap-1 p-3 bg-transparent rounded-md border border-transparent">
 					{document && (
-						<div className="flex flex-row items-center justify-center gap-1">
+						<>
 							<p className="text-center text-base font-bold text-white">Chatting with:</p>
 							<p className="text-center text-base text-cyan-500 font-bold">{document.name}</p>
-						</div>
+						</>
 					)}
 					{!document && (
-						<div className="flex flex-row items-center justify-center gap-2">
-							<div className="flex flex-row items-center justify-center gap-1">
-								<p className="text-center text-base font-bold text-white">Chatting with:</p>
-								<p className="text-center text-base text-cyan-500 font-bold">{collection.name}</p>
-							</div>
-						</div>
+						<>
+							<p className="text-center text-base font-bold text-white">Chatting with entire:</p>
+							<p className="text-center text-base text-cyan-500 font-bold">{collection.name}</p>
+						</>
 					)}
-				</>
+				</div>
 			)}
-			<div className="flex flex-1 flex-col items-start justify-start gap-4">
+			<div className="w-full flex flex-1 flex-col items-start justify-start gap-4">
 				<Bubble message={'Program Message'} user={false} />
 				<Bubble message={'User Message'} user={true} />
 			</div>
-			<div className="flex flex-row items-center justify-center gap-2">
+			<div className="flex flex-row items-center justify-center gap-2 w-full">
 				<input
 					type="text"
 					placeholder="Type a message..."

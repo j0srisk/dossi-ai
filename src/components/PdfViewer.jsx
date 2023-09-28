@@ -44,7 +44,9 @@ const PdfViewer = ({ url }) => {
 					<Page key={`page_${index + 1}`} pageNumber={index + 1} width={width} />
 				))}
 			</Document>
-			<div className={`w-[${width}] aspect-[8.5/11] bg-white rounded-md`}></div>
+			<div
+				className={`w-[${width}] aspect-[8.5/11] bg-white rounded-md absolute top-0 hidden`}
+			></div>
 		</div>
 	);
 };
