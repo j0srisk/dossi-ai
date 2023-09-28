@@ -66,7 +66,11 @@ const Content = () => {
 			{collection && (
 				<>
 					<div className="flex-1 flex justify-center">
-						<ChatContainer loadDocument={loadDocument} />
+						<ChatContainer
+							collection={collection}
+							document={document}
+							loadDocument={loadDocument}
+						/>
 					</div>
 				</>
 			)}
