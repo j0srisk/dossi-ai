@@ -2,7 +2,7 @@ const Bubble = ({ message, user, loadDocument }) => {
 	return (
 		<div className={`w-full flex ${user ? 'justify-end' : 'justify-start'}`}>
 			<div
-				className={`h-fit max-w-[85%] rounded-md p-3 text-white ${
+				className={`h-fit max-w-[85%] rounded-xl p-3 text-white ${
 					user ? 'bg-gradient-to-br from-cyan-500 to-blue-500' : 'bg-neutral-500'
 				}`}
 			>
