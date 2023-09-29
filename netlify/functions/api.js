@@ -1,4 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
+import {
+	encode,
+	encodeChat,
+	decode,
+	isWithinTokenLimit,
+	encodeGenerator,
+	decodeGenerator,
+	decodeAsyncGenerator,
+} from 'gpt-tokenizer';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
@@ -25,6 +34,81 @@ async function createEmbedding(input) {
 	});
 
 	return embedding;
+}
+
+// processing functions
+
+// sanitizes query
+function sanitize(query) {
+	const singleLineQuery = query.replace(/\n/g, ' ');
+	const trimmedQuery = singleLineQuery.trim();
+
+	return trimmedQuery;
+}
+
+// uses OpenAI to check if content is safe
+async function checkContent(query) {}
+
+//searches supabase for similar document vectors
+async function similaritySearch(query, documentId) {
+	const embedding = await createEmbedding(query);
+	const embeddingData = embedding.data[0].embedding;
+
+	const { error, data } = await supabase.rpc('match_document_vectors', {
+		document_id: documentId,
+		input_embedding: embeddingData,
+		match_threshold: 0.0,
+		match_count: 10,
+		min_content_length: 0,
+	});
+	if (error) {
+		console.log(error);
+		return { error };
+	} else {
+		return { data };
+	}
+}
+
+// generates context text for query
+async function contextGenerator(query, documentId, maxTokens) {
+	const { error, data } = await similaritySearch(query, documentId);
+
+	if (error) {
+		console.log(error);
+		return { error };
+	}
+
+	let tokenCount = 0;
+	let contextText = '';
+
+	// iterates through matches until token count exceeds maxTokens to generate max context
+	for (let i = 0; i < data.length; i++) {
+		const match = data[i];
+		const sanitizedMatch = sanitize(match.content);
+		const tokens = encode(sanitizedMatch);
+		tokenCount += tokens.length;
+		if (tokenCount >= maxTokens) {
+			// removes last match token count from total if it exceeds maxTokens
+			tokenCount -= tokens.length;
+			break;
+		}
+		// adds match content to context text and adds line break between matches
+		contextText += sanitizedMatch + '\n---\n';
+	}
+
+	return contextText;
+}
+
+async function promptGenerator(query, documentId) {
+	const sanitizedQuery = sanitize(query);
+	console.log(sanitizedQuery);
+
+	const contextText = await contextGenerator(sanitizedQuery, documentId, 2048);
+
+	const prompt = `You are a very enthusiastic representative who loves to help people! Given the following context, answer the question using only that information. If you are unsure and the answer is not explicitly written in the documentation, say "Sorry, I don't know how to help with that."    Context sections: ${contextText}    Question: """${sanitizedQuery}"""`;
+	console.log(prompt);
+
+	return prompt;
 }
 
 // express server
@@ -203,27 +287,56 @@ router.post('/delete-document', async (req, res) => {
 	}
 });
 
+router.post('/sanitize', async (req, res) => {
+	const { query } = req.body;
+
+	const sanitizedQuery = await sanitize(query);
+
+	res.status(200).json({ sanitizedQuery: sanitizedQuery });
+});
+
 router.post('/similarity-search', async (req, res) => {
 	const { query, documentId } = req.body;
 
-	const embedding = await createEmbedding(query);
-	const embeddingData = embedding.data[0].embedding;
+	const { error, data } = await similaritySearch(query, documentId);
 
-	const { error, data } = await supabase.rpc('match_document_vectors', {
-		document_id: documentId,
-		input_embedding: embeddingData,
-		match_threshold: 0.0,
-		match_count: 10,
-		min_content_length: 0,
-	});
 	if (error) {
 		console.log(error);
 		res.status(500).json({ error: error.message });
 	} else {
 		res.status(200).json({ matches: data });
 	}
+});
 
-	//res.status(200).json({ query: query, documentId: documentId });
+router.post('/tokenize', async (req, res) => {
+	const { query } = req.body;
+
+	const tokens = encode(query);
+
+	const tokensCount = tokens.length;
+
+	res.status(200).json({ tokens: tokensCount });
+});
+
+router.post('/context-generator', async (req, res) => {
+	const { query, documentId } = req.body;
+
+	const { error, tokenCount, contextText } = await contextGenerator(query, documentId, 2048);
+
+	if (error) {
+		console.log(error);
+		res.status(500).json({ error: error.message });
+	} else {
+		res.status(200).json({ contextText: contextText });
+	}
+});
+
+router.post('/prompt-generator', async (req, res) => {
+	const { query, documentId } = req.body;
+
+	const prompt = await promptGenerator(query, documentId);
+
+	res.status(200).json({ prompt: prompt });
 });
 
 app.use(`/.netlify/functions/api`, router);
