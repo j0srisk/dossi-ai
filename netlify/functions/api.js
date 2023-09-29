@@ -1,6 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { SupabaseVectorStore } from 'langchain/vectorstores/supabase';
 import OpenAI from 'openai';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -199,6 +201,29 @@ router.post('/delete-document', async (req, res) => {
 	} else {
 		res.status(200).json({ message: 'success' });
 	}
+});
+
+router.post('/similarity-search', async (req, res) => {
+	const { query, documentId } = req.body;
+
+	const embedding = await createEmbedding(query);
+	const embeddingData = embedding.data[0].embedding;
+
+	const { error, data } = await supabase.rpc('match_document_vectors', {
+		document_id: documentId,
+		input_embedding: embeddingData,
+		match_threshold: 0.0,
+		match_count: 10,
+		min_content_length: 0,
+	});
+	if (error) {
+		console.log(error);
+		res.status(500).json({ error: error.message });
+	} else {
+		res.status(200).json({ matches: data });
+	}
+
+	//res.status(200).json({ query: query, documentId: documentId });
 });
 
 app.use(`/.netlify/functions/api`, router);
