@@ -2,7 +2,8 @@ import useRequireAuth from '../hooks/useRequireAuth';
 import { supabase } from '../services/supabase';
 import { createContext, useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
+
+//import { v4 as uuidv4 } from 'uuid';
 
 export const CollectionsContext = createContext();
 
@@ -60,7 +61,8 @@ export const CollectionsProvider = ({ children }) => {
 	}, [user, collections, fetchDocuments]);
 
 	async function handleCreateCollection() {
-		const id = uuidv4();
+		//const id = uuidv4();
+		/*
 		const { error } = await supabase
 			.from('collections')
 			.insert([{ id: id, created_by: user.id, name: 'New Collection' }]);
@@ -71,9 +73,27 @@ export const CollectionsProvider = ({ children }) => {
 			await fetchCollections();
 			navigate(`/c/${id}`);
 		}
+		*/
+
+		const { error, collectionId } = await fetch('/.netlify/functions/api/create-collection', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ userId: user.id }),
+		}).then((response) => response.json());
+
+		if (error) {
+			console.log('error creating collection');
+			alert(error.message);
+		} else {
+			await fetchCollections();
+			navigate(`/c/${collectionId}`);
+		}
 	}
 
 	async function handleUpdateCollection(collection, name) {
+		/*
 		const { error } = await supabase
 			.from('collections')
 			.update({ name: name })
@@ -84,10 +104,40 @@ export const CollectionsProvider = ({ children }) => {
 		} else {
 			await fetchCollections();
 		}
+		*/
+		const { error } = await fetch('/.netlify/functions/api/update-collection', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ collectionId: collection.id, name: name, userId: user.id }),
+		});
+		if (error) {
+			console.log('error updating collection');
+			alert(error.message);
+		} else {
+			await fetchCollections();
+		}
 	}
 
 	async function handleDeleteCollection(collection) {
+		/*
 		const { error } = await supabase.from('collections').delete().eq('id', collection.id);
+		if (error) {
+			console.log('error deleting collection');
+			alert(error.message);
+		} else {
+			navigate('/');
+			await fetchCollections();
+		}
+		*/
+		const { error } = await fetch('/.netlify/functions/api/delete-collection', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ collectionId: collection.id, userId: user.id }),
+		});
 		if (error) {
 			console.log('error deleting collection');
 			alert(error.message);
@@ -100,6 +150,7 @@ export const CollectionsProvider = ({ children }) => {
 	async function handleCreateDocument(event) {
 		const file = event.target.files[0];
 
+		/*
 		const url = uuidv4();
 
 		const filePath = `${user.id}/${url}`;
@@ -121,10 +172,74 @@ export const CollectionsProvider = ({ children }) => {
 		} else {
 			await fetchDocuments();
 		}
+		
+
+		const reader = new FileReader();
+
+		reader.onload = async () => {
+			const base64String = reader.result.split(',')[1];
+			const payload = {
+				file: base64String,
+				name: file.name,
+				collectionId: collectionId,
+				documentId: url,
+				userId: user.id,
+			};
+
+			const { error } = await fetch('/.netlify/functions/api/create-document', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(payload),
+			});
+			if (error) {
+				console.log('error creating document');
+				alert(error.message);
+			} else {
+				await fetchDocuments();
+			}
+		};
+
+		reader.readAsDataURL(file);
+		*/
+
+		const formData = new FormData();
+
+		formData.append('file', file);
+		formData.append('name', file.name);
+		formData.append('collectionId', collectionId);
+		formData.append('userId', user.id);
+
+		const { error } = await fetch('/.netlify/functions/api/create-document', {
+			method: 'POST',
+			body: formData,
+		});
+		if (error) {
+			console.log('error creating document');
+			alert(error.message);
+		} else {
+			await fetchDocuments();
+		}
 	}
 
 	async function handleUpdateDocument(document, name) {
+		/*
 		const { error } = await supabase.from('documents').update({ name: name }).eq('id', document.id);
+		if (error) {
+			console.log('error updating document');
+			alert(error.message);
+		} else {
+			await fetchDocuments();
+		}
+		*/
+		const { error } = await fetch('/.netlify/functions/api/update-document', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ documentId: document.id, name: name, userId: user.id }),
+		});
 		if (error) {
 			console.log('error updating document');
 			alert(error.message);
@@ -134,6 +249,7 @@ export const CollectionsProvider = ({ children }) => {
 	}
 
 	async function handleDeleteDocument(document, collection) {
+		/*
 		const { error: databaseError } = await supabase
 			.from('documents')
 			.delete()
@@ -143,6 +259,21 @@ export const CollectionsProvider = ({ children }) => {
 			console.log('error deleting document');
 			alert(databaseError.message);
 			alert(storageError.message);
+		} else {
+			navigate(`c/${collection.id}`);
+			await fetchDocuments();
+		}
+		*/
+		const { error } = await fetch('/.netlify/functions/api/delete-document', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ documentId: document.id, userId: user.id }),
+		});
+		if (error) {
+			console.log('error deleting document');
+			alert(error.message);
 		} else {
 			navigate(`c/${collection.id}`);
 			await fetchDocuments();
