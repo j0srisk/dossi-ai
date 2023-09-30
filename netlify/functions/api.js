@@ -1,17 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
-import {
-	encode,
-	encodeChat,
-	decode,
-	isWithinTokenLimit,
-	encodeGenerator,
-	decodeGenerator,
-	decodeAsyncGenerator,
-} from 'gpt-tokenizer';
+import { encode } from 'gpt-tokenizer';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { SupabaseVectorStore } from 'langchain/vectorstores/supabase';
 import OpenAI from 'openai';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -100,13 +90,9 @@ async function contextGenerator(query, documentId, maxTokens) {
 }
 
 async function promptGenerator(query, documentId) {
-	const sanitizedQuery = sanitize(query);
-	console.log(sanitizedQuery);
+	const contextText = await contextGenerator(query, documentId, 2048);
 
-	const contextText = await contextGenerator(sanitizedQuery, documentId, 2048);
-
-	const prompt = `You are a very enthusiastic representative who loves to help people! Given the following context, answer the question using only that information. If you are unsure and the answer is not explicitly written in the documentation, say "Sorry, I don't know how to help with that."    Context sections: ${contextText}    Question: """${sanitizedQuery}"""`;
-	console.log(prompt);
+	const prompt = `You are a very enthusiastic document question answering representative who loves to help people! You are given the following context as relevant chunks from a specific document, answer the question using only that information.\nContext sections: ${contextText}\nQuestion: """${sanitizedQuery}"""`;
 
 	return prompt;
 }
@@ -206,6 +192,11 @@ router.post('/create-document', upload.single('file'), async (req, res) => {
 		},
 	]);
 
+	// create chat for document
+	const { error: chatError } = await supabase
+		.from('chats')
+		.insert([{ document: documentId, messages: [], created_by: userId }]);
+
 	// upload document to supabase storage
 	const { error: uploadError } = await supabase.storage.from('documents').upload(url, file.buffer, {
 		contentType: 'application/pdf',
@@ -228,7 +219,8 @@ router.post('/create-document', upload.single('file'), async (req, res) => {
 	let ingestErrors = [];
 
 	docs.forEach(async (doc) => {
-		const embedding = await createEmbedding(doc.pageContent);
+		const sanitizedContent = sanitize(doc.pageContent);
+		const embedding = await createEmbedding(sanitizedContent);
 		const embeddingData = embedding.data[0].embedding;
 
 		const { error } = await supabase.from('vectors').insert([
@@ -246,12 +238,17 @@ router.post('/create-document', upload.single('file'), async (req, res) => {
 		}
 	});
 
-	if (databaseError || uploadError || ingestErrors.length > 0) {
+	if (databaseError || chatError || uploadError || ingestErrors.length > 0) {
 		console.log(databaseError);
+		console.log(chatError);
 		console.log(uploadError);
-		res
-			.status(500)
-			.json({ error: databaseError.message || uploadError.message || ingestErrors[0].message });
+		res.status(500).json({
+			error:
+				databaseError.message ||
+				chatError.message ||
+				uploadError.message ||
+				ingestErrors[0].message,
+		});
 	} else {
 		res.status(200).json({ message: 'success' });
 	}
@@ -337,6 +334,67 @@ router.post('/prompt-generator', async (req, res) => {
 	const prompt = await promptGenerator(query, documentId);
 
 	res.status(200).json({ prompt: prompt });
+});
+
+router.post('/generate', async (req, res) => {
+	const { query, documentId } = req.body;
+
+	const { data, error: databaseReadError } = await supabase
+		.from('chats')
+		.select('*')
+		.eq('document', documentId)
+		.single();
+
+	if (databaseReadError) {
+		console.log(databaseReadError);
+		res.status(500).json({ error: databaseReadError.message });
+	}
+
+	console.log(data.messages);
+
+	const sanitizedQuery = sanitize(query);
+
+	const contextText = await contextGenerator(sanitizedQuery, documentId, 2048);
+
+	//const contextText = 'No context yet!';
+
+	const prompt = `You are a very enthusiastic document question answering representative who loves to help people! You are given the following context as relevant chunks from a specific document, answer the question using only that information.\nContext sections: ${contextText}\nQuestion: """${sanitizedQuery}"""`;
+
+	const response = await openai.chat.completions.create({
+		model: 'gpt-3.5-turbo',
+		messages: [
+			{
+				role: 'user',
+				content: prompt,
+			},
+		],
+		temperature: 1,
+		max_tokens: 256,
+		top_p: 1,
+		frequency_penalty: 0,
+		presence_penalty: 0,
+	});
+
+	if (!response) {
+		console.log(response);
+		res.status(500).json({ error: 'No response' });
+	}
+
+	console.log(response.choices[0].message);
+
+	const { error: databaseInsertError } = await supabase
+		.from('chats')
+		.update({
+			messages: [...data.messages, { role: 'user', content: query }, response.choices[0].message],
+		})
+		.eq('document', documentId);
+
+	if (databaseInsertError) {
+		console.log(databaseInsertError);
+		res.status(500).json({ error: databaseInsertError.message });
+	}
+
+	res.status(200).json({ response: response.choices[0].message.content });
 });
 
 app.use(`/.netlify/functions/api`, router);

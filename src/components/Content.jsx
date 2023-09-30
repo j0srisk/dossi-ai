@@ -63,7 +63,7 @@ const Content = () => {
 					)}
 				</div>
 			)}
-			{collection && (
+			{document && (
 				<>
 					<div className="flex-1 flex justify-center">
 						<ChatContainer
