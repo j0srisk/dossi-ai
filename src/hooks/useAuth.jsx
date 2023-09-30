@@ -10,7 +10,8 @@ const useAuth = ({ redirectTo = null } = {}) => {
 		if (redirectTo && !auth.user) {
 			navigate('/auth');
 		}
-		if (!redirectTo && auth.user) {
+		if (redirectTo && auth.user) {
+			console.log('redirecting to /');
 			navigate('/');
 		}
 	}, [auth.user, navigate, redirectTo]);

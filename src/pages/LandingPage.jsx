@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const LandingPage = () => {
 	const navigate = useNavigate();
 
-	const { user } = useAuth();
+	const { user } = useAuth({ redirectTo: '/' });
 
 	if (user) {
 		return null;
