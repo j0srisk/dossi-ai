@@ -6,7 +6,7 @@ const AccountInfo = () => {
 	const [userProfile, setUserProfile] = useState(null);
 	const [loading, setLoading] = useState(true);
 
-	const user = useUser();
+	const { user } = useUser();
 
 	const fetchUserProfileData = useCallback(async () => {
 		const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
