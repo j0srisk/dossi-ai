@@ -140,6 +140,7 @@ router.post('/create-collection', async (req, res) => {
 	if (error) {
 		console.log(error);
 		res.status(500).json({ error: error.message });
+		return;
 	} else {
 		res.status(200).json({ message: 'success', collectionId: collectionId });
 	}
@@ -155,6 +156,7 @@ router.post('/update-collection', async (req, res) => {
 	if (error) {
 		console.log(error);
 		res.status(500).json({ error: error.message });
+		return;
 	} else {
 		res.status(200).json({ message: 'success' });
 	}
@@ -170,6 +172,7 @@ router.post('/delete-collection', async (req, res) => {
 	if (error) {
 		console.log(error);
 		res.status(500).json({ error: error.message });
+		return;
 	} else {
 		res.status(200).json({ message: 'success' });
 	}
@@ -178,6 +181,15 @@ router.post('/delete-collection', async (req, res) => {
 router.post('/create-document', upload.single('file'), async (req, res) => {
 	const { name, collectionId, userId } = req.body;
 	const file = req.file;
+
+	console.log(file.mimetype);
+
+	if (file.mimetype !== 'application/pdf') {
+		console.log('File must be a PDF');
+		res.status(500).json({ error: 'File must be a PDF' });
+		return;
+	}
+
 	const documentId = uuidv4();
 	const url = `${userId}/${documentId}`;
 
@@ -191,6 +203,12 @@ router.post('/create-document', upload.single('file'), async (req, res) => {
 			url: url,
 		},
 	]);
+
+	if (databaseError) {
+		console.log(databaseError);
+		res.status(500).json({ error: databaseError.message });
+		return;
+	}
 
 	// create chat for document
 	const { error: chatError } = await supabase.from('chats').insert([
@@ -207,10 +225,22 @@ router.post('/create-document', upload.single('file'), async (req, res) => {
 		},
 	]);
 
+	if (chatError) {
+		console.log(chatError);
+		res.status(500).json({ error: chatError.message });
+		return;
+	}
+
 	// upload document to supabase storage
 	const { error: uploadError } = await supabase.storage.from('documents').upload(url, file.buffer, {
 		contentType: 'application/pdf',
 	});
+
+	if (uploadError) {
+		console.log(uploadError);
+		res.status(500).json({ error: uploadError.message });
+		return;
+	}
 
 	// ingest document into supabase
 	const blob = new Blob([req.file.buffer], { type: req.file.mimetype });
@@ -225,8 +255,6 @@ router.post('/create-document', upload.single('file'), async (req, res) => {
 	});
 
 	const docs = await textSplitter.splitDocuments(rawDocs);
-
-	let ingestErrors = [];
 
 	docs.forEach(async (doc) => {
 		const sanitizedContent = sanitize(doc.pageContent);
@@ -244,24 +272,12 @@ router.post('/create-document', upload.single('file'), async (req, res) => {
 		]);
 		if (error) {
 			console.log(error);
-			ingestErrors.push(error);
+			res.status(500).json({ error: error.message });
+			return;
 		}
 	});
 
-	if (databaseError || chatError || uploadError || ingestErrors.length > 0) {
-		console.log(databaseError);
-		console.log(chatError);
-		console.log(uploadError);
-		res.status(500).json({
-			error:
-				databaseError.message ||
-				chatError.message ||
-				uploadError.message ||
-				ingestErrors[0].message,
-		});
-	} else {
-		res.status(200).json({ message: 'success' });
-	}
+	res.status(200).json({ message: 'success' });
 });
 
 router.post('/update-document', async (req, res) => {
@@ -274,6 +290,7 @@ router.post('/update-document', async (req, res) => {
 	if (error) {
 		console.log(error);
 		res.status(500).json({ error: error.message });
+		return;
 	} else {
 		res.status(200).json({ message: 'success' });
 	}
@@ -289,6 +306,7 @@ router.post('/delete-document', async (req, res) => {
 	if (error) {
 		console.log(error);
 		res.status(500).json({ error: error.message });
+		return;
 	} else {
 		res.status(200).json({ message: 'success' });
 	}
@@ -310,6 +328,7 @@ router.post('/similarity-search', async (req, res) => {
 	if (error) {
 		console.log(error);
 		res.status(500).json({ error: error.message });
+		return;
 	} else {
 		res.status(200).json({ matches: data });
 	}
@@ -333,6 +352,7 @@ router.post('/context-generator', async (req, res) => {
 	if (error) {
 		console.log(error);
 		res.status(500).json({ error: error.message });
+		return;
 	} else {
 		res.status(200).json({ contextText: contextText });
 	}
@@ -358,6 +378,7 @@ router.post('/generate', async (req, res) => {
 	if (databaseReadError) {
 		console.log(databaseReadError);
 		res.status(500).json({ error: databaseReadError.message });
+		return;
 	}
 
 	console.log(data.messages);
@@ -388,6 +409,7 @@ router.post('/generate', async (req, res) => {
 	if (!response) {
 		console.log(response);
 		res.status(500).json({ error: 'No response' });
+		return;
 	}
 
 	console.log(response.choices[0].message);
@@ -402,6 +424,7 @@ router.post('/generate', async (req, res) => {
 	if (databaseInsertError) {
 		console.log(databaseInsertError);
 		res.status(500).json({ error: databaseInsertError.message });
+		return;
 	}
 
 	res.status(200).json({ response: response.choices[0].message.content });
