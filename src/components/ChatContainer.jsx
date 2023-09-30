@@ -85,7 +85,7 @@ const ChatContainer = ({ collection, document, loadDocument }) => {
 					<Bubble role="assistant" content="Generating response..." loadDocument={loadDocument} />
 				)}
 			</div>
-			<div className="flex flex-row items-center justify-center gap-2 w-full">
+			<div className="flex flex-row items-center justify-center w-full">
 				<input
 					type="text"
 					placeholder="Type a message..."
@@ -96,10 +96,10 @@ const ChatContainer = ({ collection, document, loadDocument }) => {
 							sendMessage(content);
 						}
 					}}
-					className="w-full flex-1 rounded-md p-2 bg-transparent border-neutral-500 border outline-none text-white"
+					className="w-full flex-1 rounded-l-md p-2 bg-transparent border-neutral-500 border border-r-0 outline-none text-white"
 				/>
 				<button
-					className="h-full rounded-md bg-gradient-to-r from-cyan-500 to-blue-500 p-2 text-white hover:from-cyan-600 hover:to-blue-600 hover:bg-opacity-90 hover:shadow-md px-6"
+					className="h-full rounded-r-md bg-gradient-to-r from-cyan-500 to-blue-500 p-2 text-white hover:from-cyan-600 hover:to-blue-600 hover:bg-opacity-90 hover:shadow-md px-6"
 					onClick={() => sendMessage(content)}
 				>
 					<svg

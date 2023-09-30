@@ -40,7 +40,7 @@ const Content = () => {
 	return (
 		<div className="w-full h-full flex gap-2 p-2">
 			{document && (
-				<div className="flex-1 relative">
+				<div className=" relative">
 					<DocumentContainer document={document} />
 					{!documentId && (
 						<div className="absolute top-2 right-2 z-20">
