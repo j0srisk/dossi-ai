@@ -5,7 +5,7 @@ const Login = () => {
 	const emailRef = useRef();
 	const passwordRef = useRef();
 
-	const { user, logIn } = useAuth({ redirectTo: '/' });
+	const { user, logIn } = useAuth({ redirectTo: 'auth/login' });
 
 	if (user) {
 		return null;

@@ -1,20 +1,22 @@
 import { AuthContext } from '../contexts/auth';
 import { useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const useAuth = ({ redirectTo = null } = {}) => {
 	const navigate = useNavigate();
 	const auth = useContext(AuthContext);
+	const location = useLocation();
 
 	useEffect(() => {
-		if (redirectTo && !auth.user) {
-			navigate('/auth');
-		}
-		if (redirectTo && auth.user) {
-			console.log('redirecting to /');
+		//signed in user shouldn't be able to access auth pages
+		if (auth.user && location.pathname.startsWith('/auth')) {
 			navigate('/');
 		}
-	}, [auth.user, navigate, redirectTo]);
+		//signed out user should be redirected to auth pages
+		if (!auth.user) {
+			navigate(redirectTo);
+		}
+	}, [auth.user, navigate, redirectTo, location.pathname]);
 
 	return auth;
 };

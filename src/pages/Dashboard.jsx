@@ -4,7 +4,7 @@ import useAuth from '../hooks/useAuth';
 import { Outlet } from 'react-router-dom';
 
 const Dashboard = () => {
-	const { user } = useAuth();
+	const { user } = useAuth({ redirectTo: '/auth' });
 
 	if (!user) {
 		return null;
