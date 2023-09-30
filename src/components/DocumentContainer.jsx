@@ -48,7 +48,7 @@ const DocumentContainer = ({ document }) => {
 		<>
 			{documentUrl && !downloading && (
 				<div className="flex h-full min-h-full w-full flex-col overflow-scroll relative">
-					<div className="flex flex-col gap-2 bg-neutral-800 h-full">
+					<div className="flex flex-col gap-2 bg-neutral-800 h-full w-full">
 						<PdfViewer url={documentUrl} />
 					</div>
 				</div>

@@ -19,14 +19,15 @@ const PdfViewer = ({ url }) => {
 	}
 
 	const handleResize = () => {
-		setWidth(refContainer.current.offsetWidth);
+		//setWidth(refContainer.current.offsetWidth);
 		setHeight(refContainer.current.offsetHeight);
+		// keeps aspect ratio of 8.5/11
+		setWidth((refContainer.current.offsetHeight * 8.5) / 11);
 	};
 
 	useEffect(() => {
 		if (refContainer.current) {
-			setWidth(refContainer.current.offsetWidth);
-			setHeight(refContainer.current.offsetHeight);
+			handleResize();
 		}
 
 		window.addEventListener('resize', handleResize);
@@ -44,7 +45,7 @@ const PdfViewer = ({ url }) => {
 				className={'flex flex-col gap-2 overflow-hidden'}
 			>
 				{Array.from(new Array(numPages), (el, index) => (
-					<Page key={`page_${index + 1}`} pageNumber={index + 1} height={height} />
+					<Page key={`page_${index + 1}`} pageNumber={index + 1} height={height} width={width} />
 				))}
 			</Document>
 			<div

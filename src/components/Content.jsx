@@ -38,9 +38,9 @@ const Content = () => {
 	}, [documents, documentId, loadDocument]);
 
 	return (
-		<div className="w-full h-full flex gap-2 p-2">
+		<div className="w-full h-full flex gap-2 p-2 items-center justify-center">
 			{document && (
-				<div className=" relative">
+				<div className="flex-1 w-full h-full relative">
 					<DocumentContainer document={document} />
 					{!documentId && (
 						<div className="absolute top-2 right-2 z-20">
@@ -65,7 +65,7 @@ const Content = () => {
 			)}
 			{document && (
 				<>
-					<div className="flex-1 flex justify-center">
+					<div className="flex justify-center w-full h-full">
 						<ChatContainer
 							collection={collection}
 							document={document}
@@ -73,6 +73,11 @@ const Content = () => {
 						/>
 					</div>
 				</>
+			)}
+			{!document && (
+				<p className="text-center text-base font-bold text-white">
+					Select a document to get started!
+				</p>
 			)}
 		</div>
 	);
