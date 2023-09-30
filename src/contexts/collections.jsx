@@ -1,9 +1,7 @@
-import useRequireAuth from '../hooks/useRequireAuth';
+import useUser from '../hooks/useUser';
 import { supabase } from '../services/supabase';
 import { createContext, useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-
-//import { v4 as uuidv4 } from 'uuid';
 
 export const CollectionsContext = createContext();
 
@@ -11,7 +9,7 @@ export const CollectionsProvider = ({ children }) => {
 	const [collections, setCollections] = useState([]);
 	const [documents, setDocuments] = useState([]);
 
-	const user = useRequireAuth();
+	const { user } = useUser();
 
 	const { collectionId } = useParams();
 	const navigate = useNavigate();

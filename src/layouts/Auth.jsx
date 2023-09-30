@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 
-const Main = () => {
+const Auth = () => {
 	return (
 		<div>
 			<div className="flex h-screen items-center justify-center bg-zinc-900">
@@ -10,4 +10,4 @@ const Main = () => {
 	);
 };
 
-export default Main;
+export default Auth;

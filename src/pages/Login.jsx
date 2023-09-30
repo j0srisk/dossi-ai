@@ -1,17 +1,15 @@
 import useAuth from '../hooks/useAuth';
-import useRequireUnauth from '../hooks/useRequireUnauth';
 import { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
 	const emailRef = useRef();
 	const passwordRef = useRef();
 
-	const { logIn } = useAuth();
+	const { user, logIn } = useAuth();
 
-	const navigate = useNavigate();
-
-	useRequireUnauth();
+	if (user) {
+		return null;
+	}
 
 	async function handleLogIn(e) {
 		e.preventDefault();
@@ -24,8 +22,6 @@ const Login = () => {
 		if (error) {
 			alert(error.message);
 		}
-
-		navigate('/');
 	}
 
 	return (

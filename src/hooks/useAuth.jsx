@@ -1,8 +1,21 @@
 import { AuthContext } from '../contexts/auth';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const useAuth = () => {
-	return useContext(AuthContext);
+const useAuth = ({ redirectTo = null } = {}) => {
+	const navigate = useNavigate();
+	const auth = useContext(AuthContext);
+
+	useEffect(() => {
+		if (redirectTo && !auth.user) {
+			navigate('/auth');
+		}
+		if (!redirectTo && auth.user) {
+			navigate('/');
+		}
+	}, [auth.user, navigate, redirectTo]);
+
+	return auth;
 };
 
 export default useAuth;

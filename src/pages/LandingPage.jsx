@@ -1,10 +1,14 @@
-import useRequireUnauth from '../hooks/useRequireUnauth';
+import useAuth from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
 	const navigate = useNavigate();
 
-	useRequireUnauth();
+	const { user } = useAuth();
+
+	if (user) {
+		return null;
+	}
 
 	return (
 		<div className="m-40 w-96">

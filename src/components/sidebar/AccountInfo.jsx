@@ -1,4 +1,4 @@
-import useRequireAuth from '../../hooks/useRequireAuth';
+import useUser from '../../hooks/useUser';
 import { supabase } from '../../services/supabase';
 import { useState, useEffect, useCallback } from 'react';
 
@@ -6,7 +6,7 @@ const AccountInfo = () => {
 	const [userProfile, setUserProfile] = useState(null);
 	const [loading, setLoading] = useState(true);
 
-	const user = useRequireAuth();
+	const user = useUser();
 
 	const fetchUserProfileData = useCallback(async () => {
 		const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();

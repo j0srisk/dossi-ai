@@ -1,5 +1,6 @@
 import { CollectionsContext } from '../contexts/collections';
 import useAuth from '../hooks/useAuth';
+import useUser from '../hooks/useUser';
 import AccountInfo from './sidebar/AccountInfo';
 import Collection from './sidebar/Collection';
 import { useContext } from 'react';
@@ -7,7 +8,7 @@ import { useContext } from 'react';
 const Sidebar = () => {
 	const { collections, documents, handleCreateCollection } = useContext(CollectionsContext);
 
-	const { signOut } = useAuth();
+	const { signOut } = useUser();
 
 	const handleSignOut = async () => {
 		await signOut();

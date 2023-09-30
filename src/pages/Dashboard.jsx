@@ -1,10 +1,15 @@
 import Sidebar from '../components/Sidebar';
 import { CollectionsProvider } from '../contexts/collections';
-import useRequireAuth from '../hooks/useRequireAuth';
+import useAuth from '../hooks/useAuth';
 import { Outlet } from 'react-router-dom';
 
 const Dashboard = () => {
-	useRequireAuth();
+	const { user } = useAuth();
+
+	if (!user) {
+		return null;
+	}
+
 	return (
 		<CollectionsProvider>
 			<div className="flex h-screen w-screen">

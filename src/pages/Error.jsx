@@ -1,7 +1,7 @@
 const Error = () => {
 	return (
 		<div>
-			<h1 className="text-center text-base font-bold">Error Page</h1>
+			<h1 className="text-center text-base font-bold">404</h1>
 		</div>
 	);
 };

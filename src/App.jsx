@@ -1,8 +1,9 @@
 import Content from './components/Content';
 import DocumentContainer from './components/DocumentContainer';
 import { AuthProvider } from './contexts/auth';
-import Dashboard from './layouts/Dashboard';
-import Main from './layouts/Main';
+import Auth from './layouts/Auth';
+import Dashboard from './pages/Dashboard';
+import Error from './pages/Error';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import { supabase } from './services/supabase';
@@ -42,7 +43,7 @@ function App() {
 		},
 		{
 			path: 'auth',
-			element: <Main />,
+			element: <Auth />,
 			children: [
 				{
 					path: '',
@@ -53,6 +54,10 @@ function App() {
 					element: <Login />,
 				},
 			],
+		},
+		{
+			path: '*',
+			element: <Error />,
 		},
 	]);
 
