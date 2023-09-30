@@ -193,9 +193,19 @@ router.post('/create-document', upload.single('file'), async (req, res) => {
 	]);
 
 	// create chat for document
-	const { error: chatError } = await supabase
-		.from('chats')
-		.insert([{ document: documentId, messages: [], created_by: userId }]);
+	const { error: chatError } = await supabase.from('chats').insert([
+		{
+			document: documentId,
+			messages: [
+				{
+					role: 'assistant',
+					content:
+						'Welcome to the chat! Ask me a question about the document and I will do my best to answer it!',
+				},
+			],
+			created_by: userId,
+		},
+	]);
 
 	// upload document to supabase storage
 	const { error: uploadError } = await supabase.storage.from('documents').upload(url, file.buffer, {

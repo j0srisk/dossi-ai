@@ -5,9 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 const ChatContainer = ({ collection, document, loadDocument }) => {
 	const [content, setContent] = useState('');
 	const [generating, setGenerating] = useState(false);
-	const [messages, setMessages] = useState([
-		{ role: 'assistant', content: 'Hi there, feel free to ask me a message about the document!' },
-	]);
+	const [messages, setMessages] = useState([]);
 
 	const loadChat = useCallback(async () => {
 		if (document) {
