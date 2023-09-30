@@ -11,6 +11,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 const PdfViewer = ({ url }) => {
 	const refContainer = useRef();
 	const [width, setWidth] = useState(0);
+	const [height, setHeight] = useState(0);
 	const [numPages, setNumPages] = useState(null);
 
 	function onDocumentLoadSuccess({ numPages: nextNumPages }) {
@@ -19,11 +20,13 @@ const PdfViewer = ({ url }) => {
 
 	const handleResize = () => {
 		setWidth(refContainer.current.offsetWidth);
+		setHeight(refContainer.current.offsetHeight);
 	};
 
 	useEffect(() => {
 		if (refContainer.current) {
 			setWidth(refContainer.current.offsetWidth);
+			setHeight(refContainer.current.offsetHeight);
 		}
 
 		window.addEventListener('resize', handleResize);
@@ -34,14 +37,14 @@ const PdfViewer = ({ url }) => {
 	}, []);
 
 	return (
-		<div className="w-full h-fit relative" ref={refContainer}>
+		<div className="w-fit h-full relative" ref={refContainer}>
 			<Document
 				file={url}
 				onLoadSuccess={onDocumentLoadSuccess}
-				className={'flex flex-col gap-2 overflow-hidden rounded-md'}
+				className={'flex flex-col gap-2 overflow-hidden'}
 			>
 				{Array.from(new Array(numPages), (el, index) => (
-					<Page key={`page_${index + 1}`} pageNumber={index + 1} width={width} />
+					<Page key={`page_${index + 1}`} pageNumber={index + 1} height={height} />
 				))}
 			</Document>
 			<div
