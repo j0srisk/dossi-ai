@@ -1,8 +1,9 @@
 import { supabase } from '../services/supabase';
 import Bubble from './chat/Bubble';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 const ChatContainer = ({ collection, document, loadDocument }) => {
+	const messagesRef = useRef(null);
 	const [content, setContent] = useState('');
 	const [generating, setGenerating] = useState(false);
 	const [messages, setMessages] = useState([]);
@@ -23,6 +24,12 @@ const ChatContainer = ({ collection, document, loadDocument }) => {
 	useEffect(() => {
 		loadChat();
 	}, [document, loadChat]);
+
+	useEffect(() => {
+		if (messagesRef.current) {
+			messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+		}
+	}, [messages]);
 
 	const sendMessage = async (content) => {
 		if (!content) {
@@ -72,7 +79,10 @@ const ChatContainer = ({ collection, document, loadDocument }) => {
 					</>
 				)}
 			</div>
-			<div className="w-full flex flex-1 flex-col items-start justify-start gap-4 h-full overflow-scroll">
+			<div
+				className="w-full flex flex-1 flex-col items-start justify-start gap-4 h-full overflow-scroll"
+				ref={messagesRef}
+			>
 				{messages.map((message, index) => (
 					<Bubble
 						key={index}
