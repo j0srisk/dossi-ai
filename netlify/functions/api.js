@@ -137,32 +137,16 @@ const upload = multer();
 const router = express.Router();
 
 app.use(express.json());
-
-router.get('/', (req, res) => {
-	res.json({
-		hello: 'hi!',
-	});
-});
-
-router.get('/test', (req, res) => {
-	res.json({
-		hello: 'test!',
-	});
-});
-
-router.post('/testpost', (req, res) => {
-	res.json({
-		hello: 'hit the POST!',
-	});
-});
+app.use(apiKeyMiddleware);
 
 router.post('/create-collection', async (req, res) => {
-	const { userId } = req.body;
-	const collectionId = uuidv4();
+	const user = req.user;
+	//const { userId } = req.body;
+	const collection = uuidv4();
 	const { error } = await supabase.from('collections').insert([
 		{
-			id: collectionId,
-			created_by: userId,
+			id: collection,
+			created_by: user.id,
 			name: 'New Collection',
 		},
 	]);
@@ -171,17 +155,18 @@ router.post('/create-collection', async (req, res) => {
 		res.status(500).json({ error: error.message });
 		return;
 	} else {
-		res.status(200).json({ message: 'success', collectionId: collectionId });
+		res.status(200).json({ message: 'success', collection: collection });
 	}
 });
 
 router.post('/update-collection', async (req, res) => {
-	const { collectionId, name, userId } = req.body;
+	const user = req.user;
+	const { collection, name } = req.body;
 	const { error } = await supabase
 		.from('collections')
 		.update({ name: name })
-		.eq('id', collectionId)
-		.eq('created_by', userId);
+		.eq('id', collection)
+		.eq('created_by', user.id);
 	if (error) {
 		console.log(error);
 		res.status(500).json({ error: error.message });
@@ -192,12 +177,13 @@ router.post('/update-collection', async (req, res) => {
 });
 
 router.post('/delete-collection', async (req, res) => {
-	const { collectionId, userId } = req.body;
+	const user = req.user;
+	const { collection } = req.body;
 	const { error } = await supabase
 		.from('collections')
 		.delete()
-		.eq('id', collectionId)
-		.eq('created_by', userId);
+		.eq('id', collection)
+		.eq('created_by', user.id);
 	if (error) {
 		console.log(error);
 		res.status(500).json({ error: error.message });
@@ -208,7 +194,8 @@ router.post('/delete-collection', async (req, res) => {
 });
 
 router.post('/create-document', upload.single('file'), async (req, res) => {
-	const { name, collectionId, userId } = req.body;
+	const user = req.user;
+	const { name, collection } = req.body;
 	const file = req.file;
 
 	console.log(file.mimetype);
@@ -219,16 +206,16 @@ router.post('/create-document', upload.single('file'), async (req, res) => {
 		return;
 	}
 
-	const documentId = uuidv4();
-	const url = `${userId}/${documentId}`;
+	const document = uuidv4();
+	const url = `${user.id}/${document}`;
 
 	// insert document into supabase
 	const { error: databaseError } = await supabase.from('documents').insert([
 		{
-			id: documentId,
+			id: document,
 			name,
-			collection: collectionId,
-			created_by: userId,
+			collection: collection,
+			created_by: user.id,
 			url: url,
 		},
 	]);
@@ -242,7 +229,7 @@ router.post('/create-document', upload.single('file'), async (req, res) => {
 	// create chat for document
 	const { error: chatError } = await supabase.from('chats').insert([
 		{
-			document: documentId,
+			document: document,
 			messages: [
 				{
 					role: 'assistant',
@@ -250,7 +237,7 @@ router.post('/create-document', upload.single('file'), async (req, res) => {
 						'Welcome to the chat! Ask me a question about the document and I will do my best to answer it!',
 				},
 			],
-			created_by: userId,
+			created_by: user.id,
 		},
 	]);
 
@@ -295,8 +282,8 @@ router.post('/create-document', upload.single('file'), async (req, res) => {
 				content: doc.pageContent,
 				embedding: embeddingData,
 				metadata: doc.metadata,
-				document: documentId,
-				created_by: userId,
+				document: document,
+				created_by: user.id,
 			},
 		]);
 		if (error) {
@@ -306,16 +293,17 @@ router.post('/create-document', upload.single('file'), async (req, res) => {
 		}
 	});
 
-	res.status(200).json({ message: 'success' });
+	res.status(200).json({ message: 'success', document: document });
 });
 
 router.post('/update-document', async (req, res) => {
-	const { documentId, name, userId } = req.body;
+	const user = req.user;
+	const { document, name } = req.body;
 	const { error } = await supabase
 		.from('documents')
 		.update({ name: name })
-		.eq('id', documentId)
-		.eq('created_by', userId);
+		.eq('id', document)
+		.eq('created_by', user.id);
 	if (error) {
 		console.log(error);
 		res.status(500).json({ error: error.message });
@@ -326,12 +314,13 @@ router.post('/update-document', async (req, res) => {
 });
 
 router.post('/delete-document', async (req, res) => {
-	const { documentId, userId } = req.body;
+	const user = req.user;
+	const { document } = req.body;
 	const { error } = await supabase
 		.from('documents')
 		.delete()
-		.eq('id', documentId)
-		.eq('created_by', userId);
+		.eq('id', document)
+		.eq('created_by', user.id);
 	if (error) {
 		console.log(error);
 		res.status(500).json({ error: error.message });
@@ -339,60 +328,6 @@ router.post('/delete-document', async (req, res) => {
 	} else {
 		res.status(200).json({ message: 'success' });
 	}
-});
-
-router.post('/sanitize', async (req, res) => {
-	const { query } = req.body;
-
-	const sanitizedQuery = await sanitize(query);
-
-	res.status(200).json({ sanitizedQuery: sanitizedQuery });
-});
-
-router.post('/similarity-search', async (req, res) => {
-	const { query, documentId } = req.body;
-
-	const { error, data } = await similaritySearch(query, documentId);
-
-	if (error) {
-		console.log(error);
-		res.status(500).json({ error: error.message });
-		return;
-	} else {
-		res.status(200).json({ matches: data });
-	}
-});
-
-router.post('/tokenize', async (req, res) => {
-	const { query } = req.body;
-
-	const tokens = encode(query);
-
-	const tokensCount = tokens.length;
-
-	res.status(200).json({ tokens: tokensCount });
-});
-
-router.post('/context-generator', async (req, res) => {
-	const { query, documentId } = req.body;
-
-	const { error, tokenCount, contextText } = await contextGenerator(query, documentId, 2048);
-
-	if (error) {
-		console.log(error);
-		res.status(500).json({ error: error.message });
-		return;
-	} else {
-		res.status(200).json({ contextText: contextText });
-	}
-});
-
-router.post('/prompt-generator', async (req, res) => {
-	const { query, documentId } = req.body;
-
-	const prompt = await promptGenerator(query, documentId);
-
-	res.status(200).json({ prompt: prompt });
 });
 
 router.post('/generate', async (req, res) => {
