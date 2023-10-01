@@ -1,3 +1,4 @@
+import useUser from '../hooks/useUser';
 import { supabase } from '../services/supabase';
 import Bubble from './chat/Bubble';
 import { useState, useEffect, useCallback, useRef } from 'react';
@@ -7,6 +8,8 @@ const ChatContainer = ({ collection, document, loadDocument }) => {
 	const [content, setContent] = useState('');
 	const [generating, setGenerating] = useState(false);
 	const [messages, setMessages] = useState([]);
+
+	const { user, profile } = useUser();
 
 	const loadChat = useCallback(async () => {
 		if (document) {
@@ -44,6 +47,7 @@ const ChatContainer = ({ collection, document, loadDocument }) => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+				'x-api-key': profile.api_key,
 			},
 			body: JSON.stringify({ query: content, documentId: document.id }),
 		}).then((response) => response.json());

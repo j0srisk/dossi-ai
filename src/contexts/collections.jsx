@@ -83,7 +83,7 @@ export const CollectionsProvider = ({ children }) => {
 				'Content-Type': 'application/json',
 				'x-api-key': profile.api_key,
 			},
-			body: JSON.stringify({ collection: collection, name: name }),
+			body: JSON.stringify({ collection: collection.id, name: name }),
 		});
 		if (error) {
 			console.log('error updating collection');
