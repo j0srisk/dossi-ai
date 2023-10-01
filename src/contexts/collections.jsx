@@ -9,7 +9,7 @@ export const CollectionsProvider = ({ children }) => {
 	const [collections, setCollections] = useState([]);
 	const [documents, setDocuments] = useState([]);
 
-	const { user } = useUser();
+	const { user, profile } = useUser();
 
 	const { collectionId } = useParams();
 	const navigate = useNavigate();

@@ -4,38 +4,26 @@ import { createContext, useState, useEffect } from 'react';
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-	//const [session, setSession] = useState();
 	const [user, setUser] = useState(null);
+	const [session, setSession] = useState(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		let gotSession = localStorage.getItem('authSession');
-		if (gotSession) {
-			//console.log('Retrieved: ', gotSession);
-			//setSession(JSON.parse(gotSession));
-			setUser(JSON.parse(gotSession));
-		}
-		async function getSession() {
+		supabase.auth.getSession().then(({ data: { session } }) => {
+			setSession(session);
+			setUser(session?.user ?? null);
 			setLoading(false);
-			const { subscription } = supabase.auth.onAuthStateChange(async (event, session) => {
-				if (session) {
-					//console.log('New session: ', session);
-					setUser(session.user);
-					localStorage.setItem('authSession', JSON.stringify(session));
-					//setSession(session);
-				} else {
-					console.log('No session');
-					localStorage.removeItem('authSession');
-					//setSession(null);
-					setUser(null);
-				}
-				setLoading(false);
-			});
-			return () => {
-				subscription.unsubscribe();
-			};
-		}
-		getSession();
+		});
+
+		const {
+			data: { subscription },
+		} = supabase.auth.onAuthStateChange((_event, session) => {
+			setSession(session);
+			setUser(session?.user ?? null);
+			setLoading(false);
+		});
+
+		return () => subscription.unsubscribe();
 	}, []);
 
 	const value = {
@@ -43,6 +31,7 @@ export function AuthProvider({ children }) {
 		logIn: (data) => supabase.auth.signInWithPassword(data),
 		signOut: () => supabase.auth.signOut(),
 		user,
+		session,
 	};
 
 	return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;

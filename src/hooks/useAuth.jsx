@@ -10,6 +10,7 @@ const useAuth = ({ redirectTo = null } = {}) => {
 	useEffect(() => {
 		//signed in user shouldn't be able to access auth pages
 		if (auth.user && location.pathname.startsWith('/auth')) {
+			console.log('redirecting to dashboard');
 			navigate('/');
 		}
 		//signed out user should be redirected to auth pages

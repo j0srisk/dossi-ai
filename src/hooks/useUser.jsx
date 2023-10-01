@@ -1,10 +1,33 @@
 import { AuthContext } from '../contexts/auth';
-import { useContext } from 'react';
+import { supabase } from '../services/supabase';
+import { useContext, useState, useEffect, useCallback } from 'react';
 
 const useUser = () => {
+	const [profile, setProfile] = useState(null);
 	const auth = useContext(AuthContext);
 
-	return auth;
+	const fetchUserProfile = useCallback(async () => {
+		console.log('querying user profile data');
+		const { data, error } = await supabase
+			.from('profiles')
+			.select('*')
+			.eq('id', auth.user.id)
+			.single();
+		if (error) {
+			console.log('error fetching user profile data');
+			alert(error.message);
+		} else {
+			setProfile(data);
+		}
+	}, [auth.user.id]);
+
+	useEffect(() => {
+		if (auth.user && auth.user.id) {
+			fetchUserProfile();
+		}
+	}, [auth.user, fetchUserProfile]);
+
+	return { ...auth, profile };
 };
 
 export default useUser;
