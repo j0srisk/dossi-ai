@@ -98,6 +98,35 @@ async function promptGenerator(query, documentId) {
 }
 
 // express server
+
+// middleware to check for API key
+async function apiKeyMiddleware(req, res, next) {
+	const apiKey = req.headers['x-api-key'];
+
+	console.log(apiKey);
+
+	if (!apiKey) {
+		res.status(401).json({ error: 'No API key provided' });
+		return;
+	}
+
+	console.log(apiKey);
+
+	const { error, data } = await supabase
+		.from('profiles')
+		.select('*')
+		.eq('api_key', apiKey)
+		.single();
+	if (!data) {
+		res.status(401).json({ error: 'Invalid API key' });
+		return;
+	}
+
+	req.user = data;
+
+	next();
+}
+
 const express = require('express');
 const serverless = require('serverless-http');
 const multer = require('multer');
@@ -428,6 +457,12 @@ router.post('/generate', async (req, res) => {
 	}
 
 	res.status(200).json({ response: response.choices[0].message.content });
+});
+
+router.post('/find-user', apiKeyMiddleware, async (req, res) => {
+	const user = req.user;
+
+	res.status(200).json({ user: user });
 });
 
 app.use(`/.netlify/functions/api`, router);
