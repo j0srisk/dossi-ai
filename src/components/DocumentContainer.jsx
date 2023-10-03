@@ -2,7 +2,7 @@ import { supabase } from '../services/supabase';
 import PdfViewer from './PdfViewer';
 import { useCallback, useEffect, useState } from 'react';
 
-const DocumentContainer = ({ document }) => {
+const DocumentContainer = ({ document, pageNumber, setPageNumber }) => {
 	const [documentUrl, setDocumentUrl] = useState(null);
 	const [downloading, setDownloading] = useState(true);
 
@@ -49,7 +49,7 @@ const DocumentContainer = ({ document }) => {
 			{documentUrl && !downloading && (
 				<div className="flex h-full min-h-full w-full flex-col overflow-scroll relative">
 					<div className="flex flex-col gap-2 bg-neutral-800 h-full w-full">
-						<PdfViewer url={documentUrl} />
+						<PdfViewer url={documentUrl} pageNumber={pageNumber} setPageNumber={setPageNumber} />
 					</div>
 				</div>
 			)}

@@ -3,7 +3,7 @@ import { supabase } from '../services/supabase';
 import Bubble from './chat/Bubble';
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-const ChatContainer = ({ collection, document, loadDocument }) => {
+const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber }) => {
 	const messagesRef = useRef(null);
 	const [content, setContent] = useState('');
 	const [generating, setGenerating] = useState(false);
@@ -93,11 +93,16 @@ const ChatContainer = ({ collection, document, loadDocument }) => {
 						role={message.role}
 						content={message.content}
 						loadDocument={loadDocument}
+						handleSetPageNumber={handleSetPageNumber}
 					/>
 				))}
-				{generating && (
-					<Bubble role="assistant" content="Generating response..." loadDocument={loadDocument} />
-				)}
+				{generating && <Bubble role="assistant" content="Generating response..." />}
+				<Bubble
+					role="assistant"
+					content="Some Text Here"
+					referencePage={2}
+					handleSetPageNumber={handleSetPageNumber}
+				/>
 			</div>
 			<div className="flex flex-row items-center justify-center w-full">
 				<input

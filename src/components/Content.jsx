@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 const Content = () => {
 	const [collection, setCollection] = useState([]);
 	const [document, setDocument] = useState(null);
+	const [pageNumber, setPageNumber] = useState(null);
 
 	const { collections, documents } = useContext(CollectionsContext);
 	const { collectionId, documentId } = useParams();
@@ -37,11 +38,19 @@ const Content = () => {
 		}
 	}, [documents, documentId, loadDocument]);
 
+	const handleSetPageNumber = (pageNumber) => {
+		setPageNumber(pageNumber);
+	};
+
 	return (
 		<div className="w-full h-full flex gap-2 p-2 items-center justify-center">
 			{document && (
 				<div className="flex-1 w-full h-full relative">
-					<DocumentContainer document={document} />
+					<DocumentContainer
+						document={document}
+						pageNumber={pageNumber}
+						setPageNumber={setPageNumber}
+					/>
 					{!documentId && (
 						<div className="absolute top-2 right-2 z-20">
 							<button
@@ -70,6 +79,7 @@ const Content = () => {
 							collection={collection}
 							document={document}
 							loadDocument={loadDocument}
+							handleSetPageNumber={handleSetPageNumber}
 						/>
 					</div>
 				</>
