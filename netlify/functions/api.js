@@ -69,11 +69,14 @@ async function contextGenerator(query, documentId, maxTokens) {
 	}
 
 	let tokenCount = 0;
-	let contextText = '';
+	let contextText = '---\n';
 
 	// iterates through matches until token count exceeds maxTokens to generate max context
 	for (let i = 0; i < data.length; i++) {
+		let pageContent = '';
 		const match = data[i];
+		const pageNumbers = match.metadata.loc.pageNumber;
+		pageContent = 'Page ' + pageNumbers + ': \n';
 		const sanitizedMatch = sanitize(match.content);
 		const tokens = encode(sanitizedMatch);
 		tokenCount += tokens.length;
@@ -82,8 +85,11 @@ async function contextGenerator(query, documentId, maxTokens) {
 			tokenCount -= tokens.length;
 			break;
 		}
+
+		pageContent += sanitizedMatch;
+
 		// adds match content to context text and adds line break between matches
-		contextText += sanitizedMatch + '\n---\n';
+		contextText += pageContent + '\n---\n';
 	}
 
 	return contextText;
@@ -103,14 +109,10 @@ async function promptGenerator(query, documentId) {
 async function apiKeyMiddleware(req, res, next) {
 	const apiKey = req.headers['x-api-key'];
 
-	console.log(apiKey);
-
 	if (!apiKey) {
 		res.status(401).json({ error: 'No API key provided' });
 		return;
 	}
-
-	console.log(apiKey);
 
 	const { error, data } = await supabase
 		.from('profiles')
@@ -331,7 +333,7 @@ router.post('/delete-document', async (req, res) => {
 });
 
 router.post('/generate', async (req, res) => {
-	const { query, documentId } = req.body;
+	const { query, documentId, collectionId } = req.body;
 
 	const { data, error: databaseReadError } = await supabase
 		.from('chats')
@@ -345,15 +347,13 @@ router.post('/generate', async (req, res) => {
 		return;
 	}
 
-	console.log(data.messages);
-
 	const sanitizedQuery = sanitize(query);
 
 	const contextText = await contextGenerator(sanitizedQuery, documentId, 2048);
 
 	//const contextText = 'No context yet!';
 
-	const prompt = `You are a very enthusiastic document question answering representative who loves to help people! You are given the following context as relevant chunks from a specific document, answer the question using only that information.\nContext sections: ${contextText}\nQuestion: """${sanitizedQuery}"""`;
+	const prompt = `You are a very enthusiastic document question answering representative who loves to help people! You are given the following context as relevant chunks from a specific document, answer the question using only that information.\nContext sections:\n${contextText}\nQuestion: \n"""${sanitizedQuery}"""`;
 
 	const response = await openai.chat.completions.create({
 		model: 'gpt-3.5-turbo',
@@ -392,6 +392,83 @@ router.post('/generate', async (req, res) => {
 	}
 
 	res.status(200).json({ response: response.choices[0].message.content });
+});
+
+router.post('/generate-prompt', async (req, res) => {
+	const { query, document } = req.body;
+
+	const sanitizedQuery = sanitize(query);
+
+	const contextText = await contextGenerator(sanitizedQuery, document, 512);
+
+	const prompt = `You are a very enthusiastic document question answering representative who loves to help people! You are given the following context as relevant chunks from a specific document, answer the question using only that information.\nContext sections:\n${contextText}\nQuestion: \n"""${sanitizedQuery}"""`;
+
+	console.log(prompt);
+
+	res.status(200).json({ prompt: prompt });
+});
+
+router.post('/functions-generate', async (req, res) => {
+	const { query, document } = req.body;
+
+	const sanitizedQuery = sanitize(query);
+
+	const contextText = await contextGenerator(sanitizedQuery, document, 2048);
+
+	const prompt = `You are a very enthusiastic document question answering representative who loves to help people! You are given the following context as relevant chunks from a specific document, answer the question using only that information.\nContext sections:\n${contextText}\nQuestion: \n"""${sanitizedQuery}"""`;
+
+	const response = await openai.chat.completions.create({
+		model: 'gpt-3.5-turbo',
+		messages: [
+			{
+				role: 'user',
+				content: prompt,
+			},
+		],
+		functions: [
+			{
+				name: 'answer_question',
+				parameters: {
+					type: 'object',
+					properties: {
+						answer: { type: 'string' },
+						pageNumber: {
+							type: 'number',
+							description:
+								'Page number of the most relevant document section if you think the user is asking about a specific section of the document. If the user is asking about the document as a whole, set this to 0.',
+						},
+					},
+					description:
+						'Answer to the question and page number of the most relevant document section.',
+					required: ['answer', 'pageNumber'],
+				},
+			},
+		],
+		function_call: { name: 'answer_question' },
+	});
+
+	if (!response) {
+		console.log(response);
+		res.status(500).json({ error: 'No response' });
+		return;
+	}
+
+	console.log(response.choices[0]);
+
+	const responseInJSON = JSON.parse(response.choices[0].message.function_call.arguments);
+
+	console.log(responseInJSON.answer);
+	console.log(responseInJSON.pageNumber);
+
+	if (responseInJSON.pageNumber === 0) {
+		res.status(200).json({ answer: responseInJSON.answer, context: contextText });
+	} else {
+		res.status(200).json({
+			answer: responseInJSON.answer,
+			pageNumber: responseInJSON.pageNumber,
+			context: contextText,
+		});
+	}
 });
 
 router.post('/find-user', apiKeyMiddleware, async (req, res) => {
