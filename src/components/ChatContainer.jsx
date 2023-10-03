@@ -2,6 +2,7 @@ import useUser from '../hooks/useUser';
 import { supabase } from '../services/supabase';
 import Bubble from './chat/Bubble';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 
 const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber }) => {
 	const messagesRef = useRef(null);
@@ -9,20 +10,27 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 	const [generating, setGenerating] = useState(false);
 	const [messages, setMessages] = useState([]);
 
-	const { user, profile } = useUser();
+	const { profile } = useUser();
 
 	const loadChat = useCallback(async () => {
+		let query = supabase.from('chats').select('*');
+
 		if (document) {
-			const { data, error } = await supabase.from('chats').select('*').eq('document', document.id);
-			if (error) {
-				console.log('error fetching chat');
-				alert(error.message);
-			} else {
-				setMessages(data[0].messages);
-				console.log('data: ', data[0].messages);
-			}
+			query = query.eq('document', document.id);
+		} else if (collection) {
+			query = query.eq('collection', collection.id);
 		}
-	}, [document]);
+
+		const { data, error } = await query;
+
+		if (error) {
+			console.log('error fetching chat');
+			alert(error.message);
+		} else {
+			setMessages(data[0].messages);
+			console.log('messages: ', data[0].messages);
+		}
+	}, [document, collection]);
 
 	useEffect(() => {
 		loadChat();
@@ -35,6 +43,9 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 	}, [messages]);
 
 	const sendMessage = async (content) => {
+		console.log('sending message: ', content);
+		console.log('document: ', document);
+		console.log('collection: ', collection);
 		if (!content) {
 			return;
 		}
@@ -43,13 +54,23 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 
 		setMessages(updatedMessagesWithUser);
 		setContent('');
+
+		const requestBody = {
+			query: content,
+			collection: collection.id,
+		};
+
+		if (document) {
+			requestBody.document = document.id;
+		}
+
 		const { error, response } = await fetch('/.netlify/functions/api/generate-with-references', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				'x-api-key': profile.api_key,
 			},
-			body: JSON.stringify({ query: content, document: document.id }),
+			body: JSON.stringify(requestBody),
 		}).then((response) => response.json());
 
 		console.log('response: ', response);
@@ -69,7 +90,7 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 			<div className="w-full flex flex-row items-center justify-center gap-1 p-3 bg-transparent rounded-md border border-transparent">
 				{document && (
 					<>
-						<p className="text-center text-base font-bold text-white">Chatting with:</p>
+						<p className="text-center text-base font-bold text-white">Chatting with</p>
 						<p className="text-center text-base text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-bold">
 							{document.name}
 						</p>
@@ -77,10 +98,11 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 				)}
 				{!document && (
 					<>
-						<p className="text-center text-base font-bold text-white">Chatting with entire:</p>
+						<p className="text-center text-base font-bold text-white">Chatting with entire</p>
 						<p className="text-center text-base text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-bold">
 							{collection.name}
 						</p>
+						<p className="text-center text-base font-bold text-white">collection</p>
 					</>
 				)}
 			</div>

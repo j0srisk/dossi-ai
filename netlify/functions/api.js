@@ -40,17 +40,38 @@ function sanitize(query) {
 async function checkContent(query) {}
 
 //searches supabase for similar document vectors
-async function similaritySearch(query, documentId) {
+async function similaritySearch(query, document, collection) {
 	const embedding = await createEmbedding(query);
 	const embeddingData = embedding.data[0].embedding;
 
-	const { error, data } = await supabase.rpc('match_document_vectors', {
-		document_id: documentId,
-		input_embedding: embeddingData,
-		match_threshold: 0.0,
-		match_count: 10,
-		min_content_length: 0,
-	});
+	console.log(document);
+	console.log(collection);
+
+	let error = null;
+	let data = null;
+
+	if (document) {
+		const result = await supabase.rpc('match_document_vectors', {
+			document_id: document,
+			input_embedding: embeddingData,
+			match_threshold: 0.0,
+			match_count: 10,
+			min_content_length: 0,
+		});
+		error = result.error;
+		data = result.data;
+	} else if (collection) {
+		const result = await supabase.rpc('match_collection_vectors', {
+			collection_id: collection,
+			input_embedding: embeddingData,
+			match_threshold: 0.0,
+			match_count: 10,
+			min_content_length: 0,
+		});
+		error = result.error;
+		data = result.data;
+	}
+
 	if (error) {
 		console.log(error);
 		return { error };
@@ -60,8 +81,19 @@ async function similaritySearch(query, documentId) {
 }
 
 // generates context text for query
-async function contextGenerator(query, documentId, maxTokens) {
-	const { error, data } = await similaritySearch(query, documentId);
+async function contextGenerator(query, document, collection, maxTokens) {
+	let error = null;
+	let data = null;
+
+	if (document) {
+		const result = await similaritySearch(query, document, null);
+		error = result.error;
+		data = result.data;
+	} else if (collection) {
+		const result = await similaritySearch(query, null, collection);
+		error = result.error;
+		data = result.data;
+	}
 
 	if (error) {
 		console.log(error);
@@ -145,20 +177,40 @@ router.post('/create-collection', async (req, res) => {
 	const user = req.user;
 	//const { userId } = req.body;
 	const collection = uuidv4();
-	const { error } = await supabase.from('collections').insert([
+	const { error: databaseError } = await supabase.from('collections').insert([
 		{
 			id: collection,
 			created_by: user.id,
 			name: 'New Collection',
 		},
 	]);
-	if (error) {
-		console.log(error);
-		res.status(500).json({ error: error.message });
+	if (databaseError) {
+		console.log(databaseError);
+		res.status(500).json({ error: databaseError.message });
 		return;
-	} else {
-		res.status(200).json({ message: 'success', collection: collection });
 	}
+
+	const { error: chatError } = await supabase.from('chats').insert([
+		{
+			collection: collection,
+			messages: [
+				{
+					role: 'assistant',
+					content:
+						'Welcome to the chat! Ask me a question about this collection of document and I will do my best to answer it!',
+				},
+			],
+			created_by: user.id,
+		},
+	]);
+
+	if (chatError) {
+		console.log(chatError);
+		res.status(500).json({ error: chatError.message });
+		return;
+	}
+
+	res.status(200).json({ message: 'success', collection: collection });
 });
 
 router.post('/update-collection', async (req, res) => {
@@ -332,6 +384,20 @@ router.post('/delete-document', async (req, res) => {
 	}
 });
 
+router.post('/similarity-search', async (req, res) => {
+	const { query, document, collection } = req.body;
+
+	const { error, data } = await similaritySearch(query, document, collection);
+
+	if (error) {
+		console.log(error);
+		res.status(500).json({ error: error.message });
+		return;
+	}
+
+	res.status(200).json({ data: data });
+});
+
 router.post('/generate-prompt', async (req, res) => {
 	const { query, document } = req.body;
 
@@ -409,13 +475,23 @@ router.post('/generate', async (req, res) => {
 });
 
 router.post('/generate-with-references', async (req, res) => {
-	const { query, document } = req.body;
+	const { query, document, collection } = req.body;
 
-	const { data, error: databaseReadError } = await supabase
-		.from('chats')
-		.select('*')
-		.eq('document', document)
-		.single();
+	console.log(document);
+	console.log(collection);
+
+	let databaseReadError = null;
+	let data = null;
+
+	if (document) {
+		const result = await supabase.from('chats').select('*').eq('document', document).single();
+		databaseReadError = result.error;
+		data = result.data;
+	} else if (collection) {
+		const result = await supabase.from('chats').select('*').eq('collection', collection).single();
+		databaseReadError = result.error;
+		data = result.data;
+	}
 
 	if (databaseReadError) {
 		console.log(databaseReadError);
@@ -425,7 +501,13 @@ router.post('/generate-with-references', async (req, res) => {
 
 	const sanitizedQuery = sanitize(query);
 
-	const contextText = await contextGenerator(sanitizedQuery, document, 2048);
+	let contextText = '';
+
+	if (document) {
+		contextText = await contextGenerator(sanitizedQuery, document, null, 2048);
+	} else if (collection) {
+		contextText = await contextGenerator(sanitizedQuery, null, collection, 2048);
+	}
 
 	const prompt = `You are a very enthusiastic document question answering representative who loves to help people! You are given the following context as relevant chunks from a specific document, answer the question using only that information.\nContext sections:\n${contextText}\nQuestion: \n"""${sanitizedQuery}"""`;
 
@@ -480,12 +562,25 @@ router.post('/generate-with-references', async (req, res) => {
 
 	console.log(assistantMessage);
 
-	const { error: databaseInsertError } = await supabase
-		.from('chats')
-		.update({
-			messages: [...data.messages, { role: 'user', content: query }, assistantMessage],
-		})
-		.eq('document', document);
+	let databaseInsertError = null;
+
+	if (document) {
+		const response = await supabase
+			.from('chats')
+			.update({
+				messages: [...data.messages, { role: 'user', content: query }, assistantMessage],
+			})
+			.eq('document', document);
+		databaseInsertError = response.error;
+	} else if (collection) {
+		const response = await supabase
+			.from('chats')
+			.update({
+				messages: [...data.messages, { role: 'user', content: query }, assistantMessage],
+			})
+			.eq('collection', collection);
+		databaseInsertError = response.error;
+	}
 
 	if (databaseInsertError) {
 		console.log(databaseInsertError);

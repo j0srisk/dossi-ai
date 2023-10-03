@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
 const Content = () => {
-	const [collection, setCollection] = useState([]);
+	const [collection, setCollection] = useState(null);
 	const [document, setDocument] = useState(null);
 	const [pageNumber, setPageNumber] = useState(null);
 
@@ -72,7 +72,7 @@ const Content = () => {
 					)}
 				</div>
 			)}
-			{document && (
+			{collection && (
 				<>
 					<div className="flex justify-center w-full h-full">
 						<ChatContainer
@@ -84,7 +84,7 @@ const Content = () => {
 					</div>
 				</>
 			)}
-			{!document && (
+			{!collection && (
 				<p className="text-center text-base font-bold text-white">
 					Select or upload a document to get started
 				</p>
