@@ -1,3 +1,4 @@
+import Main from '../components/Main';
 import Sidebar from '../components/Sidebar';
 import { CollectionsProvider } from '../contexts/collections';
 import useAuth from '../hooks/useAuth';
@@ -17,7 +18,7 @@ const Dashboard = () => {
 					<Sidebar />
 				</div>
 				<div className="flex flex-1 flex-col bg-zinc-900">
-					<Outlet />
+					<Main />
 				</div>
 			</div>
 		</CollectionsProvider>

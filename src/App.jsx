@@ -1,12 +1,12 @@
 import Content from './components/Content';
 import DocumentContainer from './components/DocumentContainer';
+import Main from './components/Main';
 import { AuthProvider } from './contexts/auth';
 import Auth from './layouts/Auth';
 import Dashboard from './pages/Dashboard';
 import Error from './pages/Error';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
-import { supabase } from './services/supabase';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 function App() {
@@ -17,25 +17,11 @@ function App() {
 			children: [
 				{
 					path: 'c/:collectionId',
-					element: <Content />,
-					loader: async ({ params }) => {
-						return await supabase
-							.from('collections')
-							.select('*')
-							.eq('id', params.collectionId)
-							.single();
-					},
+					element: null,
 					children: [
 						{
 							path: ':documentId',
-							element: <DocumentContainer />,
-							loader: async ({ params }) => {
-								return await supabase
-									.from('documents')
-									.select('*')
-									.eq('id', params.documentId)
-									.single();
-							},
+							element: null,
 						},
 					],
 				},

@@ -44,9 +44,6 @@ async function similaritySearch(query, document, collection) {
 	const embedding = await createEmbedding(query);
 	const embeddingData = embedding.data[0].embedding;
 
-	console.log(document);
-	console.log(collection);
-
 	let error = null;
 	let data = null;
 
@@ -108,7 +105,10 @@ async function contextGenerator(query, document, collection, maxTokens) {
 		let pageContent = '';
 		const match = data[i];
 		const pageNumbers = match.metadata.loc.pageNumber;
-		pageContent = 'Page ' + pageNumbers + ': \n';
+		const document = match.document;
+		pageContent = 'Document: ' + document + '\n';
+		pageContent += 'Page: ' + pageNumbers + '\n';
+		pageContent += 'Content: ';
 		const sanitizedMatch = sanitize(match.content);
 		const tokens = encode(sanitizedMatch);
 		tokenCount += tokens.length;
@@ -398,6 +398,16 @@ router.post('/similarity-search', async (req, res) => {
 	res.status(200).json({ data: data });
 });
 
+router.post('/generate-context', async (req, res) => {
+	const { query, document, collection, maxTokens } = req.body;
+
+	const contextText = await contextGenerator(query, document, collection, maxTokens);
+
+	console.log(contextText);
+
+	res.status(200).json({ contextText: contextText });
+});
+
 router.post('/generate-prompt', async (req, res) => {
 	const { query, document } = req.body;
 
@@ -475,10 +485,14 @@ router.post('/generate', async (req, res) => {
 });
 
 router.post('/generate-with-references', async (req, res) => {
-	const { query, document, collection } = req.body;
+	let { query, document, collection } = req.body;
 
 	console.log(document);
 	console.log(collection);
+
+	if (document && collection) {
+		collection = null;
+	}
 
 	let databaseReadError = null;
 	let data = null;
@@ -511,6 +525,51 @@ router.post('/generate-with-references', async (req, res) => {
 
 	const prompt = `You are a very enthusiastic document question answering representative who loves to help people! You are given the following context as relevant chunks from a specific document, answer the question using only that information.\nContext sections:\n${contextText}\nQuestion: \n"""${sanitizedQuery}"""`;
 
+	let schema = null;
+
+	if (document) {
+		schema = {
+			name: 'answer_question',
+			parameters: {
+				type: 'object',
+				properties: {
+					answer: { type: 'string' },
+					pageNumber: {
+						type: 'number',
+						description:
+							'Page number of the most relevant document section if you think the user is asking about a specific section of the document. If the user is asking about the document as a whole, set this to 0.',
+					},
+				},
+				description:
+					'Answer to the question and page number of the most relevant document section.',
+				required: ['answer', 'pageNumber'],
+			},
+		};
+	} else if (collection) {
+		schema = {
+			name: 'answer_question',
+			parameters: {
+				type: 'object',
+				properties: {
+					answer: { type: 'string' },
+					document: {
+						type: 'string',
+						description:
+							'ID of the document that the answer is from if you think the user is asking about a specific document. If the user is asking about the collection as a whole, set this to 0.',
+					},
+					pageNumber: {
+						type: 'number',
+						description:
+							'Page number of the most relevant document section if you think the user is asking about a specific section of the document. If the user is asking about the document as a whole, set this to 0.',
+					},
+				},
+				description:
+					'Answer to the question and page number of the most relevant document section.',
+				required: ['answer', 'pageNumber', 'document'],
+			},
+		};
+	}
+
 	const response = await openai.chat.completions.create({
 		model: 'gpt-3.5-turbo',
 		messages: [
@@ -519,25 +578,7 @@ router.post('/generate-with-references', async (req, res) => {
 				content: prompt,
 			},
 		],
-		functions: [
-			{
-				name: 'answer_question',
-				parameters: {
-					type: 'object',
-					properties: {
-						answer: { type: 'string' },
-						pageNumber: {
-							type: 'number',
-							description:
-								'Page number of the most relevant document section if you think the user is asking about a specific section of the document. If the user is asking about the document as a whole, set this to 0.',
-						},
-					},
-					description:
-						'Answer to the question and page number of the most relevant document section.',
-					required: ['answer', 'pageNumber'],
-				},
-			},
-		],
+		functions: [schema],
 		function_call: { name: 'answer_question' },
 	});
 
@@ -546,8 +587,6 @@ router.post('/generate-with-references', async (req, res) => {
 		res.status(500).json({ error: 'No response' });
 		return;
 	}
-
-	console.log(response.choices[0].message);
 
 	const responseInJSON = JSON.parse(response.choices[0].message.function_call.arguments);
 
@@ -558,6 +597,12 @@ router.post('/generate-with-references', async (req, res) => {
 
 	if (responseInJSON.pageNumber !== 0) {
 		assistantMessage.referencePage = responseInJSON.pageNumber;
+	}
+
+	if (collection) {
+		if (responseInJSON.document !== 0) {
+			assistantMessage.referenceDocument = responseInJSON.document;
+		}
 	}
 
 	console.log(assistantMessage);

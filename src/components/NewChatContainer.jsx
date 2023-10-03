@@ -1,18 +1,45 @@
+import { CollectionsContext } from '../contexts/collections';
 import useUser from '../hooks/useUser';
 import { supabase } from '../services/supabase';
 import Bubble from './chat/Bubble';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useContext, useEffect, useCallback, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
-const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber }) => {
+const NewChatContainer = ({
+	collectionId,
+	documentId,
+	collections,
+	documents,
+	handleSetDocument,
+	setPageNumber,
+}) => {
 	const messagesRef = useRef(null);
-	const [content, setContent] = useState('');
-	const [generating, setGenerating] = useState(false);
 	const [messages, setMessages] = useState([]);
+	const [document, setDocument] = useState(null);
+	const [collection, setCollection] = useState(null);
+	const [generating, setGenerating] = useState(false);
+	const [content, setContent] = useState('');
 
 	const { profile } = useUser();
 
-	const loadChat = useCallback(async () => {
+	useEffect(() => {
+		if (documentId) {
+			const currentDocument = documents.find((document) => document.id === documentId);
+			setDocument(currentDocument);
+			setCollection(null);
+		} else {
+			const currentCollection = collections.find((collection) => collection.id === collectionId);
+			setCollection(currentCollection);
+			setDocument(null);
+		}
+	}, [collectionId, documentId, collections, documents]);
+
+	const loadMessages = useCallback(async () => {
+		// wait for document or collection to be set
+		if (!document && !collection) {
+			return;
+		}
+
 		let query = supabase.from('chats').select('*');
 
 		if (document) {
@@ -33,8 +60,8 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 	}, [document, collection]);
 
 	useEffect(() => {
-		loadChat();
-	}, [document, loadChat]);
+		loadMessages();
+	}, [document, collection, loadMessages]);
 
 	useEffect(() => {
 		if (messagesRef.current) {
@@ -43,9 +70,6 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 	}, [messages]);
 
 	const sendMessage = async (content) => {
-		console.log('sending message: ', content);
-		console.log('document: ', document);
-		console.log('collection: ', collection);
 		if (!content) {
 			return;
 		}
@@ -57,11 +81,12 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 
 		const requestBody = {
 			query: content,
-			collection: collection.id,
 		};
 
 		if (document) {
 			requestBody.document = document.id;
+		} else if (collection) {
+			requestBody.collection = collection.id;
 		}
 
 		const { error, response } = await fetch('/.netlify/functions/api/generate-with-references', {
@@ -96,7 +121,7 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 						</p>
 					</>
 				)}
-				{!document && (
+				{collection && (
 					<>
 						<p className="text-center text-base font-bold text-white">Chatting with entire</p>
 						<p className="text-center text-base text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-bold">
@@ -115,8 +140,8 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 						key={index}
 						role={message.role}
 						content={message.content}
-						loadDocument={loadDocument}
-						handleSetPageNumber={handleSetPageNumber}
+						handleSetDocument={handleSetDocument}
+						setPageNumber={setPageNumber}
 						referencePage={message.referencePage}
 						referenceDocument={message.referenceDocument}
 					/>
@@ -150,7 +175,7 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 					value={content}
 					onChange={(e) => setContent(e.target.value)}
 					onKeyDown={(e) => {
-						if (e.key === 'Enter') {
+						if (e.key === 'Enter' && content && generating === false) {
 							sendMessage(content);
 						}
 					}}
@@ -159,6 +184,7 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 				<button
 					className="h-full rounded-r-md bg-gradient-to-r from-cyan-500 to-blue-500 p-2 text-white hover:from-cyan-600 hover:to-blue-600 hover:bg-opacity-90 hover:shadow-md px-6"
 					onClick={() => sendMessage(content)}
+					disabled={generating}
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -180,4 +206,4 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 	);
 };
 
-export default ChatContainer;
+export default NewChatContainer;

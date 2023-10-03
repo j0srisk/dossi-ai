@@ -15,6 +15,8 @@ const PdfViewer = ({ url, pageNumber, setPageNumber }) => {
 	const [height, setHeight] = useState(0);
 	const [numPages, setNumPages] = useState(null);
 
+	console.log('pageNumber: ', pageNumber);
+
 	function onDocumentLoadSuccess({ numPages: nextNumPages }) {
 		setNumPages(nextNumPages);
 	}
@@ -44,6 +46,7 @@ const PdfViewer = ({ url, pageNumber, setPageNumber }) => {
 	}, []);
 
 	useEffect(() => {
+		console.log('resetting page number');
 		if (pageNumber) {
 			setPageNumber(null);
 		}
@@ -51,7 +54,7 @@ const PdfViewer = ({ url, pageNumber, setPageNumber }) => {
 
 	return (
 		<>
-			<div className="w-fit h-full relative" ref={refContainer}>
+			<div className="w-fit h-full" ref={refContainer}>
 				<Document
 					file={url}
 					onLoadSuccess={onDocumentLoadSuccess}
@@ -72,9 +75,6 @@ const PdfViewer = ({ url, pageNumber, setPageNumber }) => {
 						/>
 					))}
 				</Document>
-				<div
-					className={`w-[${width}] aspect-[8.5/11] bg-white rounded-md absolute top-0 hidden`}
-				></div>
 			</div>
 		</>
 	);

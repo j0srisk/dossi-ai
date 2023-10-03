@@ -18,9 +18,11 @@ const Content = () => {
 	}, [collections, collectionId]);
 
 	const loadDocument = useCallback(
-		async (documentId) => {
-			const loadedDocument = await documents.find((document) => document.id === documentId);
+		async (referenceDocument, referencePage) => {
+			console.log(referenceDocument, referencePage);
+			const loadedDocument = await documents.find((document) => document.id === referenceDocument);
 			setDocument(loadedDocument);
+			setPageNumber(referencePage);
 		},
 		[documents],
 	);

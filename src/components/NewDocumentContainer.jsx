@@ -1,17 +1,12 @@
 import { supabase } from '../services/supabase';
 import PdfViewer from './PdfViewer';
-import { useCallback, useEffect, useState, useContext } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-const DocumentContainer = ({ document, pageNumber, setPageNumber }) => {
+const NewDocumentContainer = ({ document, pageNumber, setPageNumber }) => {
 	const [documentUrl, setDocumentUrl] = useState(null);
 	const [downloading, setDownloading] = useState(true);
 
-	console.log('document: ', document);
-
 	const downloadDocument = useCallback(async () => {
-		console.log('downloading document: ', document.name);
-		const startTimer = Date.now();
-
 		// Create a promise that resolves when the download is complete
 		const downloadPromise = supabase.storage.from('documents').download(document.url);
 
@@ -25,8 +20,6 @@ const DocumentContainer = ({ document, pageNumber, setPageNumber }) => {
 		try {
 			// Use Promise.race to wait for either the download or the timeout
 			const { data, error } = await Promise.race([downloadPromise, timeoutPromise]);
-			const endTimer = Date.now();
-			console.log('download time: ', endTimer - startTimer);
 
 			if (error) {
 				throw error;
@@ -41,6 +34,11 @@ const DocumentContainer = ({ document, pageNumber, setPageNumber }) => {
 		}
 	}, [document]);
 
+	useEffect(() => {
+		setDownloading(true);
+		downloadDocument();
+	}, [document, downloadDocument]);
+
 	return (
 		<>
 			{documentUrl && !downloading && (
@@ -54,4 +52,4 @@ const DocumentContainer = ({ document, pageNumber, setPageNumber }) => {
 	);
 };
 
-export default DocumentContainer;
+export default NewDocumentContainer;
