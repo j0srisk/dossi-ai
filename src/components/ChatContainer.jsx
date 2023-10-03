@@ -70,13 +70,17 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 				{document && (
 					<>
 						<p className="text-center text-base font-bold text-white">Chatting with:</p>
-						<p className="text-center text-base text-cyan-500 font-bold">{document.name}</p>
+						<p className="text-center text-base text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-bold">
+							{document.name}
+						</p>
 					</>
 				)}
 				{!document && (
 					<>
 						<p className="text-center text-base font-bold text-white">Chatting with entire:</p>
-						<p className="text-center text-base text-cyan-500 font-bold">{collection.name}</p>
+						<p className="text-center text-base text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-bold">
+							{collection.name}
+						</p>
 					</>
 				)}
 			</div>
@@ -94,7 +98,27 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 						referencePage={message.referencePage}
 					/>
 				))}
-				{generating && <Bubble role="assistant" content="Generating response..." />}
+				{generating && (
+					<Bubble
+						role="assistant"
+						content={
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								strokeWidth={1.5}
+								stroke="currentColor"
+								className="w-6 h-6 animate-spin "
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+								/>
+							</svg>
+						}
+					/>
+				)}
 			</div>
 			<div className="flex flex-row items-center justify-center w-full">
 				<input

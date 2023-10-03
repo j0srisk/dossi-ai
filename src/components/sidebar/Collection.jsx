@@ -138,7 +138,7 @@ const Collection = ({ collection, documents }) => {
 								<path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
 							</svg>
 
-							<p className="text-center text-base">New Document</p>
+							<p className="text-center text-base">Upload Document</p>
 						</button>
 						<input
 							type="file"

@@ -86,7 +86,7 @@ const Content = () => {
 			)}
 			{!document && (
 				<p className="text-center text-base font-bold text-white">
-					Select a document to get started!
+					Select or upload a document to get started
 				</p>
 			)}
 		</div>

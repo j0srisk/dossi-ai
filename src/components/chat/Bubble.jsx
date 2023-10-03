@@ -12,7 +12,7 @@ const Bubble = ({ role, content, loadDocument, handleSetPageNumber, referencePag
 						<p>Page:</p>
 						<button
 							onClick={() => handleSetPageNumber(referencePage)}
-							className="bg-cyan-500 h-6 w-6 aspect-square flex items-center justify-center rounded-full"
+							className="bg-gradient-to-br from-cyan-500 to-blue-500 h-6 w-6 aspect-square flex items-center justify-center rounded-full"
 						>
 							<p className="font-bold">{referencePage} </p>
 						</button>
