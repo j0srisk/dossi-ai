@@ -332,13 +332,27 @@ router.post('/delete-document', async (req, res) => {
 	}
 });
 
+router.post('/generate-prompt', async (req, res) => {
+	const { query, document } = req.body;
+
+	const sanitizedQuery = sanitize(query);
+
+	const contextText = await contextGenerator(sanitizedQuery, document, 512);
+
+	const prompt = `You are a very enthusiastic document question answering representative who loves to help people! You are given the following context as relevant chunks from a specific document, answer the question using only that information.\nContext sections:\n${contextText}\nQuestion: \n"""${sanitizedQuery}"""`;
+
+	console.log(prompt);
+
+	res.status(200).json({ prompt: prompt });
+});
+
 router.post('/generate', async (req, res) => {
-	const { query, documentId, collectionId } = req.body;
+	const { query, document } = req.body;
 
 	const { data, error: databaseReadError } = await supabase
 		.from('chats')
 		.select('*')
-		.eq('document', documentId)
+		.eq('document', document)
 		.single();
 
 	if (databaseReadError) {
@@ -349,11 +363,11 @@ router.post('/generate', async (req, res) => {
 
 	const sanitizedQuery = sanitize(query);
 
-	const contextText = await contextGenerator(sanitizedQuery, documentId, 2048);
+	const contextText = await contextGenerator(sanitizedQuery, document, 2048);
 
 	//const contextText = 'No context yet!';
 
-	const prompt = `You are a very enthusiastic document question answering representative who loves to help people! You are given the following context as relevant chunks from a specific document, answer the question using only that information.\nContext sections:\n${contextText}\nQuestion: \n"""${sanitizedQuery}"""`;
+	const prompt = `You are a very enthusiastic document question answering representative who loves to help people! You are given the following context as relevant chunks from a specific document, answer the question using only that information.\nContext sections: ${contextText}\nQuestion: """${sanitizedQuery}"""`;
 
 	const response = await openai.chat.completions.create({
 		model: 'gpt-3.5-turbo',
@@ -383,7 +397,7 @@ router.post('/generate', async (req, res) => {
 		.update({
 			messages: [...data.messages, { role: 'user', content: query }, response.choices[0].message],
 		})
-		.eq('document', documentId);
+		.eq('document', document);
 
 	if (databaseInsertError) {
 		console.log(databaseInsertError);
@@ -391,25 +405,23 @@ router.post('/generate', async (req, res) => {
 		return;
 	}
 
-	res.status(200).json({ response: response.choices[0].message.content });
+	res.status(200).json({ response: response.choices[0].message });
 });
 
-router.post('/generate-prompt', async (req, res) => {
+router.post('/generate-with-references', async (req, res) => {
 	const { query, document } = req.body;
 
-	const sanitizedQuery = sanitize(query);
+	const { data, error: databaseReadError } = await supabase
+		.from('chats')
+		.select('*')
+		.eq('document', document)
+		.single();
 
-	const contextText = await contextGenerator(sanitizedQuery, document, 512);
-
-	const prompt = `You are a very enthusiastic document question answering representative who loves to help people! You are given the following context as relevant chunks from a specific document, answer the question using only that information.\nContext sections:\n${contextText}\nQuestion: \n"""${sanitizedQuery}"""`;
-
-	console.log(prompt);
-
-	res.status(200).json({ prompt: prompt });
-});
-
-router.post('/functions-generate', async (req, res) => {
-	const { query, document } = req.body;
+	if (databaseReadError) {
+		console.log(databaseReadError);
+		res.status(500).json({ error: databaseReadError.message });
+		return;
+	}
 
 	const sanitizedQuery = sanitize(query);
 
@@ -453,22 +465,35 @@ router.post('/functions-generate', async (req, res) => {
 		return;
 	}
 
-	console.log(response.choices[0]);
+	console.log(response.choices[0].message);
 
 	const responseInJSON = JSON.parse(response.choices[0].message.function_call.arguments);
 
-	console.log(responseInJSON.answer);
-	console.log(responseInJSON.pageNumber);
+	const assistantMessage = {
+		role: 'assistant',
+		content: responseInJSON.answer,
+	};
 
-	if (responseInJSON.pageNumber === 0) {
-		res.status(200).json({ answer: responseInJSON.answer, context: contextText });
-	} else {
-		res.status(200).json({
-			answer: responseInJSON.answer,
-			pageNumber: responseInJSON.pageNumber,
-			context: contextText,
-		});
+	if (responseInJSON.pageNumber !== 0) {
+		assistantMessage.referencePage = responseInJSON.pageNumber;
 	}
+
+	console.log(assistantMessage);
+
+	const { error: databaseInsertError } = await supabase
+		.from('chats')
+		.update({
+			messages: [...data.messages, { role: 'user', content: query }, assistantMessage],
+		})
+		.eq('document', document);
+
+	if (databaseInsertError) {
+		console.log(databaseInsertError);
+		res.status(500).json({ error: databaseInsertError.message });
+		return;
+	}
+
+	res.status(200).json({ response: assistantMessage });
 });
 
 router.post('/find-user', apiKeyMiddleware, async (req, res) => {

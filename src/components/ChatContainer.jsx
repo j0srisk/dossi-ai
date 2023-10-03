@@ -43,13 +43,13 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 
 		setMessages(updatedMessagesWithUser);
 		setContent('');
-		const { error, response } = await fetch('/.netlify/functions/api/generate', {
+		const { error, response } = await fetch('/.netlify/functions/api/generate-with-references', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				'x-api-key': profile.api_key,
 			},
-			body: JSON.stringify({ query: content, documentId: document.id }),
+			body: JSON.stringify({ query: content, document: document.id }),
 		}).then((response) => response.json());
 
 		console.log('response: ', response);
@@ -58,10 +58,7 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 			alert(error.message);
 		} else {
 			setGenerating(false);
-			const updatedMessagesWithAssistant = [
-				...updatedMessagesWithUser,
-				{ role: 'assistant', content: response },
-			];
+			const updatedMessagesWithAssistant = [...updatedMessagesWithUser, response];
 
 			setMessages(updatedMessagesWithAssistant);
 		}
@@ -94,15 +91,10 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 						content={message.content}
 						loadDocument={loadDocument}
 						handleSetPageNumber={handleSetPageNumber}
+						referencePage={message.referencePage}
 					/>
 				))}
 				{generating && <Bubble role="assistant" content="Generating response..." />}
-				<Bubble
-					role="assistant"
-					content="Some Text Here"
-					referencePage={2}
-					handleSetPageNumber={handleSetPageNumber}
-				/>
 			</div>
 			<div className="flex flex-row items-center justify-center w-full">
 				<input
