@@ -8,7 +8,7 @@ const ChatContainer = ({
 	documentId,
 	collections,
 	documents,
-	handleSetDocument,
+	setDocumentFile,
 	setPageNumber,
 }) => {
 	const messagesRef = useRef(null);
@@ -138,10 +138,12 @@ const ChatContainer = ({
 						key={index}
 						role={message.role}
 						content={message.content}
-						handleSetDocument={handleSetDocument}
+						setDocumentFile={setDocumentFile}
 						setPageNumber={setPageNumber}
+						referenceDocument={documents.find(
+							(document) => document.id === message.referenceDocument,
+						)}
 						referencePage={message.referencePage}
-						referenceDocument={message.referenceDocument}
 					/>
 				))}
 				{generating && (

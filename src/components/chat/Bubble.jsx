@@ -1,16 +1,11 @@
-import { CollectionsContext } from '../../contexts/collections';
-import { useContext } from 'react';
-
 const Bubble = ({
 	role,
 	content,
-	handleSetDocument,
 	setPageNumber,
+	setDocumentFile,
 	referencePage,
 	referenceDocument,
 }) => {
-	const { documents } = useContext(CollectionsContext);
-
 	return (
 		<div className={`w-full flex ${role === 'user' ? 'justify-end' : 'justify-start'}`}>
 			<div
@@ -24,13 +19,11 @@ const Bubble = ({
 						<p>Document:</p>
 						<button
 							onClick={() => {
-								handleSetDocument(referenceDocument);
+								setDocumentFile(referenceDocument);
 							}}
 							className=""
 						>
-							<p className="font-bold">
-								{documents.find((document) => document.id === referenceDocument).name}
-							</p>
+							<p className="font-bold">{referenceDocument.name} </p>
 						</button>
 					</div>
 				)}
@@ -45,9 +38,6 @@ const Bubble = ({
 						</button>
 					</div>
 				)}
-				{/*
-				<button onClick={() => loadDocument('b2f6d0f9-c0ee-4bb6-b2cf-4515755a3fad')}>DOC</button>
-				*/}
 			</div>
 		</div>
 	);

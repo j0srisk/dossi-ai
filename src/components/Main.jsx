@@ -22,12 +22,6 @@ const Main = () => {
 		}
 	}, [documents, documentId]);
 
-	const handleSetDocument = (document) => {
-		console.log('setting document: ', document);
-		const loadedDocument = documents.find((doc) => doc.id === document);
-		setDocument(loadedDocument);
-	};
-
 	return (
 		<div className="w-full h-full flex items-center justify-center border border-neutral-300 rounded-r-2xl bg-white shadow-sm">
 			{document && (
@@ -72,7 +66,7 @@ const Main = () => {
 					collections={collections}
 					documents={documents}
 					setPageNumber={setPageNumber}
-					handleSetDocument={handleSetDocument}
+					setDocumentFile={setDocument}
 				/>
 			)}
 
