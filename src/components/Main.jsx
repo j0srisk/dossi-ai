@@ -1,6 +1,6 @@
 import { CollectionsContext } from '../contexts/collections';
-import NewChatContainer from './NewChatContainer';
-import NewDocumentContainer from './NewDocumentContainer';
+import ChatContainer from './ChatContainer';
+import DocumentContainer from './DocumentContainer';
 import { useState, useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -29,18 +29,18 @@ const Main = () => {
 	};
 
 	return (
-		<div className="w-full h-full flex gap-2 p-2 items-center justify-center">
+		<div className="w-full h-full flex items-center justify-center border border-neutral-300 rounded-r-2xl bg-white shadow-sm">
 			{document && (
-				<div className="flex-1 w-full h-full relative">
-					<NewDocumentContainer
+				<div className="flex-1 aspect-[8.5/11] h-full relative border-r border-neutral-300">
+					<DocumentContainer
 						document={document}
 						pageNumber={pageNumber}
 						setPageNumber={setPageNumber}
 					/>
 					{!documentId && (
-						<div className="absolute top-2 right-2 z-20">
+						<div className="absolute top-2 right-2 z-20 rounded-md bg-white">
 							<button
-								className="bg-neutral-500 rounded-md text-white opacity-50 hover:opacity-100 transition-opacity p-1"
+								className="rounded-md flex items-center h-full aspect-square text-neutral-300 gap-2 justify-center p-1 border-neutral-300 border shadow-md hover:shadow-lg hover:bg-neutral-700 hover:text-neutral-700 hover:bg-opacity-10 transition-all"
 								onClick={() => setDocument(null)}
 							>
 								<svg
@@ -59,14 +59,28 @@ const Main = () => {
 				</div>
 			)}
 
-			<NewChatContainer
-				collectionId={collectionId}
-				documentId={documentId}
-				collections={collections}
-				documents={documents}
-				setPageNumber={setPageNumber}
-				handleSetDocument={handleSetDocument}
-			/>
+			{collectionId && !document && (
+				<div className="h-full aspect-[8.5/11] bg-white border-r border-neutral-300 items-center justify-center flex">
+					<p className="text-center text-neutral-400 text-xl font-bold">Document Preview Window</p>
+				</div>
+			)}
+
+			{collectionId && (
+				<ChatContainer
+					collectionId={collectionId}
+					documentId={documentId}
+					collections={collections}
+					documents={documents}
+					setPageNumber={setPageNumber}
+					handleSetDocument={handleSetDocument}
+				/>
+			)}
+
+			{!documentId && !collectionId && (
+				<p className="text-center text-neutral-500 text-xl font-bold">
+					Select a collection or document to chat
+				</p>
+			)}
 		</div>
 	);
 };

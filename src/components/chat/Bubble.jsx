@@ -14,8 +14,8 @@ const Bubble = ({
 	return (
 		<div className={`w-full flex ${role === 'user' ? 'justify-end' : 'justify-start'}`}>
 			<div
-				className={`h-fit flex flex-col gap-2 w-fit max-w-[85%] rounded-xl p-3 items-start text-white ${
-					role === 'user' ? 'bg-gradient-to-br from-cyan-500 to-blue-500' : 'bg-neutral-500'
+				className={`h-fit flex flex-col gap-2 w-fit max-w-[85%] rounded-md border border-neutral-300 p-3 items-start text-white ${
+					role === 'user' ? 'bg-gradient-to-br from-cyan-500 to-blue-500' : 'bg-neutral-700'
 				}`}
 			>
 				{content}

@@ -31,19 +31,27 @@ const Collection = ({ collection, documents }) => {
 
 	return (
 		<div
-			className={`flex flex-col rounded-md text-white hover:cursor-pointer whitespace-nowrap text-base font-bold p-2 gap-2 border ${
-				isActive ? 'bg-zinc-700 border-neutral-500 shadow-md' : ' border-neutral-800 '
+			className={`flex flex-col w-full rounded-md text-white whitespace-nowrap ${
+				isActive ? 'shadow-md' : ''
 			}`}
-			onClick={handleClick}
 		>
-			<div className="relative flex w-full flex-1 items-center justify-start gap-2">
+			<div
+				className={`relative flex font-bold border-transparent w-full flex-1 items-center justify-start gap-2 p-2 border ${
+					isActive
+						? 'px-2 rounded-t-md border-neutral-700 bg-neutral-700 bg-opacity-10 text-lg'
+						: 'rounded-md hover:border-neutral-700 hover:cursor-pointer hover:shadow-lg hover:bg-neutral-700 hover:bg-opacity-10 transition-all'
+				}
+				
+				${documentId ? 'hover:cursor-pointer' : 'hover:cursor-defualt'}`}
+				onClick={handleClick}
+			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
 					viewBox="0 0 24 24"
 					strokeWidth={1.5}
 					stroke="currentColor"
-					className="h-5 w-5 flex-shrink-0"
+					className="h-5 w-5 flex-shrink-0 hidden"
 				>
 					<path
 						strokeLinecap="round"
@@ -51,7 +59,7 @@ const Collection = ({ collection, documents }) => {
 						d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
 					/>
 				</svg>
-				<div className="relative w-full overflow-hidden">
+				<div className={`relative w-full overflow-hidden `}>
 					<input
 						type="text"
 						className={`bg-transparent border-none outline-none w-full ${
@@ -72,11 +80,6 @@ const Collection = ({ collection, documents }) => {
 						}}
 					/>
 					<p className={`${isEditing ? 'hidden' : 'block'}`}>{name}</p>
-					<div
-						className={`absolute top-0 right-0 w-5 h-full bg-gradient-to-l to-transparent ${
-							isActive ? 'from-zinc-700' : 'from-neutral-800'
-						}`}
-					></div>
 				</div>
 				{isActive && !documentId && (
 					<div className="flex flex-1 justify-end gap-1">
@@ -86,7 +89,7 @@ const Collection = ({ collection, documents }) => {
 							viewBox="0 0 24 24"
 							strokeWidth={1.5}
 							stroke="currentColor"
-							className="h-4 w-4 stroke-neutral-500 flex-shrink-0"
+							className="h-4 w-4 stroke-neutral-500 flex-shrink-0 hover:cursor-pointer"
 							onClick={() => {
 								setIsEditing(true);
 								setTimeout(() => {
@@ -106,7 +109,7 @@ const Collection = ({ collection, documents }) => {
 							viewBox="0 0 24 24"
 							strokeWidth={1.5}
 							stroke="currentColor"
-							className="h-4 w-4 stroke-neutral-500 flex-shrink-0"
+							className="h-4 w-4 stroke-neutral-500 flex-shrink-0 hover:cursor-pointer"
 							onClick={() => {
 								handleDeleteCollection(collection);
 							}}
@@ -121,24 +124,28 @@ const Collection = ({ collection, documents }) => {
 				)}
 			</div>
 			{collectionId === collection.id && (
-				<div className="flex flex-col w-full gap-2">
+				<div className="flex flex-col w-full gap-2 p-2 border border-neutral-700 border-t-0 rounded-b-md">
 					{documents.map((document) => {
 						return <Document key={document.id} collection={collection} document={document} />;
 					})}
 					<div className="relative w-full">
-						<button className="flex w-full items-center justify-center gap-1 rounded-md border border-dashed border-neutral-500 p-2 text-neutral-500">
+						<button className="rounded-md w-full border-dashed flex items-center text-white gap-2 justify-start flex-1 p-2 border-neutral-700 border shadow-md hover:shadow-lg hover:bg-neutral-700 hover:bg-opacity-10 transition-all">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
 								viewBox="0 0 24 24"
 								strokeWidth={1.5}
 								stroke="currentColor"
-								className="h-4 w-4 flex-shrink-0"
+								className="w-4 h-4"
 							>
-								<path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+								/>
 							</svg>
 
-							<p className="text-center text-base">Upload Document</p>
+							<p className="text-center text-sm font-bold">Upload Document</p>
 						</button>
 						<input
 							type="file"

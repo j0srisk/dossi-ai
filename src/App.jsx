@@ -1,6 +1,3 @@
-import Content from './components/Content';
-import DocumentContainer from './components/DocumentContainer';
-import Main from './components/Main';
 import { AuthProvider } from './contexts/auth';
 import Auth from './layouts/Auth';
 import Dashboard from './pages/Dashboard';

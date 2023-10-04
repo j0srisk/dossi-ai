@@ -24,9 +24,11 @@ const PdfViewer = ({ url, pageNumber, setPageNumber }) => {
 	const handleResize = () => {
 		//setWidth(refContainer.current.offsetWidth);
 		setHeight(refContainer.current.offsetHeight);
+		console.log('viewer height: ', refContainer.current.offsetHeight);
 
 		// keeps aspect ratio of 8.5/11
 		setWidth((refContainer.current.offsetHeight * 8.5) / 11);
+		console.log('viewer width: ', (refContainer.current.offsetHeight * 8.5) / 11);
 	};
 
 	useEffect(() => {
@@ -58,8 +60,9 @@ const PdfViewer = ({ url, pageNumber, setPageNumber }) => {
 				<Document
 					file={url}
 					onLoadSuccess={onDocumentLoadSuccess}
-					className={'flex flex-col gap-2 overflow-hidden'}
+					className={'flex flex-col overflow-hidden items-center justify-center'}
 					ref={refDocument}
+					loading={null}
 				>
 					{Array.from(new Array(numPages), (el, index) => (
 						<Page
@@ -72,6 +75,7 @@ const PdfViewer = ({ url, pageNumber, setPageNumber }) => {
 							pageNumber={index + 1}
 							height={height}
 							width={width}
+							loading={null}
 						/>
 					))}
 				</Document>

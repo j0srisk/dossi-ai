@@ -29,8 +29,10 @@ const Document = ({ collection, document }) => {
 
 	return (
 		<div
-			className={`w-full border flex rounded-md p-2 whitespace-nowrap overflow-hidden items-center ${
-				isActive ? 'bg-neutral-800 border-neutral-800' : 'border-transparent'
+			className={`relative flex font-bold border-transparent w-full flex-1 items-center justify-start gap-2 p-2 border ${
+				isActive
+					? 'px-2 rounded-md border-neutral-700 bg-neutral-700 bg-opacity-10'
+					: 'rounded-md hover:border-neutral-700 hover:cursor-pointer hover:shadow-lg hover:bg-neutral-700 hover:bg-opacity-10 transition-all'
 			}`}
 			onClick={handleClick}
 		>
@@ -55,21 +57,16 @@ const Document = ({ collection, document }) => {
 						}
 					}}
 				/>
-				<div
-					className={`absolute top-0 right-0 w-5 h-full bg-gradient-to-l to-transparent ${
-						isActive ? 'from-neutral-800' : 'from-zinc-700'
-					}`}
-				></div>
 			</div>
 			{isActive && (
-				<div className="flex flex-1 justify-end gap-1">
+				<div className="flex flex-1 justify-end gap-1 text-neutral-600">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
 						strokeWidth={1.5}
 						stroke="currentColor"
-						className="h-4 w-4 stroke-neutral-500 flex-shrink-0"
+						className="h-4 w-4 flex-shrink-0 hover:cursor-pointer"
 						onClick={() => {
 							setIsEditing(true);
 							setTimeout(() => {
@@ -89,7 +86,7 @@ const Document = ({ collection, document }) => {
 						viewBox="0 0 24 24"
 						strokeWidth={1.5}
 						stroke="currentColor"
-						className="h-4 w-4 stroke-neutral-500 flex-shrink-0"
+						className="h-4 w-4  flex-shrink-0 hover:cursor-pointer"
 						onClick={() => handleDeleteDocument(document, collection)}
 					>
 						<path

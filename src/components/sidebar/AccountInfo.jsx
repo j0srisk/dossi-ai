@@ -13,13 +13,19 @@ const AccountInfo = () => {
 	}, [profile]);
 
 	return (
-		<button className="border-t border-neutral-500 p-5">
+		<button className="rounded-md flex items-center text-white gap-2 justify-between flex-1 p-2 border border-transparent hover:border-neutral-700 hover:border hover:shadow-lg hover:bg-neutral-700 hover:bg-opacity-10 transition-all text-sm">
 			{!loading ? (
-				<p className="text-center text-base font-bold text-white">
-					{profile.first_name} {profile.last_name}
-				</p>
+				<>
+					<img
+						src="https://t3.ftcdn.net/jpg/05/71/08/24/360_F_571082432_Qq45LQGlZsuby0ZGbrd79aUTSQikgcgc.jpg"
+						className="rounded-full h-8 w-8 object-cover"
+					></img>
+					<p className="text-center w-full text-lg font-bold text-white">
+						{profile.first_name} {profile.last_name}
+					</p>
+				</>
 			) : (
-				<p className="text-center text-base font-bold text-white">Loading...</p>
+				<p className="text-center text-lg font-bold text-white">Loading...</p>
 			)}
 		</button>
 	);

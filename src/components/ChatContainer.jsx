@@ -2,17 +2,42 @@ import useUser from '../hooks/useUser';
 import { supabase } from '../services/supabase';
 import Bubble from './chat/Bubble';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams } from 'react-router-dom';
 
-const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber }) => {
+const ChatContainer = ({
+	collectionId,
+	documentId,
+	collections,
+	documents,
+	handleSetDocument,
+	setPageNumber,
+}) => {
 	const messagesRef = useRef(null);
-	const [content, setContent] = useState('');
-	const [generating, setGenerating] = useState(false);
 	const [messages, setMessages] = useState([]);
+	const [document, setDocument] = useState(null);
+	const [collection, setCollection] = useState(null);
+	const [generating, setGenerating] = useState(false);
+	const [content, setContent] = useState('');
 
 	const { profile } = useUser();
 
-	const loadChat = useCallback(async () => {
+	useEffect(() => {
+		if (documentId) {
+			const currentDocument = documents.find((document) => document.id === documentId);
+			setDocument(currentDocument);
+			setCollection(null);
+		} else {
+			const currentCollection = collections.find((collection) => collection.id === collectionId);
+			setCollection(currentCollection);
+			setDocument(null);
+		}
+	}, [collectionId, documentId, collections, documents]);
+
+	const loadMessages = useCallback(async () => {
+		// wait for document or collection to be set
+		if (!document && !collection) {
+			return;
+		}
+
 		let query = supabase.from('chats').select('*');
 
 		if (document) {
@@ -33,8 +58,8 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 	}, [document, collection]);
 
 	useEffect(() => {
-		loadChat();
-	}, [document, loadChat]);
+		loadMessages();
+	}, [document, collection, loadMessages]);
 
 	useEffect(() => {
 		if (messagesRef.current) {
@@ -43,9 +68,6 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 	}, [messages]);
 
 	const sendMessage = async (content) => {
-		console.log('sending message: ', content);
-		console.log('document: ', document);
-		console.log('collection: ', collection);
 		if (!content) {
 			return;
 		}
@@ -57,11 +79,12 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 
 		const requestBody = {
 			query: content,
-			collection: collection.id,
 		};
 
 		if (document) {
 			requestBody.document = document.id;
+		} else if (collection) {
+			requestBody.collection = collection.id;
 		}
 
 		const { error, response } = await fetch('/.netlify/functions/api/generate-with-references', {
@@ -86,28 +109,28 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 	};
 
 	return (
-		<div className="w-full h-full flex flex-col gap-2 items-center max-w-screen-md">
-			<div className="w-full flex flex-row items-center justify-center gap-1 p-3 bg-transparent rounded-md border border-transparent">
+		<div className="w-full h-full flex flex-col items-center">
+			<div className="w-full flex flex-row items-center justify-center gap-1 p-3 text-zinc-900 border-b border-neutral-300 shadow-sm ">
 				{document && (
 					<>
-						<p className="text-center text-base font-bold text-white">Chatting with</p>
+						<p className="text-center text-base font-bold">Chatting with</p>
 						<p className="text-center text-base text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-bold">
 							{document.name}
 						</p>
 					</>
 				)}
-				{!document && (
+				{collection && (
 					<>
-						<p className="text-center text-base font-bold text-white">Chatting with entire</p>
+						<p className="text-center text-base font-bold">Chatting with</p>
 						<p className="text-center text-base text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-bold">
 							{collection.name}
 						</p>
-						<p className="text-center text-base font-bold text-white">collection</p>
+						<p className="text-center text-base font-bold ">collection</p>
 					</>
 				)}
 			</div>
 			<div
-				className="w-full flex flex-1 flex-col items-start justify-start gap-4 h-full overflow-scroll"
+				className="w-full flex flex-1 flex-col items-start justify-start gap-4 h-full overflow-scroll px-3 py-3 max-w-screen-md"
 				ref={messagesRef}
 			>
 				{messages.map((message, index) => (
@@ -115,8 +138,8 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 						key={index}
 						role={message.role}
 						content={message.content}
-						loadDocument={loadDocument}
-						handleSetPageNumber={handleSetPageNumber}
+						handleSetDocument={handleSetDocument}
+						setPageNumber={setPageNumber}
 						referencePage={message.referencePage}
 						referenceDocument={message.referenceDocument}
 					/>
@@ -131,7 +154,7 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 								viewBox="0 0 24 24"
 								strokeWidth={1.5}
 								stroke="currentColor"
-								className="w-6 h-6 animate-spin "
+								className="w-6 h-6 animate-spin stroke-neutral-300"
 							>
 								<path
 									strokeLinecap="round"
@@ -143,38 +166,41 @@ const ChatContainer = ({ collection, document, loadDocument, handleSetPageNumber
 					/>
 				)}
 			</div>
-			<div className="flex flex-row items-center justify-center w-full">
-				<input
-					type="text"
-					placeholder="Type a message..."
-					value={content}
-					onChange={(e) => setContent(e.target.value)}
-					onKeyDown={(e) => {
-						if (e.key === 'Enter') {
-							sendMessage(content);
-						}
-					}}
-					className="w-full flex-1 rounded-l-md p-2 bg-transparent border-neutral-500 border border-r-0 outline-none text-white"
-				/>
-				<button
-					className="h-full rounded-r-md bg-gradient-to-r from-cyan-500 to-blue-500 p-2 text-white hover:from-cyan-600 hover:to-blue-600 hover:bg-opacity-90 hover:shadow-md px-6"
-					onClick={() => sendMessage(content)}
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						strokeWidth={1.5}
-						stroke="currentColor"
-						className="w-5 h-5 flex-shrink-0"
+			<div className="flex flex-row items-center justify-center w-full border-t border-neutral-300 shadow-sm">
+				<div className="max-w-screen-md w-full flex h-full p-3">
+					<input
+						type="text"
+						placeholder="Type a message..."
+						value={content}
+						onChange={(e) => setContent(e.target.value)}
+						onKeyDown={(e) => {
+							if (e.key === 'Enter' && content && generating === false) {
+								sendMessage(content);
+							}
+						}}
+						className="w-full flex-1 rounded-l-md p-2 bg-transparent border-neutral-300 border border-r-0 outline-none text-zinc-900 shadow-sm"
+					/>
+					<button
+						className="h-full rounded-r-md bg-gradient-to-r from-cyan-500 to-blue-500 p-2 text-white hover:from-cyan-600 hover:to-blue-600 hover:bg-opacity-90 hover:shadow-md px-6"
+						onClick={() => sendMessage(content)}
+						disabled={generating}
 					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"
-						/>
-					</svg>
-				</button>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							strokeWidth={1.5}
+							stroke="currentColor"
+							className="w-5 h-5 flex-shrink-0"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"
+							/>
+						</svg>
+					</button>
+				</div>
 			</div>
 		</div>
 	);
