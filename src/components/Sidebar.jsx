@@ -17,8 +17,10 @@ const Sidebar = ({ toggleSidebar }) => {
 
 	return (
 		<div className="flex h-full flex-col gap-2 p-4">
+			{/* Logo */}
 			<Logo />
 
+			{/* New Collection */}
 			<div className="flex flex-row gap-2">
 				<Button onClick={() => handleCreateCollection()}>
 					<svg
@@ -60,6 +62,7 @@ const Sidebar = ({ toggleSidebar }) => {
 				</div>
 			</div>
 
+			{/* Collections */}
 			<div className="flex flex-1 flex-col gap-2 overflow-scroll ">
 				{collections.map((collection) => (
 					<Collection
@@ -70,10 +73,13 @@ const Sidebar = ({ toggleSidebar }) => {
 				))}
 			</div>
 
+			{/* Divider */}
 			<div className="w-full border-t border-neutral-700"></div>
 
+			{/* Account Info */}
 			<AccountInfo />
 
+			{/* Sign Out */}
 			<div className="flex flex-row gap-2">
 				<Button onClick={handleSignOut}>
 					<p className="text-left text-sm flex-1 font-bold">Sign Out</p>

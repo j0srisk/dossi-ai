@@ -97,7 +97,7 @@ const Main = () => {
 			)}
 
 			{!documentId && !collectionId && (
-				<p className="text-center text-neutral-500 text-xl font-bold">
+				<p className="text-center text-neutral-400 text-xl font-bold">
 					Select a collection or document to chat
 				</p>
 			)}

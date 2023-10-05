@@ -15,21 +15,24 @@ const Bubble = ({
 			>
 				{content}
 				{referenceDocument && (
-					<div className="flex flex-row items-center justify-start gap-2 w-full">
-						<p>Document:</p>
+					<div className="flex flex-row  gap-2 w-full">
+						<p>Reference:</p>
 						<button
 							onClick={() => {
 								handleSetDocument(referenceDocument, referencePage);
 							}}
-							className=""
+							className="flex gap-2"
 						>
 							<p className="font-bold">{referenceDocument.name} </p>
+							<p className="font-bold bg-gradient-to-br from-cyan-500 to-blue-500 h-6 w-6 aspect-square flex items-center justify-center rounded-full">
+								{referencePage}{' '}
+							</p>
 						</button>
 					</div>
 				)}
-				{referencePage && (
+				{!referenceDocument && referencePage && (
 					<div className="flex flex-row items-center justify-start gap-2 w-full">
-						<p>Page:</p>
+						<p>Reference:</p>
 						<button
 							onClick={() => setPageNumber(referencePage)}
 							className="bg-gradient-to-br from-cyan-500 to-blue-500 h-6 w-6 aspect-square flex items-center justify-center rounded-full"
