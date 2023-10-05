@@ -2,9 +2,9 @@ const Bubble = ({
 	role,
 	content,
 	setPageNumber,
-	setDocumentFile,
 	referencePage,
 	referenceDocument,
+	handleSetDocument,
 }) => {
 	return (
 		<div className={`w-full flex ${role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -19,7 +19,7 @@ const Bubble = ({
 						<p>Document:</p>
 						<button
 							onClick={() => {
-								setDocumentFile(referenceDocument);
+								handleSetDocument(referenceDocument, referencePage);
 							}}
 							className=""
 						>

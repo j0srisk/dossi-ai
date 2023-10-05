@@ -7,6 +7,8 @@ import { useParams } from 'react-router-dom';
 const Main = () => {
 	const [document, setDocument] = useState(null);
 	const [pageNumber, setPageNumber] = useState(null);
+	const [rendered, setRendered] = useState(false);
+	const [initalPage, setInitialPage] = useState(null);
 
 	const { collectionId, documentId } = useParams();
 
@@ -15,12 +17,36 @@ const Main = () => {
 	useEffect(() => {
 		console.log('resetting document');
 		setDocument(null);
+		setInitialPage(null);
+		setPageNumber(null);
 		if (documents.length > 0 && documentId) {
 			const loadedDocument = documents.find((document) => document.id === documentId);
-			console.log('loadedDocument: ', loadedDocument);
 			setDocument(loadedDocument);
 		}
 	}, [documents, documentId]);
+
+	useEffect(() => {
+		console.log('resetting rendered');
+		setRendered(false);
+	}, [document]);
+
+	const handleSetDocument = (document, pageNumber) => {
+		setDocument(document);
+		setInitialPage(pageNumber);
+	};
+
+	useEffect(() => {
+		if (rendered) {
+			console.log('setting page number: ' + initalPage);
+			setPageNumber(initalPage);
+		}
+	}, [rendered, initalPage]);
+
+	useEffect(() => {
+		if (pageNumber) {
+			setPageNumber(null);
+		}
+	}, [pageNumber, setPageNumber]);
 
 	return (
 		<div className="w-full h-full flex items-center justify-center border border-neutral-300 rounded-r-2xl bg-white shadow-sm">
@@ -29,7 +55,7 @@ const Main = () => {
 					<DocumentContainer
 						document={document}
 						pageNumber={pageNumber}
-						setPageNumber={setPageNumber}
+						setRendered={setRendered}
 					/>
 					{!documentId && (
 						<div className="absolute top-2 right-2 z-20 rounded-md bg-white">
@@ -66,7 +92,7 @@ const Main = () => {
 					collections={collections}
 					documents={documents}
 					setPageNumber={setPageNumber}
-					setDocumentFile={setDocument}
+					handleSetDocument={handleSetDocument}
 				/>
 			)}
 

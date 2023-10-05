@@ -8,8 +8,8 @@ const ChatContainer = ({
 	documentId,
 	collections,
 	documents,
-	setDocumentFile,
 	setPageNumber,
+	handleSetDocument,
 }) => {
 	const messagesRef = useRef(null);
 	const [messages, setMessages] = useState([]);
@@ -53,7 +53,6 @@ const ChatContainer = ({
 			alert(error.message);
 		} else {
 			setMessages(data[0].messages);
-			console.log('messages: ', data[0].messages);
 		}
 	}, [document, collection]);
 
@@ -138,12 +137,12 @@ const ChatContainer = ({
 						key={index}
 						role={message.role}
 						content={message.content}
-						setDocumentFile={setDocumentFile}
 						setPageNumber={setPageNumber}
 						referenceDocument={documents.find(
 							(document) => document.id === message.referenceDocument,
 						)}
 						referencePage={message.referencePage}
+						handleSetDocument={handleSetDocument}
 					/>
 				))}
 				{generating && (

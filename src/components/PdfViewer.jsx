@@ -8,36 +8,27 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 	import.meta.url,
 ).toString();
 
-const PdfViewer = ({ url, pageNumber, setPageNumber }) => {
+const PdfViewer = ({ url, pageNumber, setRendered }) => {
 	const refContainer = useRef();
-	const refDocument = useRef();
 	const [width, setWidth] = useState(0);
 	const [height, setHeight] = useState(0);
 	const [numPages, setNumPages] = useState(null);
 
-	console.log('pageNumber: ', pageNumber);
-
 	function onDocumentLoadSuccess({ numPages: nextNumPages }) {
+		console.log('document loaded');
 		setNumPages(nextNumPages);
 	}
 
 	const handleResize = () => {
-		//setWidth(refContainer.current.offsetWidth);
 		setHeight(refContainer.current.offsetHeight);
-		console.log('viewer height: ', refContainer.current.offsetHeight);
 
 		// keeps aspect ratio of 8.5/11
 		setWidth((refContainer.current.offsetHeight * 8.5) / 11);
-		console.log('viewer width: ', (refContainer.current.offsetHeight * 8.5) / 11);
 	};
 
 	useEffect(() => {
 		if (refContainer.current) {
 			handleResize();
-		}
-
-		if (refDocument.current) {
-			console.log(refDocument.current);
 		}
 
 		window.addEventListener('resize', handleResize);
@@ -47,21 +38,13 @@ const PdfViewer = ({ url, pageNumber, setPageNumber }) => {
 		};
 	}, []);
 
-	useEffect(() => {
-		console.log('resetting page number');
-		if (pageNumber) {
-			setPageNumber(null);
-		}
-	}, [pageNumber, setPageNumber]);
-
 	return (
-		<>
-			<div className="w-fit h-full" ref={refContainer}>
+		<div className="w-fit h-full" ref={refContainer}>
+			<>
 				<Document
 					file={url}
 					onLoadSuccess={onDocumentLoadSuccess}
 					className={'flex flex-col overflow-hidden items-center justify-center'}
-					ref={refDocument}
 					loading={null}
 				>
 					{Array.from(new Array(numPages), (el, index) => (
@@ -76,11 +59,16 @@ const PdfViewer = ({ url, pageNumber, setPageNumber }) => {
 							height={height}
 							width={width}
 							loading={null}
+							onRenderSuccess={() => {
+								if (numPages === index + 1) {
+									setRendered(true);
+								}
+							}}
 						/>
 					))}
 				</Document>
-			</div>
-		</>
+			</>
+		</div>
 	);
 };
 
