@@ -14,7 +14,7 @@ const Sidebar = ({ toggleSidebar }) => {
 	};
 
 	return (
-		<div className="flex h-full flex-col gap-2">
+		<div className="flex h-full flex-col gap-2 bg-zinc-900 p-4">
 			<div className="flex flex-col overflow-auto h-full gap-2">
 				<div className="flex flex-col items-center justify-center w-full  p-6">
 					<h1 className="text-center text-5xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-bold">
@@ -79,7 +79,7 @@ const Sidebar = ({ toggleSidebar }) => {
 			<div className="w-full border-t border-neutral-700"></div>
 			<AccountInfo />
 			<button
-				className="hidden rounded-md flex items-center text-white gap-2 justify-between flex-1 p-2 border-neutral-700 border shadow-md hover:shadow-lg hover:bg-neutral-700 hover:bg-opacity-10 transition-all text-sm"
+				className="rounded-md flex items-center text-white gap-2 justify-between flex-1 p-2 border-neutral-700 border shadow-md hover:shadow-lg hover:bg-neutral-700 hover:bg-opacity-10 transition-all text-sm"
 				onClick={handleSignOut}
 			>
 				<p className="font-bold text-white">Sign Out</p>

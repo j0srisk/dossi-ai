@@ -19,11 +19,11 @@ const Dashboard = () => {
 
 	return (
 		<CollectionsProvider>
-			<div className="flex h-screen w-screen bg-zinc-900 p-4 gap-4 relative">
+			<div className="flex h-screen w-screen bg-white relative">
 				<div className={`w-80 ${sidebarOpen ? 'block' : 'hidden'}`}>
 					<Sidebar toggleSidebar={toggleSidebar} />
 				</div>
-				<div className="flex-1 bg-white rounded-2xl">
+				<div className="flex-1 bg-zinc-900">
 					<Main />
 				</div>
 			</div>

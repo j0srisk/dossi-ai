@@ -49,7 +49,7 @@ const Main = () => {
 	}, [pageNumber, setPageNumber]);
 
 	return (
-		<div className="w-full h-full flex items-center justify-center border border-neutral-300 rounded-r-2xl bg-white shadow-sm">
+		<div className="w-full h-full flex items-center justify-center border border-neutral-300  bg-white shadow-sm">
 			{document && (
 				<div className="flex-1 aspect-[8.5/11] h-full relative border-r border-neutral-300">
 					<DocumentContainer

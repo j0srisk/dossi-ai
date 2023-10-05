@@ -1,9 +1,11 @@
 import { AuthProvider } from './contexts/auth';
 import Auth from './layouts/Auth';
+import Account from './pages/Account';
 import Dashboard from './pages/Dashboard';
 import Error from './pages/Error';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 function App() {
@@ -36,7 +38,15 @@ function App() {
 					path: 'login',
 					element: <Login />,
 				},
+				{
+					path: 'signup',
+					element: <SignUp />,
+				},
 			],
+		},
+		{
+			path: '/account/:userId',
+			element: <Account />,
 		},
 		{
 			path: '*',
