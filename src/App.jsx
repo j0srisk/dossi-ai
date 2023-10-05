@@ -1,5 +1,5 @@
 import { AuthProvider } from './contexts/auth';
-import Auth from './layouts/Auth';
+import Centered from './layouts/Centered';
 import Account from './pages/Account';
 import Dashboard from './pages/Dashboard';
 import Error from './pages/Error';
@@ -28,7 +28,7 @@ function App() {
 		},
 		{
 			path: 'auth',
-			element: <Auth />,
+			element: <Centered />,
 			children: [
 				{
 					path: '',

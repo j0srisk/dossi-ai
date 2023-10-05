@@ -29,10 +29,10 @@ const Document = ({ collection, document }) => {
 
 	return (
 		<div
-			className={`relative flex font-bold border-transparent w-full flex-1 items-center justify-start gap-2 p-2 border ${
+			className={`relative flex font-bold  w-full flex-1 items-center justify-start gap-2 p-2 border ${
 				isActive
 					? 'px-2 rounded-md border-neutral-700 bg-neutral-700 bg-opacity-10'
-					: 'rounded-md hover:border-neutral-700 hover:cursor-pointer hover:shadow-lg hover:bg-neutral-700 hover:bg-opacity-10 transition-all'
+					: 'rounded-md border-transparent hover:border-neutral-700 hover:cursor-pointer hover:shadow-lg hover:bg-neutral-700 hover:bg-opacity-10 transition-all'
 			}`}
 			onClick={handleClick}
 		>

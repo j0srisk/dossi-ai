@@ -19,7 +19,7 @@ const useUser = () => {
 		} else {
 			setProfile(data);
 		}
-	}, [auth.user.id]);
+	}, [auth.user]);
 
 	useEffect(() => {
 		if (auth.user && auth.user.id) {

@@ -17,7 +17,7 @@ const AccountInfo = () => {
 
 	return (
 		<button
-			className="rounded-md flex items-center text-white gap-2 justify-between flex-1 p-2 border border-transparent hover:border-neutral-700 hover:border hover:shadow-lg hover:bg-neutral-700 hover:bg-opacity-10 transition-all text-sm"
+			className="rounded-md flex items-center text-white gap-2 justify-between p-2 border border-transparent hover:border-neutral-700 hover:border hover:shadow-lg hover:bg-neutral-700 hover:bg-opacity-10 transition-all text-sm"
 			onClick={() => navigate('/account/' + profile.id)}
 		>
 			{!loading ? (
