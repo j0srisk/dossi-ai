@@ -1,6 +1,7 @@
 import useUser from '../hooks/useUser';
 import { supabase } from '../services/supabase';
 import Bubble from './chat/Bubble';
+import Query from './chat/Query';
 import { useState, useEffect, useCallback, useRef } from 'react';
 
 const ChatContainer = ({
@@ -16,7 +17,7 @@ const ChatContainer = ({
 	const [document, setDocument] = useState(null);
 	const [collection, setCollection] = useState(null);
 	const [generating, setGenerating] = useState(false);
-	const [content, setContent] = useState('');
+	const [text, setText] = useState('');
 
 	const { profile } = useUser();
 
@@ -74,7 +75,7 @@ const ChatContainer = ({
 		const updatedMessagesWithUser = [...messages, { role: 'user', content }];
 
 		setMessages(updatedMessagesWithUser);
-		setContent('');
+		setText('');
 
 		const requestBody = {
 			query: content,
@@ -128,10 +129,7 @@ const ChatContainer = ({
 					</>
 				)}
 			</div>
-			<div
-				className="w-full flex flex-1 flex-col items-start justify-start gap-4 h-full overflow-scroll px-3 py-3 max-w-screen-md"
-				ref={messagesRef}
-			>
+			<div className="w-full flex flex-1 flex-col h-full overflow-scroll " ref={messagesRef}>
 				{messages.map((message, index) => (
 					<Bubble
 						key={index}
@@ -155,7 +153,7 @@ const ChatContainer = ({
 								viewBox="0 0 24 24"
 								strokeWidth={1.5}
 								stroke="currentColor"
-								className="w-6 h-6 animate-spin stroke-neutral-300"
+								className="w-8 h-8 animate-spin stroke-neutral-300"
 							>
 								<path
 									strokeLinecap="round"
@@ -167,41 +165,8 @@ const ChatContainer = ({
 					/>
 				)}
 			</div>
-			<div className="flex flex-row items-center justify-center w-full border-t border-neutral-300 shadow-sm">
-				<div className="max-w-screen-md w-full flex h-full p-3">
-					<input
-						type="text"
-						placeholder="Type a message..."
-						value={content}
-						onChange={(e) => setContent(e.target.value)}
-						onKeyDown={(e) => {
-							if (e.key === 'Enter' && content && generating === false) {
-								sendMessage(content);
-							}
-						}}
-						className="w-full flex-1 rounded-l-md p-2 bg-transparent border-neutral-300 border border-r-0 outline-none text-zinc-900 shadow-sm"
-					/>
-					<button
-						className="h-full rounded-r-md bg-gradient-to-r from-cyan-500 to-blue-500 p-2 text-white hover:from-cyan-600 hover:to-blue-600 hover:bg-opacity-90 hover:shadow-md px-6"
-						onClick={() => sendMessage(content)}
-						disabled={generating}
-					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							strokeWidth={1.5}
-							stroke="currentColor"
-							className="w-5 h-5 flex-shrink-0"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"
-							/>
-						</svg>
-					</button>
-				</div>
+			<div className="flex flex-col items-center justify-center p-3 w-full border-t border-neutral-300">
+				<Query sendMessage={sendMessage} text={text} setText={setText} generating={generating} />
 			</div>
 		</div>
 	);
