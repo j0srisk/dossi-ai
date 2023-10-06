@@ -533,7 +533,7 @@ router.post('/generate-with-references', async (req, res) => {
 			parameters: {
 				type: 'object',
 				properties: {
-					answer: { type: 'string' },
+					answer: { type: 'string', description: 'Answer to the question.' },
 					pageNumber: {
 						type: 'number',
 						description:

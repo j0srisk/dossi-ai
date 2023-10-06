@@ -26,6 +26,12 @@ const Main = () => {
 	}, [documents, documentId]);
 
 	useEffect(() => {
+		setDocument(null);
+		setInitialPage(null);
+		setPageNumber(null);
+	}, [collectionId]);
+
+	useEffect(() => {
 		console.log('resetting rendered');
 		setRendered(false);
 	}, [document]);
@@ -50,7 +56,7 @@ const Main = () => {
 
 	return (
 		<div className="w-full h-full flex items-center justify-center border border-neutral-300  bg-white shadow-sm">
-			{document && (
+			{document && documents.some((document) => document.collection === collectionId) && (
 				<div className="flex-1 aspect-[8.5/11] h-full relative border-r border-neutral-300">
 					<DocumentContainer
 						document={document}
@@ -60,7 +66,7 @@ const Main = () => {
 					{!documentId && (
 						<div className="absolute top-2 right-2 z-20 rounded-md bg-white">
 							<button
-								className="rounded-md flex items-center h-full aspect-square text-neutral-300 gap-2 justify-center p-1 border-neutral-300 border shadow-md hover:shadow-lg hover:bg-neutral-700 hover:text-neutral-700 hover:bg-opacity-10 transition-all"
+								className="rounded-md flex items-center h-full aspect-square text-neutral-300 gap-2 justify-center p-1 border-neutral-300 border shadow-sm hover:shadow-md hover:bg-neutral-700 hover:text-neutral-700 hover:bg-opacity-10 transition-all"
 								onClick={() => setDocument(null)}
 							>
 								<svg
@@ -79,13 +85,17 @@ const Main = () => {
 				</div>
 			)}
 
-			{collectionId && !document && (
-				<div className="h-full aspect-[8.5/11] bg-white border-r border-neutral-300 items-center justify-center flex">
-					<p className="text-center text-neutral-400 text-xl font-bold">Document Preview Window</p>
-				</div>
-			)}
+			{collectionId &&
+				!document &&
+				documents.some((document) => document.collection === collectionId) && (
+					<div className="h-full aspect-[8.5/11] bg-white border-r border-neutral-300 items-center justify-center flex">
+						<p className="text-center text-neutral-400 text-xl font-bold">
+							Document Preview Window
+						</p>
+					</div>
+				)}
 
-			{collectionId && (
+			{collectionId && documents.some((document) => document.collection === collectionId) && (
 				<ChatContainer
 					collectionId={collectionId}
 					documentId={documentId}
@@ -101,6 +111,14 @@ const Main = () => {
 					Select a collection or document to chat
 				</p>
 			)}
+
+			{collectionId &&
+				!documentId &&
+				!documents.some((document) => document.collection === collectionId) && (
+					<p className="text-center text-neutral-400 text-xl font-bold">
+						Use the sidebar to upload a document to this collection
+					</p>
+				)}
 		</div>
 	);
 };

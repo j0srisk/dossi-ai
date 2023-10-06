@@ -1,34 +1,11 @@
-import { useRef, useState, useEffect } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
 const Query = ({ sendMessage, text, setText, generating }) => {
-	const refContainer = useRef(null);
-	const [width, setWidth] = useState(null);
-
-	const handleResize = () => {
-		setWidth(refContainer.current.offsetWidth - 8);
-	};
-
-	useEffect(() => {
-		if (refContainer.current) {
-			handleResize();
-		}
-
-		window.addEventListener('resize', handleResize);
-
-		return () => {
-			window.removeEventListener('resize', handleResize);
-		};
-	}, []);
-
 	return (
 		<>
-			<div
-				className="w-full flex flex-1 rounded-md border-neutral-300 border outline-none text-zinc-900 max-w-screen-md"
-				ref={refContainer}
-			>
+			<div className="w-full flex flex-1 rounded-md shadow-md border border-neutral-300outline-none text-zinc-900 max-w-screen-md">
 				<TextareaAutosize
-					className="outline-none resize-none w-full p-2 rounded-md"
+					className="outline-none resize-none w-full p-2 rounded-md "
 					rows={1}
 					maxRows={10}
 					placeholder="Type a message..."
@@ -42,7 +19,7 @@ const Query = ({ sendMessage, text, setText, generating }) => {
 					}}
 				/>
 				<div
-					className="flex items-center group hover:cursor-pointer px-2 h-full"
+					className="flex items-center group hover:cursor-pointer rounded-r-md px-2 h-full border-neutral-300"
 					onClick={() => sendMessage(text)}
 				>
 					<svg
@@ -51,7 +28,9 @@ const Query = ({ sendMessage, text, setText, generating }) => {
 						viewBox="0 0 24 24"
 						strokeWidth={1.5}
 						stroke="currentColor"
-						className="w-5 h-5 text-neutral-300 group-hover:text-blue-500 "
+						className={`w-5 h-5group-hover:text-blue-500 ${
+							text ? 'text-zinc-900' : 'text-gray-400 '
+						}}`}
 					>
 						<path
 							strokeLinecap="round"

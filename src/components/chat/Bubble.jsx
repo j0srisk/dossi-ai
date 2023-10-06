@@ -8,14 +8,14 @@ const Bubble = ({
 }) => {
 	return (
 		<div
-			className={`w-full flex text-zinc-900 p-6 items-center outline outline-neutral-300 justify-center ${
+			className={`w-full flex text-zinc-900 p-6 items-center outline outline-1 outline-neutral-300 justify-center ${
 				role === 'user' ? 'bg-white' : 'bg-neutral-100'
 			}`}
 		>
 			<div className="max-w-screen-md flex w-full gap-6">
 				<div
-					className={`h-8 w-8 flex flex-shrink-0 items-center justify-center rounded-md text-white ${
-						role === 'user' ? 'bg-blue-500' : 'bg-neutral-700'
+					className={`h-8 w-8 flex flex-shrink-0 items-center justify-center text-white ${
+						role === 'user' ? 'bg-blue-500 rounded-full' : 'bg-neutral-700 rounded-md'
 					}`}
 				>
 					<svg
@@ -48,7 +48,7 @@ const Bubble = ({
 					{referenceDocument && (
 						<div className="flex flex-row gap-2 w-full">
 							<button
-								className="rounded-md flex items-center h-full text-neutral-600 gap-2 justify-center bg-white border-neutral-300 border shadow-md hover:shadow-lg hover:bg-neutral-700 hover:text-neutral-700 hover:bg-opacity-10 transition-all"
+								className="rounded-md flex items-center h-full text-zinc-600 gap-2 justify-center bg-white border-neutral-300 border shadow-sm hover:shadow-mc hover:bg-neutral-700 hover:text-neutral-700 hover:bg-opacity-10 transition-all"
 								onClick={() => {
 									handleSetDocument(referenceDocument, referencePage);
 								}}
@@ -62,12 +62,12 @@ const Bubble = ({
 					{!referenceDocument && referencePage && (
 						<div className="flex flex-row gap-2 w-full">
 							<button
-								className="rounded-md flex items-center h-full text-neutral-600 gap-2 justify-center bg-white border-neutral-300 border shadow-md hover:shadow-lg hover:bg-neutral-700 hover:text-neutral-700 hover:bg-opacity-10 transition-all"
+								className="rounded-md flex items-center h-full text-neutral-600 gap-2 justify-center bg-white border-neutral-300 border shadow-sm hover:shadow-md hover:bg-neutral-700 hover:text-neutral-700 hover:bg-opacity-10 transition-all"
 								onClick={() => {
 									setPageNumber(referencePage);
 								}}
 							>
-								<p className="font-bold px-2 py-1 min-w-[30px]">{referencePage}</p>
+								<p className="font-bold px-2 py-1 min-w-[30px]">Page {referencePage}</p>
 							</button>
 						</div>
 					)}

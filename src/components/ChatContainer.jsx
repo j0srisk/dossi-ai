@@ -165,6 +165,7 @@ const ChatContainer = ({
 					/>
 				)}
 			</div>
+
 			<div className="flex flex-col items-center justify-center p-3 w-full border-t border-neutral-300">
 				<Query sendMessage={sendMessage} text={text} setText={setText} generating={generating} />
 			</div>
