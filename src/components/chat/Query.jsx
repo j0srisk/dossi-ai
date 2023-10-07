@@ -3,7 +3,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 const Query = ({ sendMessage, text, setText, generating }) => {
 	return (
 		<>
-			<div className="w-full flex flex-1 rounded-md shadow-md border border-neutral-300outline-none text-zinc-900 max-w-screen-md">
+			<div className="w-full flex flex-1 rounded-md shadow-sm border border-neutral-300 outline-none text-zinc-900 max-w-screen-md">
 				<TextareaAutosize
 					className="outline-none resize-none w-full p-2 rounded-md "
 					rows={1}

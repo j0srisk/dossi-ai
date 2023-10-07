@@ -109,27 +109,8 @@ const ChatContainer = ({
 	};
 
 	return (
-		<div className="w-full h-full flex flex-col items-center">
-			<div className="w-full flex flex-row items-center justify-center gap-1 p-3 text-zinc-900 border-b border-neutral-300 shadow-sm ">
-				{document && (
-					<>
-						<p className="text-center text-base font-bold">Chatting with</p>
-						<p className="text-center text-base text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-bold">
-							{document.name}
-						</p>
-					</>
-				)}
-				{collection && (
-					<>
-						<p className="text-center text-base font-bold">Chatting with</p>
-						<p className="text-center text-base text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-bold">
-							{collection.name}
-						</p>
-						<p className="text-center text-base font-bold ">collection</p>
-					</>
-				)}
-			</div>
-			<div className="w-full flex flex-1 flex-col h-full overflow-scroll " ref={messagesRef}>
+		<div className="h-full w-full flex flex-col items-center flex-1 bg-white">
+			<div className="flex flex-1 flex-col overflow-scroll w-full" ref={messagesRef}>
 				{messages.map((message, index) => (
 					<Bubble
 						key={index}
@@ -165,8 +146,7 @@ const ChatContainer = ({
 					/>
 				)}
 			</div>
-
-			<div className="flex flex-col items-center justify-center p-3 w-full border-t border-neutral-300">
+			<div className="flex flex-col h-fit items-center justify-center p-3 w-full border-t border-neutral-300">
 				<Query sendMessage={sendMessage} text={text} setText={setText} generating={generating} />
 			</div>
 		</div>

@@ -72,7 +72,6 @@ export const CollectionsProvider = ({ children }) => {
 			alert(error.message);
 		} else {
 			await fetchCollections();
-			navigate(`/c/${collection}`);
 		}
 	}
 
@@ -111,7 +110,7 @@ export const CollectionsProvider = ({ children }) => {
 		}
 	}
 
-	async function handleCreateDocument(event) {
+	async function handleCreateDocument(event, collectionId) {
 		const file = event.target.files[0];
 
 		const formData = new FormData();

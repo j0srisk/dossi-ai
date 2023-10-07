@@ -1,5 +1,5 @@
-import Button from '../components/Button';
-import Input from '../components/Input';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 import useAuth from '../hooks/useAuth';
 import useUser from '../hooks/useUser';
 import Centered from '../layouts/Centered';
@@ -13,8 +13,6 @@ const Account = () => {
 	const { userId } = useParams();
 
 	if (!user) {
-		return null;
-	} else if (user.id !== userId) {
 		return null;
 	}
 

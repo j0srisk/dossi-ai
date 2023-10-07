@@ -21,9 +21,8 @@ const PdfViewer = ({ url, pageNumber, setRendered }) => {
 
 	const handleResize = () => {
 		setHeight(refContainer.current.offsetHeight);
-
-		// keeps aspect ratio of 8.5/11
-		setWidth((refContainer.current.offsetHeight * 8.5) / 11);
+		setWidth(refContainer.current.offsetWidth - 32);
+		console.log('width: ' + refContainer.current.offsetWidth);
 	};
 
 	useEffect(() => {
@@ -39,7 +38,7 @@ const PdfViewer = ({ url, pageNumber, setRendered }) => {
 	}, []);
 
 	return (
-		<div className="w-fit h-full" ref={refContainer}>
+		<div className="h-full" ref={refContainer}>
 			<>
 				<Document
 					file={url}
@@ -47,25 +46,28 @@ const PdfViewer = ({ url, pageNumber, setRendered }) => {
 					className={'flex flex-col overflow-hidden items-center justify-center'}
 					loading={null}
 				>
-					{Array.from(new Array(numPages), (el, index) => (
-						<Page
-							key={`page_${index + 1}`}
-							inputRef={(ref) => {
-								if (ref && pageNumber === index + 1) {
-									ref.scrollIntoView({ behavior: 'smooth' });
-								}
-							}}
-							pageNumber={index + 1}
-							height={height}
-							width={width}
-							loading={null}
-							onRenderSuccess={() => {
-								if (numPages === index + 1) {
-									setRendered(true);
-								}
-							}}
-						/>
-					))}
+					<div className="flex flex-col gap-2 my-4">
+						{Array.from(new Array(numPages), (el, index) => (
+							<div className="shadow-md" key={`page_${index + 1}`}>
+								<Page
+									key={`page_${index + 1}`}
+									inputRef={(ref) => {
+										if (ref && pageNumber === index + 1) {
+											ref.scrollIntoView({ behavior: 'smooth' });
+										}
+									}}
+									pageNumber={index + 1}
+									loading={null}
+									width={width}
+									onRenderSuccess={() => {
+										if (numPages === index + 1) {
+											setRendered(true);
+										}
+									}}
+								/>
+							</div>
+						))}
+					</div>
 				</Document>
 			</>
 		</div>

@@ -42,7 +42,7 @@ const DocumentContainer = ({ document, pageNumber, setRendered }) => {
 	return (
 		<>
 			{documentUrl && !downloading && (
-				<div className="flex h-full min-h-full w-full flex-col overflow-scroll relative">
+				<div className="h-full min-h-full w-full overflow-scroll">
 					<PdfViewer url={documentUrl} pageNumber={pageNumber} setRendered={setRendered} />
 				</div>
 			)}
