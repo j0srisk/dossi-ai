@@ -138,10 +138,27 @@ const Main = () => {
 				)}
 
 				{collectionId && !document && (
-					<div className="h-full bg-white border-r border-neutral-300 items-center justify-center flex flex-1">
+					<div className="h-full flex-col bg-white border-r border-neutral-300 items-center justify-center flex flex-1 gap-2">
 						<p className="text-center text-neutral-400 text-xl font-bold">
 							Document Preview Window
 						</p>
+						<div className="flex flex-col gap-1 items-center">
+							{documents
+								.filter((document) => document.collection === collectionId)
+								.map((document) => {
+									return (
+										<button
+											className="text-neutral-300 text-sm w-fit hover:underline hover:text-neutral-700"
+											key={document.id}
+											onClick={() => {
+												handleSetDocument(document);
+											}}
+										>
+											{document.name}
+										</button>
+									);
+								})}
+						</div>
 					</div>
 				)}
 

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 const Collections = () => {
 	const [search, setSearch] = useState('');
 	const [accountMenuOpen, setAccountMenuOpen] = useState(false);
-	const [sort, setSort] = useState('name');
+	const [sort, setSort] = useState('date');
 
 	const { user } = useAuth({ redirectTo: '/auth' });
 
