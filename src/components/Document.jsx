@@ -8,6 +8,7 @@ const Document = ({ collection, documentObj }) => {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [name, setName] = useState(documentObj.name);
 	const [newName, setNewName] = useState(documentObj.name);
+	const [deleted, setDeleted] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -46,6 +47,11 @@ const Document = ({ collection, documentObj }) => {
 		};
 	}, []);
 
+	//immediately removes document from view if deleted
+	if (deleted) {
+		return null;
+	}
+
 	return (
 		<div className=" flex w-full flex-1 items-center justify-start gap-2 rounded-md hover:bg-neutral-100 pr-2 font-bold">
 			{/* Document name */}
@@ -72,7 +78,12 @@ const Document = ({ collection, documentObj }) => {
 						}}
 					/>
 				)}
-				{isDeleting && <p className="w-fit p-2">Are you sure you want to delete: {name}</p>}
+				{isDeleting && (
+					<div className="flex gap-1 p-2 items-center">
+						<p className="w-fit font-normal">Are you sure you want to delete:</p>
+						<p className="w-fit font-bold">{name}</p>
+					</div>
+				)}
 			</div>
 
 			{/* Edit and Delete Icons */}
@@ -170,8 +181,9 @@ const Document = ({ collection, documentObj }) => {
 					<button
 						className="bg-rose-500 p-1 px-2 rounded-md text-white flex gap-1 items-center h-full"
 						onClick={() => {
-							handleDeleteDocument(collection);
+							handleDeleteDocument(documentObj);
 							setIsDeleting(false);
+							setDeleted(true);
 						}}
 						ref={confirmDeleteButtonRef}
 					>

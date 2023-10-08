@@ -7,6 +7,7 @@ const Collection = ({ collection, documents }) => {
 	const [isActive, setIsActive] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
+	const [deleted, setDeleted] = useState(false);
 	const [name, setName] = useState(collection.name);
 	const [newName, setNewName] = useState(collection.name);
 
@@ -48,6 +49,11 @@ const Collection = ({ collection, documents }) => {
 		};
 	}, []);
 
+	//immediately removes collection from view if deleted
+	if (deleted) {
+		return null;
+	}
+
 	return (
 		<div className="flex flex-col w-full rounded-md shadow-sm text-zinc-900 whitespace-nowrap group">
 			{/* Collection Name */}
@@ -84,7 +90,12 @@ const Collection = ({ collection, documents }) => {
 							}}
 						/>
 					)}
-					{isDeleting && <p className="w-fit p-2">Are you sure you want to delete: {name}</p>}
+					{isDeleting && (
+						<div className="flex gap-1 p-2 items-center">
+							<p className="w-fit font-normal">Are you sure you want to delete:</p>
+							<p className="w-fit">{name}</p>
+						</div>
+					)}
 					{!isEditing && !isDeleting && <p className="w-fit p-2 pr-0">{name}</p>}
 					{!isEditing && !isDeleting && (
 						<p className="text-sm font-normal italic text-neutral-400">
@@ -218,6 +229,7 @@ const Collection = ({ collection, documents }) => {
 							onClick={() => {
 								handleDeleteCollection(collection);
 								setIsDeleting(false);
+								setDeleted(true);
 							}}
 							ref={confirmDeleteButtonRef}
 						>
