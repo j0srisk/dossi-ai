@@ -1,7 +1,7 @@
 const Bubble = ({
 	role,
 	content,
-	setPageNumber,
+	scrollToPage,
 	referencePage,
 	referenceDocument,
 	handleSetDocument,
@@ -64,7 +64,7 @@ const Bubble = ({
 							<button
 								className="rounded-md flex items-center h-full text-neutral-600 gap-2 justify-center bg-white border-neutral-300 border shadow-sm hover:shadow-md hover:bg-neutral-700 hover:text-neutral-700 hover:bg-opacity-10 transition-all"
 								onClick={() => {
-									setPageNumber(referencePage);
+									scrollToPage(referencePage);
 								}}
 							>
 								<p className="font-bold px-2 py-1 min-w-[30px]">Page {referencePage}</p>

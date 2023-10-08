@@ -9,7 +9,7 @@ const ChatContainer = ({
 	documentId,
 	collections,
 	documents,
-	setPageNumber,
+	scrollToPage,
 	handleSetDocument,
 }) => {
 	const messagesRef = useRef(null);
@@ -116,7 +116,7 @@ const ChatContainer = ({
 						key={index}
 						role={message.role}
 						content={message.content}
-						setPageNumber={setPageNumber}
+						scrollToPage={scrollToPage}
 						referenceDocument={documents.find(
 							(document) => document.id === message.referenceDocument,
 						)}

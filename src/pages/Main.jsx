@@ -10,7 +10,6 @@ const Main = () => {
 	const [document, setDocument] = useState(null);
 	const [pageNumber, setPageNumber] = useState(null);
 	const [rendered, setRendered] = useState(false);
-	const [initalPage, setInitialPage] = useState(null);
 
 	const { collectionId, documentId } = useParams();
 
@@ -18,44 +17,49 @@ const Main = () => {
 
 	const { collections, documents } = useContext(CollectionsContext);
 
-	//Set document if documentId is in url
+	//set document if documentId is in url
 	useEffect(() => {
 		setDocument(null);
-		setInitialPage(null);
 		setPageNumber(null);
 		if (documents.length > 0 && documentId) {
 			const loadedDocument = documents.find((document) => document.id === documentId);
-			console.log(loadedDocument);
 			setDocument(loadedDocument);
 		}
 	}, [documents, documentId]);
 
-	const handleSetDocument = (document, pageNumber) => {
-		setDocument(document);
-		setInitialPage(pageNumber);
+	//sets document and page number from document reference
+	const handleSetDocument = (newDocument, pageNumber) => {
+		setDocument(newDocument);
+		setPageNumber(pageNumber);
+
+		//scroll to page if document is already rendered
+		if (newDocument.id === document?.id) {
+			scrollToPage(pageNumber);
+		}
 	};
 
-	useEffect(() => {
-		if (pageNumber) {
-			console.log('resetting page number');
-			setPageNumber(null);
-			//setInitialPage(null);
-		}
-	}, [pageNumber, setPageNumber]);
+	//scrolls to page and resets page number so it can be scrolled to again
+	const scrollToPage = (pageNumber) => {
+		setPageNumber(pageNumber);
+		//timeout to update state twice in fuction
+		setTimeout(() => {
+			if (rendered) {
+				setPageNumber(null);
+			}
+		}, 0);
+	};
 
-	//Resets rendered state when document changes
-	useEffect(() => {
-		console.log('resetting rendered');
-		setRendered(false);
-	}, [document]);
-
+	//scrolls to page when document is rendered
 	useEffect(() => {
 		if (rendered) {
-			console.log('scrolling to page ' + initalPage);
-			setPageNumber(initalPage);
-			setInitialPage(null);
+			scrollToPage(pageNumber);
 		}
 	}, [rendered]);
+
+	//resets rendered state when document changes
+	useEffect(() => {
+		setRendered(false);
+	}, [document]);
 
 	return (
 		<div className="w-full h-full flex flex-col">
@@ -147,7 +151,7 @@ const Main = () => {
 						documentId={documentId}
 						collections={collections}
 						documents={documents}
-						setPageNumber={setPageNumber}
+						scrollToPage={scrollToPage}
 						handleSetDocument={handleSetDocument}
 					/>
 				)}

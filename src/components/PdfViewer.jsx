@@ -59,7 +59,6 @@ const PdfViewer = ({ url, pageNumber, setRendered }) => {
 									width={width}
 									onRenderSuccess={() => {
 										if (numPages === index + 1) {
-											console.log('fully rendered');
 											setRendered(true);
 										}
 									}}
