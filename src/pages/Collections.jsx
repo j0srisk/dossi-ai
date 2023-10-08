@@ -25,7 +25,11 @@ const Collections = () => {
 	return (
 		<div className="bg-neutral-100 w-screen min-h-screen flex flex-col text-zinc-900">
 			<Navbar>
-				<h1 className="text-center text-md text-white font-bold">PDF Chat</h1>
+				<div className="flex items-center gap-3 p-2 rounded-md shadow-sm">
+					<img src="/bookmark-tabs.png" className="w-6 h-6" />
+
+					<h1 className="text-center text-3xl text-white font-bold">PDF Chat</h1>
+				</div>
 				<div className="relative flex-1 flex items-center justify-end gap-6">
 					<p
 						className="text-center text-md text-white font-bold hover:underline hover:cursor-pointer"

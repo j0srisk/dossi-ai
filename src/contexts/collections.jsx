@@ -15,7 +15,6 @@ export const CollectionsProvider = ({ children }) => {
 	const navigate = useNavigate();
 
 	const fetchCollections = useCallback(async () => {
-		console.log('querying collections');
 		const { data, error } = await supabase
 			.from('collections')
 			.select('*')
@@ -30,7 +29,6 @@ export const CollectionsProvider = ({ children }) => {
 	}, [user]);
 
 	const fetchDocuments = useCallback(async () => {
-		console.log('querying documents');
 		const collectionIds = collections.map((collection) => collection.id);
 		const { data, error } = await supabase
 			.from('documents')

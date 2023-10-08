@@ -18,8 +18,8 @@ const Main = () => {
 
 	const { collections, documents } = useContext(CollectionsContext);
 
+	//Set document if documentId is in url
 	useEffect(() => {
-		console.log('resetting document');
 		setDocument(null);
 		setInitialPage(null);
 		setPageNumber(null);
@@ -30,34 +30,32 @@ const Main = () => {
 		}
 	}, [documents, documentId]);
 
-	useEffect(() => {
-		setDocument(null);
-		setInitialPage(null);
-		setPageNumber(null);
-	}, [collectionId]);
-
-	useEffect(() => {
-		console.log('resetting rendered');
-		setRendered(false);
-	}, [document]);
-
 	const handleSetDocument = (document, pageNumber) => {
 		setDocument(document);
 		setInitialPage(pageNumber);
 	};
 
 	useEffect(() => {
-		if (rendered) {
-			console.log('setting page number: ' + initalPage);
-			setPageNumber(initalPage);
-		}
-	}, [rendered, initalPage]);
-
-	useEffect(() => {
 		if (pageNumber) {
+			console.log('resetting page number');
 			setPageNumber(null);
+			//setInitialPage(null);
 		}
 	}, [pageNumber, setPageNumber]);
+
+	//Resets rendered state when document changes
+	useEffect(() => {
+		console.log('resetting rendered');
+		setRendered(false);
+	}, [document]);
+
+	useEffect(() => {
+		if (rendered) {
+			console.log('scrolling to page ' + initalPage);
+			setPageNumber(initalPage);
+			setInitialPage(null);
+		}
+	}, [rendered]);
 
 	return (
 		<div className="w-full h-full flex flex-col">
@@ -114,7 +112,7 @@ const Main = () => {
 							setRendered={setRendered}
 						/>
 						{!documentId && (
-							<div className="absolute top-2 right-2 z-20 rounded-md bg-white">
+							<div className="absolute top-6 right-6 z-20 rounded-md bg-white">
 								<button
 									className="rounded-md flex items-center h-full aspect-square text-neutral-300 gap-2 justify-center p-1 border-neutral-300 border shadow-sm hover:shadow-md hover:bg-neutral-700 hover:text-neutral-700 hover:bg-opacity-10 transition-all"
 									onClick={() => setDocument(null)}

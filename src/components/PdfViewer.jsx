@@ -15,14 +15,12 @@ const PdfViewer = ({ url, pageNumber, setRendered }) => {
 	const [numPages, setNumPages] = useState(null);
 
 	function onDocumentLoadSuccess({ numPages: nextNumPages }) {
-		console.log('document loaded');
 		setNumPages(nextNumPages);
 	}
 
 	const handleResize = () => {
 		setHeight(refContainer.current.offsetHeight);
 		setWidth(refContainer.current.offsetWidth - 32);
-		console.log('width: ' + refContainer.current.offsetWidth);
 	};
 
 	useEffect(() => {
@@ -61,6 +59,7 @@ const PdfViewer = ({ url, pageNumber, setRendered }) => {
 									width={width}
 									onRenderSuccess={() => {
 										if (numPages === index + 1) {
+											console.log('fully rendered');
 											setRendered(true);
 										}
 									}}

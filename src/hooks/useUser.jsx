@@ -7,7 +7,6 @@ const useUser = () => {
 	const auth = useContext(AuthContext);
 
 	const fetchUserProfile = useCallback(async () => {
-		console.log('querying user profile data');
 		const { data, error } = await supabase
 			.from('profiles')
 			.select('*')
