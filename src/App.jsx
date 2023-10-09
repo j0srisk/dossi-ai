@@ -2,11 +2,11 @@ import { AuthProvider } from './contexts/auth';
 import { CollectionsProvider } from './contexts/collections';
 import Centered from './layouts/Centered';
 import Account from './pages/Account';
+import Chat from './pages/Chat';
 import Collections from './pages/Collections';
 import Error from './pages/Error';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
-import Main from './pages/Main';
 import SignUp from './pages/SignUp';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
@@ -24,7 +24,7 @@ function App() {
 			path: 'c/:collectionId',
 			element: (
 				<CollectionsProvider>
-					<Main />
+					<Chat />
 				</CollectionsProvider>
 			),
 			children: [

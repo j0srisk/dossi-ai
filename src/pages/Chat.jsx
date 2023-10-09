@@ -6,7 +6,7 @@ import { CollectionsContext } from '../contexts/collections';
 import { useState, useContext, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-const Main = () => {
+const Chat = () => {
 	const [document, setDocument] = useState(null);
 	const [pageNumber, setPageNumber] = useState(null);
 	const [rendered, setRendered] = useState(false);
@@ -87,16 +87,16 @@ const Main = () => {
 					</div>
 				</div>
 				{collectionId && !documentId && (
-					<div className="flex gap-1">
-						<p className="text-center text-base font-bold text-white">Chatting with entire</p>
-						<p className="text-center text-base text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-bold">
+					<div className="flex gap-1 items-end font-inter">
+						<p className="text-center text-lg font-bold text-white">Chatting with entire</p>
+						<p className="text-center text-lg text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-bold">
 							{collections.find((collection) => collection.id === collectionId)?.name}
 						</p>
-						<p className="text-center text-base font-bold text-white">collection</p>
+						<p className="text-center text-lg font-bold text-white">collection</p>
 					</div>
 				)}
 				{documentId && (
-					<div className="flex gap-1">
+					<div className="flex gap-1 font-inter">
 						<p className="text-center text-base font-bold text-white">Chatting with</p>
 						<div className="flex">
 							<p className="text-center text-base text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-bold">
@@ -177,4 +177,4 @@ const Main = () => {
 	);
 };
 
-export default Main;
+export default Chat;
