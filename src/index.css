@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+::file-selector-button {
+	@apply h-0 w-0 overflow-hidden border-0;
+	/* Add any additional custom styling here */
+}

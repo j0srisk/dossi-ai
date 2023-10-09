@@ -278,7 +278,7 @@ const Collection = ({ collection, documents }) => {
 								id="file"
 								name="file"
 								accept=".pdf"
-								className="absolute top-0 h-full w-full opacity-0"
+								className="absolute top-0 h-full w-full opacity-0 hover:cursor-pointer"
 								onChange={(e) => handleCreateDocument(e, collection.id)}
 							/>
 						</button>

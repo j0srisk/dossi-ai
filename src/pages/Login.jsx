@@ -8,7 +8,7 @@ const Login = () => {
 	const emailRef = useRef();
 	const passwordRef = useRef();
 
-	const { user, logIn } = useAuth({ redirectTo: '' });
+	const { user, logIn, logInWithProvider } = useAuth({ redirectTo: '' });
 
 	if (user) {
 		return null;
@@ -27,6 +27,16 @@ const Login = () => {
 		}
 	}
 
+	async function handleLogInWithGoogle(e) {
+		e.preventDefault();
+
+		const { error } = await logInWithProvider('google');
+
+		if (error) {
+			alert(error.message);
+		}
+	}
+
 	return (
 		<div className="flex flex-col gap-3 ">
 			<Logo />
@@ -37,6 +47,9 @@ const Login = () => {
 					<p className="text-center text-base font-bold text-white"> Log In </p>{' '}
 				</Button>
 			</form>
+			<Button onClick={handleLogInWithGoogle}>
+				<p className="text-center text-base font-bold text-white"> Log In with Google </p>{' '}
+			</Button>
 		</div>
 	);
 };
