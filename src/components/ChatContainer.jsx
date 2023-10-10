@@ -109,8 +109,8 @@ const ChatContainer = ({
 	};
 
 	return (
-		<div className="h-full w-full flex flex-col items-center flex-1 bg-white">
-			<div className="flex flex-1 flex-col overflow-scroll w-full" ref={messagesRef}>
+		<div className="flex h-full w-full flex-1 flex-col items-center bg-white">
+			<div className="flex w-full flex-1 flex-col overflow-scroll" ref={messagesRef}>
 				{messages.map((message, index) => (
 					<Bubble
 						key={index}
@@ -134,7 +134,7 @@ const ChatContainer = ({
 								viewBox="0 0 24 24"
 								strokeWidth={1.5}
 								stroke="currentColor"
-								className="w-8 h-8 animate-spin stroke-neutral-300"
+								className="h-8 w-8 animate-spin stroke-neutral-300"
 							>
 								<path
 									strokeLinecap="round"
@@ -146,7 +146,7 @@ const ChatContainer = ({
 					/>
 				)}
 			</div>
-			<div className="flex flex-col h-fit items-center justify-center p-3 w-full border-t border-neutral-300">
+			<div className="flex h-fit w-full flex-col items-center justify-center border-t border-neutral-300 p-3">
 				<Query sendMessage={sendMessage} text={text} setText={setText} generating={generating} />
 			</div>
 		</div>

@@ -41,10 +41,10 @@ const PdfViewer = ({ url, pageNumber, setRendered }) => {
 				<Document
 					file={url}
 					onLoadSuccess={onDocumentLoadSuccess}
-					className={'flex flex-col overflow-hidden items-center justify-center'}
+					className={'flex flex-col items-center justify-center overflow-hidden'}
 					loading={null}
 				>
-					<div className="flex flex-col gap-2 my-4">
+					<div className="my-4 flex flex-col gap-2">
 						{Array.from(new Array(numPages), (el, index) => (
 							<div className="shadow-md" key={`page_${index + 1}`}>
 								<Page

@@ -55,10 +55,10 @@ const Collection = ({ collection, documents }) => {
 	}
 
 	return (
-		<div className="flex flex-col w-full rounded-md shadow-sm text-zinc-900 whitespace-nowrap group">
+		<div className="group flex w-full flex-col whitespace-nowrap rounded-md text-zinc-900 shadow-sm">
 			{/* Collection Name */}
 			<div
-				className={`relative flex font-bold w-full flex-1 items-center justify-start gap-2 pr-2 border border-neutral-300 bg-white hover:cursor-pointer transition-all ${
+				className={`relative flex w-full flex-1 items-center justify-start gap-2 border border-neutral-300 bg-white pr-2 font-bold transition-all hover:cursor-pointer ${
 					isActive ? 'rounded-t-md' : 'rounded-md'
 				}`}
 				onClick={() => {
@@ -68,11 +68,11 @@ const Collection = ({ collection, documents }) => {
 				}}
 			>
 				{/* Collection Name and Input */}
-				<div className="relative w-full overflow-hidden flex items-center gap-2">
+				<div className="relative flex w-full items-center gap-2 overflow-hidden">
 					{isEditing && (
 						<input
 							type="text"
-							className="p-2 bg-transparent border-none outline-none w-full text-base rounded-md"
+							className="w-full rounded-md border-none bg-transparent p-2 text-base outline-none"
 							ref={inputRef}
 							value={newName}
 							disabled={!isEditing}
@@ -91,7 +91,7 @@ const Collection = ({ collection, documents }) => {
 						/>
 					)}
 					{isDeleting && (
-						<div className="flex gap-1 p-2 items-center">
+						<div className="flex items-center gap-1 p-2">
 							<p className="w-fit font-normal">Are you sure you want to delete:</p>
 							<p className="w-fit">{name}</p>
 						</div>
@@ -109,14 +109,14 @@ const Collection = ({ collection, documents }) => {
 
 				{/* Edit and Delete Icons */}
 				{isActive && !isEditing && !isDeleting && (
-					<div className="text-neutral-400 flex gap-2">
+					<div className="flex gap-2 text-neutral-400">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
 							viewBox="0 0 24 24"
 							strokeWidth={1.5}
 							stroke="currentColor"
-							className="w-5 h-5 hover:cursor-pointer hover:text-zinc-900"
+							className="h-5 w-5 hover:cursor-pointer hover:text-zinc-900"
 							onClick={(e) => {
 								e.stopPropagation();
 								setIsEditing(true);
@@ -137,7 +137,7 @@ const Collection = ({ collection, documents }) => {
 							viewBox="0 0 24 24"
 							strokeWidth={1.5}
 							stroke="currentColor"
-							className="w-5 h-5 hover:cursor-pointer hover:text-zinc-900"
+							className="h-5 w-5 hover:cursor-pointer hover:text-zinc-900"
 							onClick={(e) => {
 								e.stopPropagation();
 								setIsDeleting(true);
@@ -157,7 +157,7 @@ const Collection = ({ collection, documents }) => {
 					<>
 						{documents.some((document) => document.collection === collection.id) ? (
 							<button
-								className="bg-blue-500 p-1 px-2 rounded-md text-white flex gap-1 items-center font-ar-one-sans"
+								className="flex items-center gap-1 rounded-md bg-accent p-1 px-2 font-ar-one-sans text-white"
 								onClick={() => navigate('/c/' + collection.id)}
 							>
 								<svg
@@ -166,7 +166,7 @@ const Collection = ({ collection, documents }) => {
 									viewBox="0 0 24 24"
 									strokeWidth={2}
 									stroke="currentColor"
-									className="w-4 h-4"
+									className="h-4 w-4"
 								>
 									<path
 										strokeLinecap="round"
@@ -178,7 +178,7 @@ const Collection = ({ collection, documents }) => {
 							</button>
 						) : (
 							<button
-								className="bg-blue-500 opacity-25 p-1 px-2 rounded-md text-white flex gap-1 items-center font-ar-one-sans"
+								className="flex items-center gap-1 rounded-md bg-accent p-1 px-2 font-ar-one-sans text-white opacity-25"
 								disabled={true}
 							>
 								<svg
@@ -187,7 +187,7 @@ const Collection = ({ collection, documents }) => {
 									viewBox="0 0 24 24"
 									strokeWidth={2}
 									stroke="currentColor"
-									className="w-4 h-4"
+									className="h-4 w-4"
 								>
 									<path
 										strokeLinecap="round"
@@ -205,7 +205,7 @@ const Collection = ({ collection, documents }) => {
 				{isEditing && (
 					<>
 						<button
-							className="bg-green-500 p-1 px-2 rounded-md text-white flex gap-1 items-center h-full"
+							className="flex h-full items-center gap-1 rounded-md bg-green-500 p-1 px-2 text-white"
 							onClick={() => {
 								setName(newName);
 								handleUpdateCollection(collection, newName);
@@ -215,7 +215,7 @@ const Collection = ({ collection, documents }) => {
 						>
 							<p className="text-sm">Confirm</p>
 						</button>
-						<button className="bg-neutral-300 p-1 px-2 rounded-md text-white flex gap-1 items-center h-full">
+						<button className="flex h-full items-center gap-1 rounded-md bg-neutral-300 p-1 px-2 text-white">
 							<p className="text-sm">Cancel</p>
 						</button>
 					</>
@@ -225,7 +225,7 @@ const Collection = ({ collection, documents }) => {
 				{isDeleting && (
 					<>
 						<button
-							className="bg-rose-500 p-1 px-2 rounded-md text-white flex gap-1 items-center h-full"
+							className="flex h-full items-center gap-1 rounded-md bg-rose-500 p-1 px-2 text-white"
 							onClick={() => {
 								handleDeleteCollection(collection);
 								setIsDeleting(false);
@@ -235,7 +235,7 @@ const Collection = ({ collection, documents }) => {
 						>
 							<p className="text-sm">Delete</p>
 						</button>
-						<button className="bg-neutral-300 p-1 px-2 rounded-md text-white flex gap-1 items-center h-full">
+						<button className="flex h-full items-center gap-1 rounded-md bg-neutral-300 p-1 px-2 text-white">
 							<p className="text-sm">Cancel</p>
 						</button>
 					</>
@@ -244,9 +244,9 @@ const Collection = ({ collection, documents }) => {
 
 			{/* Documents */}
 			{isActive && (
-				<div className="flex flex-col w-full gap-1 p-2 border border-neutral-300 bg-white border-t-0 rounded-b-md">
+				<div className="flex w-full flex-col gap-1 rounded-b-md border border-t-0 border-neutral-300 bg-white p-2">
 					{documents.length === 0 && (
-						<div className="p-6 hidden">
+						<div className="hidden p-6">
 							<p className="text-center text-sm font-bold">
 								Add one or more documents to this collection to chat
 							</p>
@@ -256,14 +256,14 @@ const Collection = ({ collection, documents }) => {
 						{documents.map((document) => {
 							return <Document key={document.id} collection={collection} documentObj={document} />;
 						})}
-						<button className="p-2 flex hover:cursor-pointer hover:underline w-fit items-center gap-2 relative">
+						<button className="relative flex w-fit items-center gap-2 p-2 hover:cursor-pointer hover:underline">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
 								viewBox="0 0 24 24"
 								strokeWidth={2}
 								stroke="currentColor"
-								className="w-5 h-5"
+								className="h-5 w-5"
 							>
 								<path
 									strokeLinecap="round"
@@ -272,7 +272,7 @@ const Collection = ({ collection, documents }) => {
 								/>
 							</svg>
 
-							<p className="font-bold w-fit">Upload Document</p>
+							<p className="w-fit font-bold">Upload Document</p>
 							<input
 								type="file"
 								id="file"
@@ -283,15 +283,15 @@ const Collection = ({ collection, documents }) => {
 							/>
 						</button>
 					</>
-					<div className="relative w-full hidden">
-						<button className="rounded-md w-full border-dashed flex items-center justify-center gap-2 flex-1 p-2 border-neutral-300 text-neutral-300 border">
+					<div className="relative hidden w-full">
+						<button className="flex w-full flex-1 items-center justify-center gap-2 rounded-md border border-dashed border-neutral-300 p-2 text-neutral-300">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
 								viewBox="0 0 24 24"
 								strokeWidth={2}
 								stroke="currentColor"
-								className="w-4 h-4"
+								className="h-4 w-4"
 							>
 								<path
 									strokeLinecap="round"

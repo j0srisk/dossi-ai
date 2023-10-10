@@ -53,14 +53,14 @@ const Document = ({ collection, documentObj }) => {
 	}
 
 	return (
-		<div className=" flex w-full flex-1 items-center justify-start gap-2 rounded-md hover:bg-neutral-100 pr-2 font-bold">
+		<div className=" flex w-full flex-1 items-center justify-start gap-2 rounded-md pr-2 font-bold hover:bg-neutral-100">
 			{/* Document name */}
 			<div className="relative w-full overflow-hidden text-sm font-normal">
 				{!isEditing && !isDeleting && <p className="p-2">{name}</p>}
 				{isEditing && (
 					<input
 						type="text"
-						className={'p-2 bg-transparent border-none outline-none w-full'}
+						className={'w-full border-none bg-transparent p-2 outline-none'}
 						ref={inputRef}
 						value={newName}
 						disabled={!isEditing}
@@ -79,7 +79,7 @@ const Document = ({ collection, documentObj }) => {
 					/>
 				)}
 				{isDeleting && (
-					<div className="flex gap-1 p-2 items-center">
+					<div className="flex items-center gap-1 p-2">
 						<p className="w-fit font-normal">Are you sure you want to delete:</p>
 						<p className="w-fit font-bold">{name}</p>
 					</div>
@@ -88,14 +88,14 @@ const Document = ({ collection, documentObj }) => {
 
 			{/* Edit and Delete Icons */}
 			{!isEditing && !isDeleting && (
-				<div className="text-neutral-400 flex gap-2">
+				<div className="flex gap-2 text-neutral-400">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
 						strokeWidth={1.5}
 						stroke="currentColor"
-						className="w-4 h-4 hover:cursor-pointer hover:text-zinc-900"
+						className="h-4 w-4 hover:cursor-pointer hover:text-zinc-900"
 						onClick={(e) => {
 							e.stopPropagation();
 							setIsEditing(true);
@@ -116,7 +116,7 @@ const Document = ({ collection, documentObj }) => {
 						viewBox="0 0 24 24"
 						strokeWidth={1.5}
 						stroke="currentColor"
-						className="w-4 h-4 hover:cursor-pointer hover:text-zinc-900"
+						className="h-4 w-4 hover:cursor-pointer hover:text-zinc-900"
 						onClick={(e) => {
 							e.stopPropagation();
 							setIsDeleting(true);
@@ -134,7 +134,7 @@ const Document = ({ collection, documentObj }) => {
 			{/* Chat button */}
 			{!isEditing && !isDeleting && (
 				<button
-					className="bg-blue-500 font-bold p-1 px-2 rounded-md text-white flex gap-1 items-center"
+					className="flex items-center gap-1 rounded-md bg-accent p-1 px-2 font-bold text-white"
 					onClick={() => navigate('/c/' + collection.id + '/d/' + documentObj.id)}
 				>
 					<svg
@@ -143,7 +143,7 @@ const Document = ({ collection, documentObj }) => {
 						viewBox="0 0 24 24"
 						strokeWidth={2}
 						stroke="currentColor"
-						className="w-4 h-4"
+						className="h-4 w-4"
 					>
 						<path
 							strokeLinecap="round"
@@ -151,7 +151,7 @@ const Document = ({ collection, documentObj }) => {
 							d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z"
 						/>
 					</svg>
-					<p className="text-sm hidden">Chat</p>
+					<p className="hidden text-sm">Chat</p>
 				</button>
 			)}
 
@@ -159,7 +159,7 @@ const Document = ({ collection, documentObj }) => {
 			{isEditing && (
 				<>
 					<button
-						className="bg-green-500 p-1 px-2 rounded-md text-white flex gap-1 items-center h-full"
+						className="flex h-full items-center gap-1 rounded-md bg-green-500 p-1 px-2 text-white"
 						onClick={() => {
 							setName(newName);
 							handleUpdateDocument(documentObj, newName);
@@ -169,7 +169,7 @@ const Document = ({ collection, documentObj }) => {
 					>
 						<p className="text-sm">Confirm</p>
 					</button>
-					<button className="bg-neutral-300 p-1 px-2 rounded-md text-white flex gap-1 items-center h-full">
+					<button className="flex h-full items-center gap-1 rounded-md bg-neutral-300 p-1 px-2 text-white">
 						<p className="text-sm">Cancel</p>
 					</button>
 				</>
@@ -179,7 +179,7 @@ const Document = ({ collection, documentObj }) => {
 			{isDeleting && (
 				<>
 					<button
-						className="bg-rose-500 p-1 px-2 rounded-md text-white flex gap-1 items-center h-full"
+						className="flex h-full items-center gap-1 rounded-md bg-rose-500 p-1 px-2 text-white"
 						onClick={() => {
 							handleDeleteDocument(documentObj);
 							setIsDeleting(false);
@@ -189,7 +189,7 @@ const Document = ({ collection, documentObj }) => {
 					>
 						<p className="text-sm">Delete</p>
 					</button>
-					<button className="bg-neutral-300 p-1 px-2 rounded-md text-white flex gap-1 items-center h-full">
+					<button className="flex h-full items-center gap-1 rounded-md bg-neutral-300 p-1 px-2 text-white">
 						<p className="text-sm">Cancel</p>
 					</button>
 				</>

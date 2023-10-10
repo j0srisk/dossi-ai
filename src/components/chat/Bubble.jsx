@@ -8,14 +8,14 @@ const Bubble = ({
 }) => {
 	return (
 		<div
-			className={`w-full flex text-zinc-900 p-6 items-center outline outline-1 outline-neutral-300 justify-center ${
+			className={`flex w-full items-center justify-center p-6 text-zinc-900 outline outline-1 outline-neutral-300 ${
 				role === 'user' ? 'bg-white' : 'bg-neutral-100'
 			}`}
 		>
-			<div className="max-w-screen-md flex w-full gap-6">
+			<div className="flex w-full max-w-screen-md gap-6">
 				<div
-					className={`h-8 w-8 flex flex-shrink-0 items-center justify-center text-white ${
-						role === 'user' ? 'bg-blue-500 rounded-full' : 'bg-neutral-700 rounded-md'
+					className={`flex h-8 w-8 flex-shrink-0 items-center justify-center text-white ${
+						role === 'user' ? 'rounded-full bg-accent' : 'rounded-md bg-neutral-700'
 					}`}
 				>
 					<svg
@@ -24,7 +24,7 @@ const Bubble = ({
 						viewBox="0 0 24 24"
 						strokeWidth={1.5}
 						stroke="currentColor"
-						className="w-4 h-4"
+						className="h-4 w-4"
 					>
 						{role === 'user' && (
 							<path
@@ -46,28 +46,28 @@ const Bubble = ({
 				<div className="flex flex-col gap-6">
 					{content}
 					{referenceDocument && (
-						<div className="flex flex-row gap-2 w-full">
+						<div className="flex w-full flex-row gap-2">
 							<button
-								className="rounded-md flex items-center h-full text-zinc-600 gap-2 justify-center bg-white border-neutral-300 border shadow-sm hover:shadow-mc hover:bg-neutral-700 hover:text-neutral-700 hover:bg-opacity-10 transition-all"
+								className="hover:shadow-mc flex h-full items-center justify-center gap-2 rounded-md border border-neutral-300 bg-white text-zinc-600 shadow-sm transition-all hover:bg-neutral-700 hover:bg-opacity-10 hover:text-neutral-700"
 								onClick={() => {
 									handleSetDocument(referenceDocument, referencePage);
 								}}
 							>
-								<p className="pl-2 py-1">{referenceDocument.name}</p>
+								<p className="py-1 pl-2">{referenceDocument.name}</p>
 								<div className="h-full w-[1px] bg-neutral-300"></div>
-								<p className="font-bold pr-2 py-1 min-w-[30px]">{referencePage}</p>
+								<p className="min-w-[30px] py-1 pr-2 font-bold">{referencePage}</p>
 							</button>
 						</div>
 					)}
 					{!referenceDocument && referencePage && (
-						<div className="flex flex-row gap-2 w-full">
+						<div className="flex w-full flex-row gap-2">
 							<button
-								className="rounded-md flex items-center h-full text-neutral-600 gap-2 justify-center bg-white border-neutral-300 border shadow-sm hover:shadow-md hover:bg-neutral-700 hover:text-neutral-700 hover:bg-opacity-10 transition-all"
+								className="flex h-full items-center justify-center gap-2 rounded-md border border-neutral-300 bg-white text-neutral-600 shadow-sm transition-all hover:bg-neutral-700 hover:bg-opacity-10 hover:text-neutral-700 hover:shadow-md"
 								onClick={() => {
 									scrollToPage(referencePage);
 								}}
 							>
-								<p className="font-bold px-2 py-1 min-w-[30px]">Page {referencePage}</p>
+								<p className="min-w-[30px] px-2 py-1 font-bold">Page {referencePage}</p>
 							</button>
 						</div>
 					)}

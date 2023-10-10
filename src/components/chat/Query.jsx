@@ -3,9 +3,9 @@ import TextareaAutosize from 'react-textarea-autosize';
 const Query = ({ sendMessage, text, setText, generating }) => {
 	return (
 		<>
-			<div className="w-full flex flex-1 rounded-md shadow-sm border border-neutral-300 outline-none text-zinc-900 max-w-screen-md">
+			<div className="flex w-full max-w-screen-md flex-1 rounded-md border border-neutral-300 text-zinc-900 shadow-sm outline-none">
 				<TextareaAutosize
-					className="outline-none resize-none w-full p-2 rounded-md "
+					className="w-full resize-none rounded-md p-2 outline-none "
 					rows={1}
 					maxRows={10}
 					placeholder="Type a message..."
@@ -19,7 +19,7 @@ const Query = ({ sendMessage, text, setText, generating }) => {
 					}}
 				/>
 				<div
-					className="flex items-center group hover:cursor-pointer rounded-r-md px-2 h-full border-neutral-300"
+					className="group flex h-full items-center rounded-r-md border-neutral-300 px-2 hover:cursor-pointer"
 					onClick={() => sendMessage(text)}
 				>
 					<svg
@@ -28,7 +28,7 @@ const Query = ({ sendMessage, text, setText, generating }) => {
 						viewBox="0 0 24 24"
 						strokeWidth={1.5}
 						stroke="currentColor"
-						className={`w-5 h-5group-hover:text-blue-500 ${
+						className={`h-5 w-5 group-hover:text-accent ${
 							text ? 'text-zinc-900' : 'text-gray-400 '
 						}}`}
 					>

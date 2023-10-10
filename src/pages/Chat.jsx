@@ -62,9 +62,9 @@ const Chat = () => {
 	}, [document]);
 
 	return (
-		<div className="w-full h-full flex flex-col">
+		<div className="flex h-full w-full flex-col">
 			<Navbar>
-				<div className="flex-1 flex items-center">
+				<div className="flex flex-1 items-center">
 					<div className="w-fit">
 						<Button onClick={() => navigate('/')}>
 							<svg
@@ -73,7 +73,7 @@ const Chat = () => {
 								viewBox="0 0 24 24"
 								strokeWidth={1.5}
 								stroke="currentColor"
-								className="w-4 h-4"
+								className="h-4 w-4"
 							>
 								<path
 									strokeLinecap="round"
@@ -82,14 +82,14 @@ const Chat = () => {
 								/>
 							</svg>
 
-							<p className="text-left text-sm flex-1 font-bold">Collections</p>
+							<p className="flex-1 text-left text-sm font-bold">Collections</p>
 						</Button>
 					</div>
 				</div>
 				{collectionId && !documentId && (
-					<div className="flex gap-1 items-end font-inter">
+					<div className="flex items-end gap-1 font-inter">
 						<p className="text-center text-lg font-bold text-white">Chatting with entire</p>
-						<p className="text-center text-lg text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-bold">
+						<p className="bg-gradient-to-r from-teal-500 to-cyan-600 bg-clip-text text-center text-lg font-bold text-transparent">
 							{collections.find((collection) => collection.id === collectionId)?.name}
 						</p>
 						<p className="text-center text-lg font-bold text-white">collection</p>
@@ -99,26 +99,26 @@ const Chat = () => {
 					<div className="flex gap-1 font-inter">
 						<p className="text-center text-base font-bold text-white">Chatting with</p>
 						<div className="flex">
-							<p className="text-center text-base text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-bold">
+							<p className="bg-gradient-to-r from-teal-500 to-cyan-600 bg-clip-text text-center text-base font-bold text-transparent">
 								{documents.find((document) => document.id === documentId)?.name}
 							</p>
 						</div>
 					</div>
 				)}
-				<div className="flex-1 flex items-center justify-end"></div>
+				<div className="flex flex-1 items-center justify-end"></div>
 			</Navbar>
-			<div className="w-full h-[calc(100vh-72px)] flex items-center justify-center border border-neutral-300 shadow-sm">
+			<div className="flex h-[calc(100vh-72px)] w-full items-center justify-center border border-neutral-300 shadow-sm">
 				{document && (
-					<div className="flex-1 h-full relative border-r border-neutral-300 bg-white">
+					<div className="relative h-full flex-1 border-r border-neutral-300 bg-white">
 						<DocumentContainer
 							document={document}
 							pageNumber={pageNumber}
 							setRendered={setRendered}
 						/>
 						{!documentId && (
-							<div className="absolute top-6 right-6 z-20 rounded-md bg-white">
+							<div className="absolute right-6 top-6 z-20 rounded-md bg-white">
 								<button
-									className="rounded-md flex items-center h-full aspect-square text-neutral-300 gap-2 justify-center p-1 border-neutral-300 border shadow-sm hover:shadow-md hover:bg-neutral-700 hover:text-neutral-700 hover:bg-opacity-10 transition-all"
+									className="flex aspect-square h-full items-center justify-center gap-2 rounded-md border border-neutral-300 p-1 text-neutral-300 shadow-sm transition-all hover:bg-neutral-700 hover:bg-opacity-10 hover:text-neutral-700 hover:shadow-md"
 									onClick={() => setDocument(null)}
 								>
 									<svg
@@ -127,7 +127,7 @@ const Chat = () => {
 										viewBox="0 0 24 24"
 										strokeWidth={1.5}
 										stroke="currentColor"
-										className="w-6 h-6"
+										className="h-6 w-6"
 									>
 										<path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
 									</svg>
@@ -138,17 +138,17 @@ const Chat = () => {
 				)}
 
 				{collectionId && !document && (
-					<div className="h-full flex-col bg-white border-r border-neutral-300 items-center justify-center flex flex-1 gap-2">
-						<p className="text-center text-neutral-400 text-xl font-bold">
+					<div className="flex h-full flex-1 flex-col items-center justify-center gap-2 border-r border-neutral-300 bg-white">
+						<p className="text-center text-xl font-bold text-neutral-400">
 							Document Preview Window
 						</p>
-						<div className="flex flex-col gap-1 items-center">
+						<div className="flex flex-col items-center gap-1">
 							{documents
 								.filter((document) => document.collection === collectionId)
 								.map((document) => {
 									return (
 										<button
-											className="text-neutral-300 text-sm w-fit hover:underline hover:text-neutral-700"
+											className="w-fit text-sm text-neutral-300 hover:text-neutral-700 hover:underline"
 											key={document.id}
 											onClick={() => {
 												handleSetDocument(document);

@@ -9,21 +9,24 @@ const Navbar = ({ children }) => {
 	const navigate = useNavigate();
 
 	return (
-		<div className="flex items-center justify-between h-[72px] px-4 bg-zinc-900 shadow-md z-20  font-ar-one-sans">
+		<div className="z-20 flex h-[72px] items-center justify-between border-b border-neutral-700 bg-zinc-900 px-4 font-ar-one-sans shadow-md">
 			{children ? (
 				// Render the provided children
 				children
 			) : (
 				// Render a default navbar if no children are provided
 				<>
-					<div className="flex items-center gap-3 p-2 rounded-md shadow-sm text-white font-ar-one-sans">
+					<button
+						className="group flex items-center gap-3 rounded-md p-2 font-ar-one-sans text-white shadow-sm"
+						onClick={() => navigate('/')}
+					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
 							viewBox="0 0 24 24"
 							strokeWidth={2}
 							stroke="currentColor"
-							className="w-8 h-8 stroke-blue-500 hover:stroke-white transition-all"
+							className="h-8 w-8 stroke-accent transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:stroke-accent"
 						>
 							<path
 								strokeLinecap="round"
@@ -32,23 +35,23 @@ const Navbar = ({ children }) => {
 							/>
 						</svg>
 
-						<h1 className="text-center text-3xl text-white font-bold ">Dossi - AI</h1>
-					</div>
-					<div className="relative flex-1 flex items-center justify-end gap-6 font-ar-one-sans">
+						<h1 className="text-center text-3xl font-bold text-white ">Dossi - AI</h1>
+					</button>
+					<div className="relative flex flex-1 items-center justify-end gap-6 font-ar-one-sans text-neutral-700">
 						<button
-							className="text-center text-md text-white font-bold hover:underline hover:cursor-pointer"
+							className="text-md text-center font-bold transition-all duration-300 ease-in-out hover:text-white"
 							onClick={() => navigate('/')}
 						>
 							Collections
 						</button>
-						<button className="text-center text-md text-white font-bold hover:underline hover:cursor-pointer">
+						<button className="text-md text-center font-bold transition-all duration-300 ease-in-out hover:text-white">
 							Documents
 						</button>
-						<button className="text-center text-md text-white font-bold hover:underline hover:cursor-pointer">
+						<button className="text-md text-center font-bold transition-all duration-300 ease-in-out hover:text-white">
 							GitHub
 						</button>
 						<button
-							className="w-8 h-8 text-neutral-700 rounded-full items-center flex justify-center border-neutral-700 border hover:bg-blue-500 hover:text-white transition-all"
+							className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-neutral-700 text-neutral-700 transition-all duration-300 ease-in-out hover:border-accent hover:bg-accent hover:text-white"
 							onClick={() => setAccountMenuOpen(!accountMenuOpen)}
 						>
 							<svg
@@ -57,7 +60,7 @@ const Navbar = ({ children }) => {
 								viewBox="0 0 24 24"
 								strokeWidth={2}
 								stroke="currentColor"
-								className="w-5 h-5"
+								className="h-5 w-5"
 							>
 								<path
 									strokeLinecap="round"
@@ -67,19 +70,52 @@ const Navbar = ({ children }) => {
 							</svg>
 						</button>
 						{accountMenuOpen && (
-							<div className="absolute top-10 right-0 p-4 px-6 gap-2 bg-white border text-zinc-900 border-neutral-300 rounded-md flex flex-col shadow-sm">
-								<p
-									className="text-center w-fit whitespace-nowrap hover:cursor-pointer"
-									onClick={() => navigate('/account')}
-								>
-									Account
-								</p>
-								<p
-									className="text-center w-fit whitespace-nowrap hover:cursor-pointer"
-									onClick={() => signOut()}
-								>
-									Sign Out
-								</p>
+							<div className="absolute right-0 top-10 flex flex-col gap-2 rounded-md border border-neutral-300 bg-white p-4 px-6 text-zinc-900 shadow-sm">
+								<div className="flex items-center gap-2">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										strokeWidth={2}
+										stroke="currentColor"
+										className="h-4 w-4"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+										/>
+									</svg>
+									<p
+										className="w-fit whitespace-nowrap text-center hover:cursor-pointer"
+										onClick={() => navigate('/account')}
+									>
+										Account
+									</p>
+								</div>
+								<div className="flex items-center gap-2">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										strokeWidth={2}
+										stroke="currentColor"
+										className="h-4 w-4"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"
+										/>
+									</svg>
+
+									<p
+										className="w-fit whitespace-nowrap text-center hover:cursor-pointer"
+										onClick={() => signOut()}
+									>
+										Sign Out
+									</p>
+								</div>
 							</div>
 						)}
 					</div>
