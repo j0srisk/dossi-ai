@@ -89,7 +89,7 @@ const Chat = () => {
 				{collectionId && !documentId && (
 					<div className="flex items-end gap-1 font-inter">
 						<p className="text-center text-lg font-bold text-white">Chatting with entire</p>
-						<p className="bg-gradient-to-r from-teal-500 to-cyan-600 bg-clip-text text-center text-lg font-bold text-transparent">
+						<p className="bg-gradient-to-r from-accent to-lime-400 bg-clip-text text-center text-lg font-bold text-transparent">
 							{collections.find((collection) => collection.id === collectionId)?.name}
 						</p>
 						<p className="text-center text-lg font-bold text-white">collection</p>
@@ -99,7 +99,7 @@ const Chat = () => {
 					<div className="flex gap-1 font-inter">
 						<p className="text-center text-base font-bold text-white">Chatting with</p>
 						<div className="flex">
-							<p className="bg-gradient-to-r from-teal-500 to-cyan-600 bg-clip-text text-center text-base font-bold text-transparent">
+							<p className="bg-gradient-to-r from-accent to-lime-400 bg-clip-text text-center text-base font-bold text-transparent">
 								{documents.find((document) => document.id === documentId)?.name}
 							</p>
 						</div>
