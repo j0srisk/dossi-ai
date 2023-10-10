@@ -58,7 +58,7 @@ const Collections = () => {
 					</div>
 					<div className="w-fit font-ar-one-sans">
 						<button
-							className="flex h-full items-center gap-2 rounded-md border border-accent bg-accent p-2 text-white shadow-sm"
+							className="group flex h-full items-center gap-2 rounded-md border bg-gradient-to-br from-accent to-lime-400 p-2 text-white shadow-sm"
 							onClick={() => handleCreateCollection()}
 						>
 							<svg
@@ -67,7 +67,7 @@ const Collections = () => {
 								viewBox="0 0 24 24"
 								strokeWidth={2}
 								stroke="currentColor"
-								className="h-4 w-4"
+								className="h-6 w-6"
 							>
 								<path
 									strokeLinecap="round"
@@ -76,7 +76,7 @@ const Collections = () => {
 								/>
 							</svg>
 
-							<p className="flex-1 text-left text-sm font-bold">New Collection</p>
+							<p className="hidden flex-1 text-left text-base font-bold">Create</p>
 						</button>
 					</div>
 				</div>

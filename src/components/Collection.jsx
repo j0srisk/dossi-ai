@@ -157,7 +157,7 @@ const Collection = ({ collection, documents }) => {
 					<>
 						{documents.some((document) => document.collection === collection.id) ? (
 							<button
-								className="flex items-center gap-1 rounded-md bg-accent p-1 px-2 font-ar-one-sans text-white"
+								className="flex items-center gap-1 rounded-md bg-neutral-400 p-1 px-2 font-ar-one-sans text-white"
 								onClick={() => navigate('/c/' + collection.id)}
 							>
 								<svg
@@ -178,7 +178,7 @@ const Collection = ({ collection, documents }) => {
 							</button>
 						) : (
 							<button
-								className="flex items-center gap-1 rounded-md bg-accent p-1 px-2 font-ar-one-sans text-white opacity-25"
+								className="hidden items-center gap-1 rounded-md bg-accent p-1 px-2 font-ar-one-sans text-white opacity-25"
 								disabled={true}
 							>
 								<svg

@@ -8,7 +8,7 @@ const Logo = () => {
 					viewBox="0 0 24 24"
 					strokeWidth={2}
 					stroke="currentColor"
-					className="h-14 w-14 stroke-white transition-all"
+					className="h-14 w-14 stroke-white transition-all duration-500 ease-in-out group-hover:stroke-accent"
 				>
 					<path
 						strokeLinecap="round"

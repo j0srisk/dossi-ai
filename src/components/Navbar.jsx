@@ -17,7 +17,7 @@ const Navbar = ({ children }) => {
 				// Render a default navbar if no children are provided
 				<>
 					<button
-						className="group flex items-center gap-3 rounded-md p-2 font-ar-one-sans text-white shadow-sm"
+						className="group flex items-center justify-center gap-3 rounded-md p-2 font-ar-one-sans text-white shadow-sm"
 						onClick={() => navigate('/')}
 					>
 						<svg

@@ -134,7 +134,7 @@ const Document = ({ collection, documentObj }) => {
 			{/* Chat button */}
 			{!isEditing && !isDeleting && (
 				<button
-					className="flex items-center gap-1 rounded-md bg-accent p-1 px-2 font-bold text-white"
+					className="flex items-center gap-1 rounded-md bg-neutral-400 p-1 px-2 font-bold text-white"
 					onClick={() => navigate('/c/' + collection.id + '/d/' + documentObj.id)}
 				>
 					<svg
