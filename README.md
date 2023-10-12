@@ -1,33 +1,36 @@
-<h1 align="center" id="title">Template React Tailwind</h1>
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-<p id="description">Description Paragraph</p>
+## Getting Started
 
-<h2>🚀 Demo</h2>
+First, run the development server:
 
-Netlify Badge
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-[Link](Link)
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-<h2>Project Screenshots:</h2>
+You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-<img src="screenshot.png" alt="project-screenshot" width="400" height="auto">
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-  
-  
-<h2>🧐 Features</h2>
+## Learn More
 
-Here're some of the project's best features:
+To learn more about Next.js, take a look at the following resources:
 
-*   Feature 1
-*   Feature 2
-*   Feature 3
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-  
-  
-<h2>💻 Built with</h2>
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-Technologies used in the project:
+## Deploy on Vercel
 
-*   Technology 1
-*   Technology 2
-*   Technology 3
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

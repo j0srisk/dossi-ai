@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-	content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+module.exports = {
+	content: [
+		'./pages/**/*.{js,ts,jsx,tsx,mdx}',
+		'./components/**/*.{js,ts,jsx,tsx,mdx}',
+		'./app/**/*.{js,ts,jsx,tsx,mdx}',
+	],
 	theme: {
 		extend: {
 			fontFamily: {
@@ -22,7 +26,9 @@ export default {
 				spin: 'spin 1.5s linear infinite',
 			},
 			backgroundImage: {
-				splash: "url('/src/assets/thom-milkovic-qGQIOLke2kE-unsplash.jpg')",
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+				'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+				unsplash: "url('/thom-milkovic-qGQIOLke2kE-unsplash.jpg')",
 			},
 		},
 	},

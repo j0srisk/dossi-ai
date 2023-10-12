@@ -1,6 +1,9 @@
 {
-	"useTabs": true,
-	"singleQuote": true,
-	"printWidth": 100,
-	"plugins": ["@trivago/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"]
+  "useTabs": true,
+  "singleQuote": true,
+  "printWidth": 100,
+  "plugins": [
+    "@trivago/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss"
+  ]
 }
