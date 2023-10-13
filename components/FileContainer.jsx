@@ -1,5 +1,6 @@
 'use client';
 
+import PageNavigator from '@/components/PageNavigator';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useState, useEffect, useRef } from 'react';
 import { pdfjs, Document, Page } from 'react-pdf';
@@ -49,61 +50,30 @@ const FileContainer = ({ document, page, setPage }) => {
 	};
 
 	useEffect(() => {
-		const tempPage = page;
 		setRendered(false);
 		downloadFile();
-		setPage(tempPage);
 	}, [document]);
 
 	function onDocumentLoadSuccess({ numPages: nextNumPages }) {
 		setNumPages(nextNumPages);
 	}
 
-	useEffect(() => {
-		if (page === null) {
-			return;
-		}
-
-		if (rendered) {
-			setPage(null);
-		}
-	}, [page, rendered]);
-
 	return (
-		<div className="flex h-full w-full flex-col overflow-scroll p-4">
-			<div className="flex h-full" ref={refContainer}>
-				{documentUrl ? (
-					<Document file={documentUrl} onLoadSuccess={onDocumentLoadSuccess} loading={null}>
-						<div className="flex flex-col gap-2 pb-4">
-							{Array.from(new Array(numPages), (el, index) => (
-								<div className="shadow-md" key={`page_${index + 1}`}>
-									<Page
-										key={`page_${index + 1}`}
-										inputRef={(ref) => {
-											if (ref && page === index + 1) {
-												ref.scrollIntoView({ behavior: 'smooth' });
-											}
-										}}
-										pageNumber={index + 1}
-										width={containerWidth}
-										loading={null}
-										onRenderSuccess={() => {
-											if (numPages === index + 1) {
-												setRendered(true);
-												console.log('rendered');
-											}
-										}}
-									/>
-								</div>
-							))}
+		<div className="relative h-full">
+			<div className="flex h-full w-full flex-col overflow-scroll p-4">
+				<div className=" flex h-full" ref={refContainer}>
+					{documentUrl ? (
+						<Document file={documentUrl} onLoadSuccess={onDocumentLoadSuccess} loading={null}>
+							<Page pageNumber={page} width={containerWidth} loading={null} />
+						</Document>
+					) : (
+						<div className="flex flex-1 items-center justify-center bg-white shadow-md">
+							Loading....
 						</div>
-					</Document>
-				) : (
-					<div className="flex flex-1 items-center justify-center bg-white shadow-md">
-						Loading....
-					</div>
-				)}
+					)}
+				</div>
 			</div>
+			<PageNavigator numPages={numPages} page={page} setPage={setPage} />
 		</div>
 	);
 };

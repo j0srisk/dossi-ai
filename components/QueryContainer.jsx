@@ -4,7 +4,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
-const QueryContainer = ({ topic, updateMessages }) => {
+const QueryContainer = ({ topic, updateMessages, setGenerating }) => {
 	const [text, setText] = useState('');
 
 	const sendMessage = async (text) => {
@@ -12,6 +12,8 @@ const QueryContainer = ({ topic, updateMessages }) => {
 			return;
 		}
 
+		setText('');
+		setGenerating(true);
 		updateMessages({ role: 'user', content: text });
 
 		let endpoint;
@@ -35,15 +37,17 @@ const QueryContainer = ({ topic, updateMessages }) => {
 				if (response.status === 500) {
 					throw new Error('Internal Server Error');
 				}
+
 				return response.json();
 			})
 			.then((data) => updateMessages(data))
+			.then(() => {
+				setGenerating(false);
+			})
 			.catch((error) => {
 				updateMessages({ role: 'assistant', content: error.message });
 				console.error(error);
 			});
-
-		setText('');
 	};
 
 	return (

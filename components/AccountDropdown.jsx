@@ -39,8 +39,8 @@ const AccountDropdown = () => {
 				/>
 			</svg>
 			{accountMenuOpen && (
-				<div className="absolute right-0 top-10 flex flex-col gap-2 rounded-md border border-neutral-300 bg-white p-4 px-6 text-zinc-900 shadow-sm">
-					<Link href="/account" className="flex items-center gap-2">
+				<div className="absolute right-0 top-10 flex flex-col rounded-md border border-neutral-300 bg-white py-4 text-zinc-900 shadow-sm">
+					<Link href="/account" className="flex items-center gap-2 px-6 py-1 hover:bg-neutral-200">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
@@ -57,7 +57,10 @@ const AccountDropdown = () => {
 						</svg>
 						<p className="w-fit whitespace-nowrap text-center hover:cursor-pointer">Account</p>
 					</Link>
-					<div className="flex items-center gap-2" onClick={() => signOut()}>
+					<div
+						className="flex items-center gap-2 px-6 py-1 hover:bg-neutral-200"
+						onClick={() => signOut()}
+					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"

@@ -1,6 +1,6 @@
 import Reference from '@/components/Reference';
 
-const Message = ({ message, setActiveDocument, setReference, documents }) => {
+const Message = ({ message, setActiveDocument, setReference, documents, children }) => {
 	return (
 		<div
 			className={`flex w-full items-center justify-center p-6 text-zinc-900 outline outline-1 outline-neutral-300 ${
@@ -38,9 +38,9 @@ const Message = ({ message, setActiveDocument, setReference, documents }) => {
 						)}
 					</svg>
 				</div>
-				<div className="flex flex-col gap-6">
+				<div className="flex flex-col gap-6 pt-1">
 					{message.content}
-
+					{children}
 					{message.referencePage || message.referenceDocument ? (
 						<>
 							{documents ? (

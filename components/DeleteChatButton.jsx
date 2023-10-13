@@ -20,6 +20,8 @@ const DeleteChatButton = ({ topic }) => {
 			method: 'DELETE',
 			body: JSON.stringify(body),
 		});
+
+		window.location.reload(false);
 	};
 
 	return (
