@@ -105,35 +105,52 @@ const ChatContainer = ({ topic, messages }) => {
 			<div className="flex w-full flex-1 outline outline-neutral-300">
 				<div className="flex w-full flex-col">
 					<div className="flex h-full flex-1 flex-col overflow-scroll bg-white" ref={containerRef}>
-						{clientMessages.map((message, index) => (
-							<div className="w-full" key={index}>
+						<>
+							{topic.type === 'document' ? (
 								<Message
-									message={message}
-									setActiveDocument={setActiveDocument}
-									setReference={setReference}
-									documents={documents}
-								/>
-							</div>
-						))}
-						{generating && (
-							<Message message={{ role: 'assistant' }} key={clientMessages.length}>
-								{' '}
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									strokeWidth={1.5}
-									stroke="currentColor"
-									className="h-10 w-10 animate-spin stroke-neutral-600"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+									message={{
+										role: 'assistant',
+										content: `Welcome to Dossi AI. Ask me a question about ${topic.name} and I will do my best to answer it!`,
+									}}
+								></Message>
+							) : (
+								<Message
+									message={{
+										role: 'assistant',
+										content: `Welcome to Dossi AI. Ask me a question about this collection of ${topic.name} documents and I will do my best to answer it!`,
+									}}
+								></Message>
+							)}
+							{clientMessages.map((message, index) => (
+								<div className="w-full" key={index}>
+									<Message
+										message={message}
+										setActiveDocument={setActiveDocument}
+										setReference={setReference}
+										documents={documents}
 									/>
-								</svg>
-							</Message>
-						)}
+								</div>
+							))}
+							{generating && (
+								<Message message={{ role: 'assistant' }}>
+									{' '}
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										strokeWidth={1.5}
+										stroke="currentColor"
+										className="h-10 w-10 animate-spin stroke-neutral-600"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+										/>
+									</svg>
+								</Message>
+							)}
+						</>
 					</div>
 					<QueryContainer
 						topic={topic}

@@ -45,13 +45,7 @@ export async function POST(request) {
 	const { error: chatError } = await supabase.from('chats').insert([
 		{
 			document: documentId,
-			messages: [
-				{
-					role: 'assistant',
-					content:
-						'Welcome to the chat! Ask me a question about the document and I will do my best to answer it!',
-				},
-			],
+			messages: [],
 			created_by: user.id,
 		},
 	]);
