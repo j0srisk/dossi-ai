@@ -134,7 +134,7 @@ const Collection = ({ collection, documents, children }) => {
 							{documents.some((document) => document.collection === collection.id) && (
 								<Link
 									href={`/c/` + collection.id}
-									className="font-ar-one-sans flex items-center gap-1 rounded-md bg-neutral-400 p-1 px-2 text-sm text-white"
+									className="flex items-center gap-1 rounded-md bg-neutral-400 p-1 px-2 font-ar-one-sans text-sm text-white"
 									onClick={(e) => {
 										e.stopPropagation();
 									}}

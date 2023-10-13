@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 const Navbar = ({ children }) => {
 	return (
-		<div className="font-ar-one-sans z-20 flex h-[72px] items-center justify-between border-b border-neutral-700 bg-zinc-900 px-4 shadow-md">
+		<div className="z-20 flex h-[72px] items-center justify-between border-b border-neutral-700 bg-neutral-900 px-4 font-ar-one-sans shadow-md">
 			{children ? (
 				// Render the provided children
 				children
@@ -12,7 +12,7 @@ const Navbar = ({ children }) => {
 				<>
 					<Link
 						href="/"
-						className="font-ar-one-sans group flex items-center justify-center gap-3 rounded-md p-2 text-white shadow-sm"
+						className="group flex items-center justify-center gap-3 rounded-md p-2 font-ar-one-sans text-white shadow-sm"
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -31,19 +31,25 @@ const Navbar = ({ children }) => {
 
 						<h1 className="text-center text-3xl font-bold text-white ">Dossi - AI</h1>
 					</Link>
-					<div className="font-ar-one-sans relative flex flex-1 items-center justify-end gap-6 text-neutral-700">
+					<div className="relative flex flex-1 items-center justify-end gap-6 font-ar-one-sans text-neutral-700">
 						<Link
 							href="/collections"
 							className="text-md text-center font-bold transition-all duration-300 ease-in-out hover:text-white"
 						>
 							Collections
 						</Link>
-						<button className="text-md text-center font-bold transition-all duration-300 ease-in-out hover:text-white">
+						<Link
+							href="/documents"
+							className="text-md text-center font-bold transition-all duration-300 ease-in-out hover:text-white"
+						>
 							Documents
-						</button>
-						<button className="text-md text-center font-bold transition-all duration-300 ease-in-out hover:text-white">
-							GitHub
-						</button>
+						</Link>
+						<Link
+							href="/chats"
+							className="text-md text-center font-bold transition-all duration-300 ease-in-out hover:text-white"
+						>
+							Chats
+						</Link>
 						<AccountDropdown />
 					</div>
 				</>

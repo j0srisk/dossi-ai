@@ -15,15 +15,21 @@ module.exports = {
 			colors: {
 				// teal-500
 				accent: '#49CC5F',
+				'accent-hover': `#3FB34F`,
 			},
 			keyframes: {
 				spin: {
 					'0%': { transform: 'rotate(0deg)' },
 					'100%': { transform: 'rotate(360deg)' },
 				},
+				grow: {
+					'0%': { transform: 'scale(.95)', opacity: 0 },
+					'100%': { transform: 'scale(1)', opacity: 1 },
+				},
 			},
 			animation: {
 				spin: 'spin 1.5s linear infinite',
+				grow: 'grow 0.25s ease-out',
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

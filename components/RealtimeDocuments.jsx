@@ -3,12 +3,13 @@
 import Collection from './Collection';
 import DropdownMenu from '@/components/DropdownMenu';
 import NewCollection from '@/components/NewCollection';
+import NewDocument from '@/components/NewDocument';
 import SearchBar from '@/components/SearchBar';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
-const RealtimeCollections = ({ collections, documents }) => {
+const RealtimeDocuments = ({ documents }) => {
 	const [search, setSearch] = useState('');
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [sort, setSort] = useState('name');
@@ -17,8 +18,8 @@ const RealtimeCollections = ({ collections, documents }) => {
 
 	useEffect(() => {
 		const channel = supabase
-			.channel('realtime-collections')
-			.on('postgres_changes', { event: '*', schema: 'public', table: 'collections' }, (payload) => {
+			.channel('realtime-documents')
+			.on('postgres_changes', { event: '*', schema: 'public', table: 'documents' }, () => {
 				router.refresh();
 			})
 			.subscribe();
@@ -38,28 +39,10 @@ const RealtimeCollections = ({ collections, documents }) => {
 				menuOpen={menuOpen}
 				setMenuOpen={setMenuOpen}
 			/>
-			<div className="flex flex-col items-center justify-between">
-				{/*
-				{collections?.map((collection) => (
-					<>
-						
-						<Collection
-							key={collection.id}
-							collection={collection}
-							documents={documents.filter((document) => document.collection === collection.id)}
-						/>
-						
-						<NewCollection
-							key={collection.id}
-							collection={collection}
-							documents={documents.filter((document) => document.collection === collection.id)}
-						/>
-					</>
-				))}
-				*/}
 
-				{collections
-					?.filter((collection) => collection.name.toLowerCase().includes(search.toLowerCase()))
+			<div className="flex flex-col items-center justify-between">
+				{documents
+					?.filter((document) => document.name.toLowerCase().includes(search.toLowerCase()))
 					.sort((a, b) => {
 						if (sort === 'name') {
 							return a.name.localeCompare(b.name);
@@ -68,16 +51,12 @@ const RealtimeCollections = ({ collections, documents }) => {
 						}
 						return 0;
 					})
-					.map((collection) => (
-						<NewCollection
-							key={collection.id}
-							collection={collection}
-							documents={documents.filter((document) => document.collection === collection.id)}
-						/>
+					.map((document) => (
+						<NewDocument key={document.id} document={document} />
 					))}
 			</div>
 		</div>
 	);
 };
 
-export default RealtimeCollections;
+export default RealtimeDocuments;

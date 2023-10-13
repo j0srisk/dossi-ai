@@ -1,7 +1,7 @@
 const Reference = ({ setActiveDocument, setReference, document, page }) => {
 	return (
 		<button
-			className="hover:shadow-mc flex h-full w-fit items-center justify-center rounded-md border border-neutral-300 bg-white text-zinc-600 shadow-sm transition-all hover:bg-neutral-700 hover:bg-opacity-10 hover:text-neutral-700"
+			className="flex h-full w-fit items-center justify-center rounded-lg border border-neutral-300 bg-white text-sm font-bold text-neutral-900 shadow-sm transition-all duration-300 ease-out hover:bg-neutral-700 hover:bg-opacity-10"
 			onClick={() => setReference(document, page)}
 		>
 			{document && (
@@ -10,7 +10,7 @@ const Reference = ({ setActiveDocument, setReference, document, page }) => {
 					<div className="h-full w-[1px] bg-neutral-300"></div>
 				</>
 			)}
-			<p className="min-w-[30px] px-2 py-1 font-bold">{page}</p>
+			<p className="min-w-[30px] px-2 py-1">{page}</p>
 		</button>
 	);
 };

@@ -3,14 +3,14 @@ import Reference from '@/components/Reference';
 const Message = ({ message, setActiveDocument, setReference, documents, children }) => {
 	return (
 		<div
-			className={`flex w-full items-center justify-center p-6 text-zinc-900 outline outline-1 outline-neutral-300 ${
+			className={`flex w-full items-center justify-center p-6 text-neutral-900  ${
 				message.role === 'user' ? 'bg-white' : 'bg-neutral-100'
 			}`}
 		>
 			<div className="flex w-full max-w-screen-md gap-6">
 				<div
 					className={`flex h-8 w-8 flex-shrink-0 items-center justify-center text-white ${
-						message.role === 'user' ? 'rounded-full bg-accent' : 'rounded-md bg-neutral-700'
+						message.role === 'user' ? 'rounded-full bg-accent' : 'rounded-lg bg-neutral-700'
 					}`}
 				>
 					<svg

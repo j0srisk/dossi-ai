@@ -10,12 +10,12 @@ export default async function Page() {
 	const { data: documents } = await supabase.from('documents').select();
 
 	return (
-		<div className="flex flex-col gap-4">
-			<div className="items center flex justify-between">
-				<p className="text-3xl font-bold">Your Collections</p>
+		<div className="flex flex-col gap-4 text-neutral-900">
+			<div className="flex items-center justify-between">
+				<p className="text-2xl font-bold">Your Collections</p>
 				<CreateCollectionButton />
 			</div>
-			<div className="font-inter flex w-full flex-1 flex-col gap-2 overflow-scroll">
+			<div className="flex w-full flex-1 flex-col gap-2 overflow-visible font-inter">
 				<RealtimeCollections collections={collections} documents={documents} />
 			</div>
 		</div>
