@@ -42,19 +42,6 @@ export async function POST(request) {
 		return new NextResponse('Error creating document in database', { status: 500 });
 	}
 
-	const { error: chatError } = await supabase.from('chats').insert([
-		{
-			document: documentId,
-			messages: [],
-			created_by: user.id,
-		},
-	]);
-
-	if (chatError) {
-		console.log('chatError', chatError);
-		return new NextResponse('Error creating chat in database', { status: 500 });
-	}
-
 	const { error: storageError } = await supabase.storage
 		.from('documents')
 		.upload(documentUrl, buffer, {

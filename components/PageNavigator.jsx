@@ -1,4 +1,4 @@
-const PageNavigator = ({ numPages, page, setPage }) => {
+export default function PageNavigator({ numPages, page, setPage }) {
 	return (
 		<div className="group absolute right-6 top-6 z-20 flex items-center  gap-2 rounded-md border border-neutral-300 bg-white p-1 text-neutral-300 opacity-50 shadow-sm hover:bg-neutral-700 hover:bg-opacity-10 hover:opacity-100 hover:shadow-md">
 			<button
@@ -46,5 +46,4 @@ const PageNavigator = ({ numPages, page, setPage }) => {
 			</button>
 		</div>
 	);
-};
-export default PageNavigator;
+}

@@ -1,6 +1,6 @@
 'use client';
 
-const CreateCollectionButton = () => {
+export default function CreateCollectionButton() {
 	const createCollection = async () => {
 		const name = 'New Collection';
 
@@ -12,7 +12,7 @@ const CreateCollectionButton = () => {
 
 	return (
 		<button
-			className="hover:bg-accent-hover flex items-center gap-2 rounded-lg bg-accent p-2 px-4 text-sm font-bold text-white shadow-sm"
+			className="flex items-center gap-2 rounded-lg bg-accent p-2 px-4 text-sm font-bold text-white shadow-sm hover:bg-accent-hover"
 			onClick={() => createCollection()}
 		>
 			<svg
@@ -28,6 +28,4 @@ const CreateCollectionButton = () => {
 			Create Collection
 		</button>
 	);
-};
-
-export default CreateCollectionButton;
+}

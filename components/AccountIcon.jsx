@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-const AccountDropdown = () => {
+export default function AccountIcon() {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const supabase = createClientComponentClient();
 	const router = useRouter();
@@ -41,15 +41,15 @@ const AccountDropdown = () => {
 				/>
 			</svg>
 			{menuOpen && (
-				<DropdownMenu top={'top-10'}>
+				<DropdownMenu top={'top-10'} setMenuOpen={setMenuOpen}>
 					<Link
 						href="/account"
-						className="whitespace-nowrap rounded-md p-1 px-4 font-inter text-xs font-bold text-neutral-900 hover:cursor-pointer hover:bg-accent hover:text-white"
+						className="whitespace-nowrap rounded-md p-1 px-4 text-left font-inter text-xs font-bold text-neutral-900 hover:cursor-pointer hover:bg-accent hover:text-white"
 					>
-						Account
+						Account Details
 					</Link>
 					<p
-						className="whitespace-nowrap rounded-md p-1 px-4 font-inter text-xs font-bold text-neutral-900 hover:cursor-pointer hover:bg-accent hover:text-white"
+						className="whitespace-nowrap rounded-md p-1 px-4 text-left font-inter text-xs font-bold text-neutral-900 hover:cursor-pointer hover:bg-accent hover:text-white"
 						onClick={signOut}
 					>
 						Sign Out
@@ -58,6 +58,4 @@ const AccountDropdown = () => {
 			)}
 		</button>
 	);
-};
-
-export default AccountDropdown;
+}

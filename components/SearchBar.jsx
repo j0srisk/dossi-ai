@@ -1,6 +1,9 @@
 import DropdownMenu from '@/components/DropdownMenu';
+import { useState } from 'react';
 
-export default function SearchBar({ search, setSearch, setSort, sort, menuOpen, setMenuOpen }) {
+export default function SearchBar({ setSearch, setSort, sort }) {
+	const [menuOpen, setMenuOpen] = useState(false);
+
 	return (
 		<div className="flex items-center justify-between gap-2 border-b border-neutral-300 pb-2 text-neutral-500">
 			<div className="flex w-full items-center gap-2">
@@ -38,7 +41,7 @@ export default function SearchBar({ search, setSearch, setSort, sort, menuOpen, 
 					<path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
 				</svg>
 				{menuOpen && (
-					<DropdownMenu top={'top-6'}>
+					<DropdownMenu top={'top-6'} setMenuOpen={setMenuOpen}>
 						<div
 							className="flex gap-1 whitespace-nowrap rounded-md p-1 pr-4 text-left text-xs font-bold text-neutral-900 hover:cursor-pointer hover:bg-accent hover:text-white"
 							onClick={() => setSort('name')}

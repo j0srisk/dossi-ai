@@ -23,18 +23,5 @@ export async function POST(request) {
 		return new NextResponse('Error creating collection', { status: 500 });
 	}
 
-	const { error: chatError } = await supabase.from('chats').insert([
-		{
-			collection: collectionId,
-			messages: [],
-			created_by: user.id,
-		},
-	]);
-
-	if (chatError) {
-		console.log('chatError', chatError);
-		return new NextResponse('Error creating chat in database', { status: 500 });
-	}
-
 	return new NextResponse('Collection created', { status: 200 });
 }

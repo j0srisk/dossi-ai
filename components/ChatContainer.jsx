@@ -3,14 +3,13 @@
 import DocumentList from '@/components/DocumentList';
 import FileContainer from '@/components/FileContainer';
 import Message from '@/components/Message';
-import MessageContainer from '@/components/MessageContainer';
 import QueryContainer from '@/components/QueryContainer';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useState, useEffect, useRef } from 'react';
 
-const ChatContainer = ({ topic, messages }) => {
+export default function ChatContainer({ topic, messages, chatId }) {
 	const containerRef = useRef(null);
-	const [clientMessages, setClientMessages] = useState(messages);
+	const [clientMessages, setClientMessages] = useState(messages || []);
 	const [rendered, setRendered] = useState(false);
 	const [activePage, setActivePage] = useState(1);
 	const [generating, setGenerating] = useState(false);
@@ -121,16 +120,20 @@ const ChatContainer = ({ topic, messages }) => {
 									}}
 								></Message>
 							)}
-							{clientMessages.map((message, index) => (
-								<div className="w-full" key={index}>
-									<Message
-										message={message}
-										setActiveDocument={setActiveDocument}
-										setReference={setReference}
-										documents={documents}
-									/>
-								</div>
-							))}
+							{clientMessages && (
+								<>
+									{clientMessages.map((message, index) => (
+										<div className="w-full" key={index}>
+											<Message
+												message={message}
+												setActiveDocument={setActiveDocument}
+												setReference={setReference}
+												documents={documents}
+											/>
+										</div>
+									))}
+								</>
+							)}
 							{generating && (
 								<Message message={{ role: 'assistant' }}>
 									{' '}
@@ -156,11 +159,10 @@ const ChatContainer = ({ topic, messages }) => {
 						topic={topic}
 						updateMessages={updateMessages}
 						setGenerating={setGenerating}
+						chatId={chatId}
 					/>
 				</div>
 			</div>
 		</div>
 	);
-};
-
-export default ChatContainer;
+}

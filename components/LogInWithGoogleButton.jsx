@@ -2,7 +2,7 @@
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-const LogInWithGoogleButton = () => {
+export default function LogInWithGoogleButton() {
 	const logInWithGoogle = async () => {
 		const supabase = createClientComponentClient();
 
@@ -42,6 +42,4 @@ const LogInWithGoogleButton = () => {
 			Log In with Google
 		</button>
 	);
-};
-
-export default LogInWithGoogleButton;
+}

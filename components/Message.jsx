@@ -1,6 +1,6 @@
 import Reference from '@/components/Reference';
 
-const Message = ({ message, setActiveDocument, setReference, documents, children }) => {
+export default function Message({ message, setActiveDocument, setReference, documents, children }) {
 	return (
 		<div
 			className={`flex w-full items-center justify-center p-6 text-neutral-900  ${
@@ -63,6 +63,4 @@ const Message = ({ message, setActiveDocument, setReference, documents, children
 			</div>
 		</div>
 	);
-};
-
-export default Message;
+}

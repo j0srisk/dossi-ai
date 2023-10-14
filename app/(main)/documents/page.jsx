@@ -8,6 +8,7 @@ export default async function Page({ params }) {
 	const cookieStore = cookies();
 	const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
+	const { data: collections } = await supabase.from('collections').select();
 	const { data: documents } = await supabase.from('documents').select();
 
 	return (
@@ -21,7 +22,7 @@ export default async function Page({ params }) {
 				<CreateDocumentButton />
 			</div>
 			<div className="flex w-full flex-1 flex-col gap-2 overflow-visible font-inter">
-				<RealtimeDocuments documents={documents} />
+				<RealtimeDocuments collections={collections} documents={documents} />
 			</div>
 		</div>
 	);

@@ -1,10 +1,9 @@
 'use client';
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
-const QueryContainer = ({ topic, updateMessages, setGenerating }) => {
+export default function QueryContainer({ topic, updateMessages, setGenerating, chatId }) {
 	const [text, setText] = useState('');
 
 	const sendMessage = async (text) => {
@@ -24,9 +23,12 @@ const QueryContainer = ({ topic, updateMessages, setGenerating }) => {
 			endpoint = 'collectionId';
 		}
 
+		console.log(chatId);
+
 		const body = {
 			query: text,
 			[endpoint]: topic.id,
+			chatId: chatId,
 		};
 
 		fetch('/api/chat', {
@@ -91,6 +93,4 @@ const QueryContainer = ({ topic, updateMessages, setGenerating }) => {
 			</div>
 		</div>
 	);
-};
-
-export default QueryContainer;
+}

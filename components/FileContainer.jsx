@@ -12,7 +12,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 	import.meta.url,
 ).toString();
 
-const FileContainer = ({ document, page, setPage }) => {
+export default function FileContainer({ document, page, setPage }) {
 	const refContainer = useRef(null);
 	const [documentUrl, setDocumentUrl] = useState(null);
 	const [containerWidth, setContainerWidth] = useState(0);
@@ -52,6 +52,9 @@ const FileContainer = ({ document, page, setPage }) => {
 	useEffect(() => {
 		setRendered(false);
 		downloadFile();
+		if (!page) {
+			setPage(1);
+		}
 	}, [document]);
 
 	function onDocumentLoadSuccess({ numPages: nextNumPages }) {
@@ -76,6 +79,4 @@ const FileContainer = ({ document, page, setPage }) => {
 			<PageNavigator numPages={numPages} page={page} setPage={setPage} />
 		</div>
 	);
-};
-
-export default FileContainer;
+}

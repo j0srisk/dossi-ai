@@ -1,17 +1,13 @@
 'use client';
 
-import Collection from './Collection';
-import DropdownMenu from '@/components/DropdownMenu';
-import NewCollection from '@/components/NewCollection';
 import NewDocument from '@/components/NewDocument';
 import SearchBar from '@/components/SearchBar';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
-const RealtimeDocuments = ({ documents }) => {
+export default function RealtimeDocuments({ collections, documents }) {
 	const [search, setSearch] = useState('');
-	const [menuOpen, setMenuOpen] = useState(false);
 	const [sort, setSort] = useState('name');
 	const supabase = createClientComponentClient();
 	const router = useRouter();
@@ -31,14 +27,7 @@ const RealtimeDocuments = ({ documents }) => {
 
 	return (
 		<div className="relative flex flex-col gap-4 overflow-visible text-white">
-			<SearchBar
-				search={search}
-				setSearch={setSearch}
-				sort={sort}
-				setSort={setSort}
-				menuOpen={menuOpen}
-				setMenuOpen={setMenuOpen}
-			/>
+			<SearchBar search={search} setSearch={setSearch} sort={sort} setSort={setSort} />
 
 			<div className="flex flex-col items-center justify-between">
 				{documents
@@ -52,11 +41,13 @@ const RealtimeDocuments = ({ documents }) => {
 						return 0;
 					})
 					.map((document) => (
-						<NewDocument key={document.id} document={document} />
+						<NewDocument
+							key={document.id}
+							document={document}
+							collection={collections.find((collection) => collection.id === document.collection)}
+						/>
 					))}
 			</div>
 		</div>
 	);
-};
-
-export default RealtimeDocuments;
+}

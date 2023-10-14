@@ -4,6 +4,8 @@ import {
 	generatePrompt,
 	generateAnswer,
 	generateAnswerWithReference,
+	getChatData,
+	createChatData,
 } from '@/app/api/utils';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
@@ -15,35 +17,43 @@ export async function POST(request) {
 	const collectionId = body.collectionId;
 	const documentId = body.documentId;
 
+	const chatId = body.chatId;
+
 	if (documentId && collectionId) {
 		return new NextResponse('Cannot specify both documentId and collectionId', { status: 400 });
 	}
 
+	let topic = {};
+
 	let type;
 
 	if (documentId) {
+		topic.id = documentId;
+		topic.type = 'document';
 		type = 'document';
 	} else if (collectionId) {
+		topic.id = collectionId;
+		topic.type = 'collection';
 		type = 'collection';
 	}
 
 	const supabase = createRouteHandlerClient({ cookies });
 
-	// Retrieve previous messages from chat
-	let retrieveChatQuery = supabase.from('chats').select('*');
+	// Get chat data
+	let chatData = await getChatData(chatId);
 
-	if (type === 'document') {
-		retrieveChatQuery = retrieveChatQuery.or(`document.eq.${documentId}`).single();
-	} else if (type === 'collection') {
-		retrieveChatQuery = retrieveChatQuery.or(`collection.eq.${collectionId}`).single();
+	// Create chat data if it doesn't exist
+	if (!chatData) {
+		let name = query.substring(0, 30);
+		if (name.length === 30) {
+			name += '...';
+		}
+		await createChatData(chatId, topic, name);
+		// set chatData.messages to empty array so that we can push to it later
+		chatData = { messages: [] };
 	}
 
-	const { data: retrieveChatData, error: retrieveChatError } = await retrieveChatQuery;
-
-	if (retrieveChatError) {
-		console.error(retrieveChatError);
-		return new NextResponse('Error retrieving past chats', { status: 500 });
-	}
+	console.log('chatData', chatData);
 
 	const sanitizedQuery = sanitize(query);
 
@@ -59,7 +69,7 @@ export async function POST(request) {
 
 	// Update chat with new messages
 	let updateChatQuery = supabase.from('chats').update({
-		messages: [...retrieveChatData.messages, { role: 'user', content: query }, assistantMessage],
+		messages: [...chatData.messages, { role: 'user', content: query }, assistantMessage],
 	});
 
 	if (type === 'document') {

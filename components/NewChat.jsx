@@ -1,6 +1,6 @@
+import DropdownMenu from './DropdownMenu';
 import ItemContainer from './ItemContainer';
 import DeleteModal from '@/components/DeleteModal';
-import DropdownMenu from '@/components/DropdownMenu';
 import Item from '@/components/Item';
 import ItemButtonContainer from '@/components/ItemButtonContainer';
 import ItemChatButton from '@/components/ItemChatButton';
@@ -8,34 +8,13 @@ import ItemIcon from '@/components/ItemIcon';
 import ItemMenuButton from '@/components/ItemMenuButton';
 import ItemText from '@/components/ItemText';
 import RenameModal from '@/components/RenameModal';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useState } from 'react';
 
-export default function NewDocument({ document, collection }) {
+export default function NewChat({ chat, topic }) {
+	const [topicId] = useState(chat.document || chat.collection);
 	const [menuOpen, setMenuOpen] = useState(false);
-
 	const [isRenaming, setIsRenaming] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
-
-	const updateDocument = async (name) => {
-		const supabase = createClientComponentClient();
-		const { error } = await supabase.from('documents').update({ name: name }).eq('id', document.id);
-
-		if (error) {
-			console.error(error);
-			return;
-		}
-	};
-
-	const deleteDocument = async () => {
-		const supabase = createClientComponentClient();
-		const { error } = await supabase.from('documents').delete().eq('id', document.id);
-
-		if (error) {
-			console.error(error);
-			return;
-		}
-	};
 
 	return (
 		<Item>
@@ -53,14 +32,14 @@ export default function NewDocument({ document, collection }) {
 							<path
 								strokeLinecap="round"
 								strokeLinejoin="round"
-								d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+								d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
 							/>
 						</svg>
 					}
 				/>
-				<ItemText text={document.name} subtext={collection ? collection.name : 'No Collection'} />
+				<ItemText text={chat.name} subtext={topic.name} />
 				<ItemButtonContainer>
-					<ItemChatButton text="Chat with Document" href={'/c/' + document.id} />
+					<ItemChatButton text="Open Chat" href={'/c/' + topicId + '/' + chat.id} />
 					<ItemMenuButton menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 				</ItemButtonContainer>
 			</ItemContainer>
@@ -86,18 +65,18 @@ export default function NewDocument({ document, collection }) {
 			{isRenaming && (
 				<RenameModal
 					text="Rename Chat"
-					name={document.name}
+					name={chat.name}
 					setIsRenaming={setIsRenaming}
-					updateFunction={updateDocument}
+					updateFunction={null}
 				/>
 			)}
 
 			{isDeleting && (
 				<DeleteModal
 					text="Delete Chat"
-					name={document.name}
+					name={chat.name}
 					setIsDeleting={setIsDeleting}
-					deleteFunction={deleteDocument}
+					deleteFunction={null}
 				/>
 			)}
 		</Item>

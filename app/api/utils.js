@@ -210,3 +210,46 @@ export const generateAnswerWithReference = async (prompt, type) => {
 
 	return assistantMessage;
 };
+
+export const getChatData = async (id) => {
+	const supabase = createRouteHandlerClient({ cookies });
+
+	let chatData = null;
+
+	let { data: retrieveChatData, error: retrieveChatError } = await supabase
+		.from('chats')
+		.select('*')
+		.eq('id', id);
+
+	if (retrieveChatError) {
+		console.error(retrieveChatError);
+		return new NextResponse('Error retrieving past chats', { status: 500 });
+	}
+
+	chatData = retrieveChatData[0];
+
+	return chatData;
+};
+
+export const createChatData = async (id, topic, name) => {
+	const supabase = createRouteHandlerClient({ cookies });
+	console.log('chat does not exist, creating new chat');
+	console.log('name', name);
+	const { data: userData } = await supabase.auth.getUser();
+	const user = userData.user;
+
+	const { data: createChatData, error: createChatError } = await supabase.from('chats').insert([
+		{
+			id: id,
+			[topic.type]: topic.id,
+			messages: [],
+			created_by: user.id,
+			name: name,
+		},
+	]);
+
+	if (createChatError) {
+		console.error(createChatError);
+		return new NextResponse('Error creating chat', { status: 500 });
+	}
+};

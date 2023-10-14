@@ -1,7 +1,7 @@
-import AccountDropdown from './AccountDropdown';
+import AccountIcon from '@/components/AccountIcon';
 import Link from 'next/link';
 
-const Navbar = ({ children }) => {
+export default function Navbar({ children }) {
 	return (
 		<div className="z-20 flex h-[72px] items-center justify-between border-b border-neutral-700 bg-neutral-900 px-4 font-ar-one-sans shadow-md">
 			{children ? (
@@ -50,12 +50,10 @@ const Navbar = ({ children }) => {
 						>
 							Chats
 						</Link>
-						<AccountDropdown />
+						<AccountIcon />
 					</div>
 				</>
 			)}
 		</div>
 	);
-};
-
-export default Navbar;
+}
