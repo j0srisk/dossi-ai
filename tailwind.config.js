@@ -22,14 +22,25 @@ module.exports = {
 					'0%': { transform: 'rotate(0deg)' },
 					'100%': { transform: 'rotate(360deg)' },
 				},
-				grow: {
-					'0%': { transform: 'scale(.95)', opacity: 0 },
-					'100%': { transform: 'scale(1)', opacity: 1 },
+				'grow-in': {
+					'0%': { transform: 'scale(.95)' },
+					'100%': { transform: 'scale(1)' },
+				},
+				'grow-in-sm': {
+					'0%': { transform: 'scale(.99)' },
+					'100%': { transform: 'scale(1)' },
+				},
+				'fade-in': {
+					'0%': { opacity: 0 },
+					'100%': { opacity: 1 },
 				},
 			},
 			animation: {
 				spin: 'spin 1.5s linear infinite',
-				grow: 'grow 0.25s ease-out',
+				'grow-in': 'grow-in 0.25s ease-out',
+				'grow-in-sm': 'grow-in-sm 0.1s ease-out',
+				'fade-in': 'fade-in 0.25s ease-out',
+				'grow-fade-in': 'grow-in 0.25s ease-out, fade-in 0.25s ease-out',
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

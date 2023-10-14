@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 
 export default function RealtimeChats({ chats, documents, collections }) {
 	const [search, setSearch] = useState('');
-	const [sort, setSort] = useState('name');
+	const [sort, setSort] = useState('date');
 	const supabase = createClientComponentClient();
 	const router = useRouter();
 
@@ -63,7 +63,7 @@ export default function RealtimeChats({ chats, documents, collections }) {
 						if (sort === 'name') {
 							return a.name.localeCompare(b.name);
 						} else if (sort === 'date') {
-							return a.created_at.localeCompare(b.created_at);
+							return b.created_at.localeCompare(a.created_at);
 						}
 						return 0;
 					})

@@ -17,7 +17,7 @@ export default function NewChat({ chat, topic }) {
 	const [isDeleting, setIsDeleting] = useState(false);
 
 	return (
-		<Item>
+		<Item menuOpen={menuOpen}>
 			<ItemContainer>
 				<ItemIcon
 					svg={
@@ -38,7 +38,7 @@ export default function NewChat({ chat, topic }) {
 					}
 				/>
 				<ItemText text={chat.name} subtext={topic.name} />
-				<ItemButtonContainer>
+				<ItemButtonContainer menuOpen={menuOpen}>
 					<ItemChatButton text="Open Chat" href={'/c/' + topicId + '/' + chat.id} />
 					<ItemMenuButton menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 				</ItemButtonContainer>

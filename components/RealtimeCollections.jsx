@@ -48,7 +48,7 @@ export default function RealtimeCollections({ collections, documents }) {
 						if (sort === 'name') {
 							return a.name.localeCompare(b.name);
 						} else if (sort === 'date') {
-							return a.created_at.localeCompare(b.created_at);
+							return b.created_at.localeCompare(a.created_at);
 						}
 						return 0;
 					})

@@ -1,9 +1,9 @@
 import Modal from '@/components/Modal';
 import { useState, useRef, useEffect } from 'react';
 
-export default function RenameModal({ text, name, setIsRenaming, updateFunction }) {
+export default function CreateCollectionModal({ text, setIsCreating, createFunction }) {
 	const inputRef = useRef(null);
-	const [newName, setNewName] = useState(name);
+	const [newName, setNewName] = useState('New Collection');
 
 	useEffect(() => {
 		inputRef.current.focus();
@@ -19,10 +19,8 @@ export default function RenameModal({ text, name, setIsRenaming, updateFunction 
 				onChange={(e) => setNewName(e.target.value)}
 				onKeyDown={(e) => {
 					if (e.key === 'Enter') {
-						setIsRenaming(false);
-						if (newName !== name) {
-							updateFunction(newName);
-						}
+						setIsCreating(false);
+						createFunction(newName);
 					}
 				}}
 			/>
@@ -30,8 +28,8 @@ export default function RenameModal({ text, name, setIsRenaming, updateFunction 
 				<button
 					className="flex h-full w-full items-center justify-center rounded-md bg-neutral-200 p-2 px-4 hover:cursor-pointer hover:bg-neutral-300"
 					onClick={() => {
-						setIsRenaming(false);
-						setNewName(name);
+						setIsCreating(false);
+						setNewName('New Collection');
 					}}
 				>
 					<p className="whitespace-nowrap text-sm font-bold">Cancel</p>
@@ -39,14 +37,11 @@ export default function RenameModal({ text, name, setIsRenaming, updateFunction 
 				<button
 					className="flex h-full w-full items-center justify-center rounded-md bg-neutral-200 p-2 px-4 hover:cursor-pointer hover:bg-accent hover:text-white"
 					onClick={() => {
-						setIsRenaming(false);
-						if (newName !== name) {
-							updateFunction(newName);
-						}
+						setIsCreating(false);
+						createFunction(newName);
 					}}
-					disabled={newName === name}
 				>
-					<p className="whitespace-nowrap text-sm font-bold">Rename</p>
+					<p className="whitespace-nowrap text-sm font-bold">Create</p>
 				</button>
 			</div>
 		</Modal>

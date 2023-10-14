@@ -73,7 +73,6 @@ export async function POST(request) {
 
 		const embeddings = await generateEmbeddings(doc.pageContent);
 
-		console.log('embeddings', embeddings);
 		const { error: ingestError } = await supabase.from('vectors').insert([
 			{
 				content: doc.pageContent,
@@ -86,17 +85,6 @@ export async function POST(request) {
 
 		if (ingestError) {
 			console.error('ingestError', ingestError);
-			const { error: ingestCompleteError } = await supabase
-				.from('documents')
-				.update({
-					ingesting: null,
-				})
-				.match({ id: documentId });
-
-			if (ingestCompleteError) {
-				console.error('ingestCompleteError', ingestCompleteError);
-				return new NextResponse('Error nulling document ingestion', { status: 500 });
-			}
 			return new NextResponse('Error ingesting document', { status: 500 });
 		}
 

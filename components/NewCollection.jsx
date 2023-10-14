@@ -58,7 +58,7 @@ export default function NewCollection({ collection, documents }) {
 	};
 
 	return (
-		<Item>
+		<Item menuOpen={menuOpen}>
 			<ItemContainer>
 				<ItemIcon
 					svg={
@@ -88,7 +88,7 @@ export default function NewCollection({ collection, documents }) {
 							: 'documents')
 					}
 				/>
-				<ItemButtonContainer>
+				<ItemButtonContainer menuOpen={menuOpen}>
 					{documents.filter((document) => document.collection === collection.id).length > 0 && (
 						<ItemChatButton text="Chat with Collection" href={'/c/' + collection.id} />
 					)}

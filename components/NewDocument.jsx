@@ -38,7 +38,7 @@ export default function NewDocument({ document, collection }) {
 	};
 
 	return (
-		<Item>
+		<Item menuOpen={menuOpen}>
 			<ItemContainer>
 				<ItemIcon
 					svg={
@@ -59,7 +59,7 @@ export default function NewDocument({ document, collection }) {
 					}
 				/>
 				<ItemText text={document.name} subtext={collection ? collection.name : 'No Collection'} />
-				<ItemButtonContainer>
+				<ItemButtonContainer menuOpen={menuOpen}>
 					<ItemChatButton text="Chat with Document" href={'/c/' + document.id} />
 					<ItemMenuButton menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 				</ItemButtonContainer>

@@ -1,7 +1,7 @@
 export default function ItemMenuButton({ setMenuOpen }) {
 	return (
 		<div
-			className="relative flex h-full animate-grow items-center justify-center rounded-lg border border-neutral-300 bg-white px-1 shadow-sm transition-all duration-300 ease-in-out hover:cursor-pointer hover:bg-neutral-700 hover:bg-opacity-10"
+			className="animate-grow-fade-in relative flex h-full items-center justify-center rounded-lg border border-neutral-300 bg-white px-1 shadow-sm transition-all duration-300 ease-in-out hover:cursor-pointer hover:bg-neutral-700 hover:bg-opacity-10"
 			onClick={() => {
 				setMenuOpen(true);
 			}}
