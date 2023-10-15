@@ -24,11 +24,17 @@ export const generateEmbeddings = async (text) => {
 	const embeddings = embeddingResponse.data[0].embedding;
 	const tokens = embeddingResponse.usage.total_tokens;
 
-	return embeddings;
+	return { embeddings, tokens };
 };
 
 export const similaritySearch = async (query, id, type) => {
-	const embeddings = await generateEmbeddings(query);
+	let totalTokens = await getEmbeddingsTokenCount();
+
+	const { embeddings, tokens } = await generateEmbeddings(query);
+
+	totalTokens += tokens;
+
+	await updateEmbeddingsTokenCount(totalTokens);
 
 	const supabase = createRouteHandlerClient({ cookies });
 
@@ -186,6 +192,18 @@ export const generateAnswerWithReference = async (prompt, type) => {
 		function_call: { name: 'answer_question' },
 	});
 
+	let { totalInputTokens, totalOutputTokens } = await getGptTokenCount();
+
+	totalInputTokens += response.usage.prompt_tokens;
+
+	totalOutputTokens += response.usage.completion_tokens;
+
+	await updateGptTokenCount(totalInputTokens, totalOutputTokens);
+
+	console.log('input tokens', response.usage.prompt_tokens);
+
+	console.log('output tokens', response.usage.completion_tokens);
+
 	if (response.error) {
 		console.error(response.error);
 		return new NextResponse('Error generating answer', { status: 500 });
@@ -251,5 +269,80 @@ export const createChatData = async (id, topic, name) => {
 	if (createChatError) {
 		console.error(createChatError);
 		return new NextResponse('Error creating chat', { status: 500 });
+	}
+};
+
+export const getEmbeddingsTokenCount = async () => {
+	const supabase = createRouteHandlerClient({ cookies });
+
+	const { data: profileData, error: profileDataError } = await supabase
+		.from('profiles')
+		.select('*')
+		.single();
+
+	if (profileDataError) {
+		console.error(profileDataError);
+		return new NextResponse('Error retrieving profile embedding token count', { status: 500 });
+	}
+	return profileData.ada_v2_tokens;
+};
+
+export const updateEmbeddingsTokenCount = async (totalTokens) => {
+	const supabase = createRouteHandlerClient({ cookies });
+
+	const { data: userData } = await supabase.auth.getUser();
+	const user = userData.user;
+
+	const { data: profileData, error: profileDataError } = await supabase
+		.from('profiles')
+		.update({
+			ada_v2_tokens: totalTokens,
+		})
+		.eq('id', user.id)
+		.single();
+
+	if (profileDataError) {
+		console.error(profileDataError);
+		return new NextResponse('Error updating profile embedding token count', { status: 500 });
+	}
+};
+
+export const getGptTokenCount = async () => {
+	const supabase = createRouteHandlerClient({ cookies });
+
+	const { data: profileData, error: profileDataError } = await supabase
+		.from('profiles')
+		.select('*')
+		.single();
+
+	if (profileDataError) {
+		console.error(profileDataError);
+		return new NextResponse('Error retrieving profile GPT token count', { status: 500 });
+	}
+
+	return {
+		totalInputTokens: profileData.gpt_3_turbo_4k_input_tokens,
+		totalOutputTokens: profileData.gpt_3_turbo_4k_output_tokens,
+	};
+};
+
+export const updateGptTokenCount = async (totalInputTokens, totalOutputTokens) => {
+	const supabase = createRouteHandlerClient({ cookies });
+
+	const { data: userData } = await supabase.auth.getUser();
+	const user = userData.user;
+
+	const { data: profileData, error: profileDataError } = await supabase
+		.from('profiles')
+		.update({
+			gpt_3_turbo_4k_input_tokens: totalInputTokens,
+			gpt_3_turbo_4k_output_tokens: totalOutputTokens,
+		})
+		.eq('id', user.id)
+		.single();
+
+	if (profileDataError) {
+		console.error(profileDataError);
+		return new NextResponse('Error updating profile GPT token count', { status: 500 });
 	}
 };

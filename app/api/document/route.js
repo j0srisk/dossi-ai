@@ -1,4 +1,9 @@
-import { sanitize, generateEmbeddings } from '@/app/api/utils';
+import {
+	sanitize,
+	generateEmbeddings,
+	getEmbeddingsTokenCount,
+	updateEmbeddingsTokenCount,
+} from '@/app/api/utils';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
@@ -66,12 +71,16 @@ export async function POST(request) {
 
 	let docsIngested = 0;
 	let ingestProgress = 0;
+	let totalTokens = await getEmbeddingsTokenCount();
 
 	docs.forEach(async (doc) => {
 		const sanitizedDoc = sanitize(doc.pageContent);
 		console.log('sanitizedDoc', sanitizedDoc);
 
-		const embeddings = await generateEmbeddings(doc.pageContent);
+		const { embeddings, tokens } = await generateEmbeddings(doc.pageContent);
+
+		totalTokens += tokens;
+		console.log('totalTokens', totalTokens);
 
 		const { error: ingestError } = await supabase.from('vectors').insert([
 			{
@@ -105,6 +114,7 @@ export async function POST(request) {
 				console.error('ingestCompleteError', ingestCompleteError);
 				return new NextResponse('Error completing document ingestion', { status: 500 });
 			}
+			await updateEmbeddingsTokenCount(totalTokens);
 			console.log('Ingestion complete');
 		}
 	});
