@@ -2,7 +2,10 @@ import CreateDocumentButton from '@/components/CreateDocumentButton';
 import RealtimeDocuments from '@/components/RealtimeDocuments';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
-import Link from 'next/link';
+
+export const metadata = {
+	title: 'Documents',
+};
 
 export default async function Page({ params }) {
 	const cookieStore = cookies();

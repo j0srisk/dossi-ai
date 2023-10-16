@@ -3,6 +3,10 @@ import RealtimeCollections from '@/components/RealtimeCollections';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
+export const metadata = {
+	title: 'Collections',
+};
+
 export default async function Page() {
 	const cookieStore = cookies();
 	const supabase = createServerComponentClient({ cookies: () => cookieStore });
