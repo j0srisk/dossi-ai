@@ -1,7 +1,7 @@
 import DropdownMenu from '@/components/DropdownMenu';
 import { useState } from 'react';
 
-export default function SearchBar({ setSearch, setSort, sort }) {
+export default function SearchBar({ setSearch, setSort, sort, setOrder, order }) {
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	return (
@@ -43,20 +43,60 @@ export default function SearchBar({ setSearch, setSort, sort }) {
 				{menuOpen && (
 					<DropdownMenu top={'top-6'} setMenuOpen={setMenuOpen}>
 						<div
-							className="flex gap-1 whitespace-nowrap rounded-md p-1 pr-4 text-left text-xs font-bold text-neutral-900 hover:cursor-pointer hover:bg-accent hover:text-white"
-							onClick={() => setSort('name')}
+							className="flex items-center gap-1 whitespace-nowrap rounded-md p-1 pr-4 text-left text-xs font-bold text-neutral-900 hover:cursor-pointer hover:bg-accent hover:text-white"
+							onClick={() => {
+								setSort('name');
+								if (sort === 'name') {
+									setOrder(order === 'asc' ? 'desc' : 'asc');
+								}
+							}}
 						>
-							<div className="flex h-full w-2 items-center justify-center">
-								{sort === 'name' && <p>•</p>}
+							<div className="flex h-full w-4 items-center justify-center">
+								{sort === 'name' && (
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										strokeWidth={3}
+										stroke="currentColor"
+										className={`h-3 w-3 ${order === 'asc' ? '' : 'rotate-180 transform'}`}
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											d="M4.5 15.75l7.5-7.5 7.5 7.5"
+										/>
+									</svg>
+								)}
 							</div>
 							<div className="w-full">Name</div>
 						</div>
 						<div
-							className="flex gap-1 whitespace-nowrap rounded-md p-1 pr-4 text-left text-xs font-bold text-neutral-900 hover:cursor-pointer hover:bg-accent hover:text-white"
-							onClick={() => setSort('date')}
+							className="flex items-center gap-1 whitespace-nowrap rounded-md p-1 pr-4 text-left text-xs font-bold text-neutral-900 hover:cursor-pointer hover:bg-accent hover:text-white"
+							onClick={() => {
+								setSort('date');
+								if (sort === 'date') {
+									setOrder(order === 'asc' ? 'desc' : 'asc');
+								}
+							}}
 						>
-							<div className="flex h-full w-2 items-center justify-center">
-								{sort === 'date' && <p>•</p>}
+							<div className="flex h-full w-4 items-center justify-center">
+								{sort === 'date' && (
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										strokeWidth={3}
+										stroke="currentColor"
+										className={`h-3 w-3 ${order === 'asc' ? '' : 'rotate-180 transform'}`}
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											d="M4.5 15.75l7.5-7.5 7.5 7.5"
+										/>
+									</svg>
+								)}
 							</div>
 							<div className="w-full">Creation Date</div>
 						</div>
