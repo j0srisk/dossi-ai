@@ -70,10 +70,9 @@ export default function ChatContainer({ topic, messages, chatId }) {
 								page={activePage}
 								setPage={setActivePage}
 								setRendered={setRendered}
-							/>
-							<div className="absolute left-6 top-6 z-20 rounded-md bg-white">
+							>
 								<button
-									className="flex aspect-square h-full items-center justify-center gap-2 rounded-md border border-neutral-300 p-1 text-neutral-300 shadow-sm transition-all hover:bg-neutral-700 hover:bg-opacity-10 hover:text-neutral-700 hover:shadow-md"
+									className=""
 									onClick={() => {
 										setActiveDocument(null);
 										setActivePage(1);
@@ -83,14 +82,14 @@ export default function ChatContainer({ topic, messages, chatId }) {
 										xmlns="http://www.w3.org/2000/svg"
 										fill="none"
 										viewBox="0 0 24 24"
-										strokeWidth={1.5}
+										strokeWidth={1.25}
 										stroke="currentColor"
-										className="h-6 w-6"
+										className="h-6 w-6 text-neutral-300 transition-all duration-300 ease-in-out hover:text-neutral-500"
 									>
 										<path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
 									</svg>
 								</button>
-							</div>
+							</FileContainer>
 						</div>
 					) : (
 						<div className="flex flex-1 flex-col items-center justify-center overflow-hidden">
@@ -101,7 +100,7 @@ export default function ChatContainer({ topic, messages, chatId }) {
 					)}
 				</>
 			)}
-			<div className="flex w-full flex-1 outline outline-neutral-300">
+			<div className="z-30 flex w-full flex-1 border-l border-neutral-300">
 				<div className="flex w-full flex-col">
 					<div className="flex h-full flex-1 flex-col overflow-scroll bg-white" ref={containerRef}>
 						<>
