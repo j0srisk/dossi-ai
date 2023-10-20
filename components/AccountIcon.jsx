@@ -22,24 +22,28 @@ export default function AccountIcon() {
 	};
 
 	return (
-		<button
-			className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-neutral-700 text-neutral-700 transition-all duration-300 ease-in-out hover:border-accent hover:bg-accent hover:text-white"
-			onClick={() => setMenuOpen(!menuOpen)}
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				strokeWidth={2}
-				stroke="currentColor"
-				className="h-5 w-5"
+		<div className="group relative">
+			<button
+				className="relative flex h-8 w-8 items-center justify-center rounded-full bg-neutral-700 p-0.5"
+				onClick={() => setMenuOpen(!menuOpen)}
 			>
-				<path
-					strokeLinecap="round"
-					strokeLinejoin="round"
-					d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-				/>
-			</svg>
+				<div className="z-20 flex h-full w-full items-center justify-center rounded-full bg-neutral-900 shadow-md">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						strokeWidth={2.25}
+						className="h-5 w-5 stroke-current transition-all duration-500 ease-in-out group-hover:stroke-white"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+						/>
+					</svg>
+				</div>
+			</button>
+			<div className="absolute right-0 top-0 h-full w-full rounded-full bg-gradient-to-br from-[#49CC5F] from-10% to-[#a3e635] opacity-0 transition-all duration-500 ease-in-out group-hover:opacity-100" />
 			{menuOpen && (
 				<DropdownMenu top={'top-10'} setMenuOpen={setMenuOpen}>
 					<Link
@@ -56,6 +60,6 @@ export default function AccountIcon() {
 					</p>
 				</DropdownMenu>
 			)}
-		</button>
+		</div>
 	);
 }

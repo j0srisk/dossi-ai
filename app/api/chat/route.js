@@ -2,7 +2,8 @@ import {
 	sanitize,
 	generateContext,
 	generatePrompt,
-	generateAnswer,
+	generateAnswerChat,
+	generateAnswerInstruct,
 	generateAnswerWithReference,
 	getChatData,
 	createChatData,
@@ -53,19 +54,19 @@ export async function POST(request) {
 		chatData = { messages: [] };
 	}
 
-	console.log('chatData', chatData);
-
 	const sanitizedQuery = sanitize(query);
 
-	const prompt = await generatePrompt(sanitizedQuery, documentId || collectionId, type);
+	let prompt = await generatePrompt(sanitizedQuery, documentId || collectionId, type);
 
-	//const answer = await generateAnswer(prompt);
+	//await generateAnswerChat(prompt);
+
+	//prompt = prompt + '/n Answer:';
 
 	const answer = await generateAnswerWithReference(prompt, type);
 
-	const assistantMessage = answer;
+	//const answer = await generateAnswerInstruct(prompt);
 
-	console.log('assistantMessage', assistantMessage);
+	const assistantMessage = answer;
 
 	// Update chat with new messages
 	let updateChatQuery = supabase.from('chats').update({

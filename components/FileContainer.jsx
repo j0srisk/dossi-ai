@@ -124,7 +124,7 @@ export default function FileContainer({ document, page, setPage, children }) {
 					</button>
 				</div>
 				<div className="flex h-full flex-1 items-center justify-center gap-1">
-					<button onClick={() => setZoom(zoom - 0.1)} disabled={zoom < 0.6}>
+					<button onClick={() => setZoom(zoom - 0.1)} disabled={zoom < 0.5}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"

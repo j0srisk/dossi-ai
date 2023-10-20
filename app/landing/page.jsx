@@ -3,7 +3,7 @@ import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import Image from 'next/image';
 
-export default async function LandingPage() {
+export default async function MainLayout({ children }) {
 	return (
 		<div className="flex w-screen flex-col gap-24">
 			<Navbar />

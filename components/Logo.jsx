@@ -1,25 +1,15 @@
 export default function Logo() {
 	return (
-		<div className="flex w-full flex-col items-center justify-center p-6">
-			<div className="flex items-center gap-3 rounded-md p-2 font-ar-one-sans text-white shadow-sm">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					strokeWidth={2}
-					stroke="currentColor"
-					className="h-14 w-14 stroke-white transition-all duration-500 ease-in-out group-hover:stroke-accent"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M21 7.5l-2.25-1.313M21 7.5v2.25m0-2.25l-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3l2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75l2.25-1.313M12 21.75V19.5m0 2.25l-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25"
-					/>
-				</svg>
+		<div className="relative flex w-fit items-start justify-center gap-2 p-6">
+			<h1 className="text-center text-6xl font-bold text-white ">Dossi</h1>
 
-				<h1 className="bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-center text-6xl font-bold text-white">
-					Dossi
-				</h1>
+			<div className="relative mt-1 shadow-md">
+				<div className="flex h-7 rounded-md bg-neutral-700 p-[3px]">
+					<div className="z-20 flex h-full w-full items-center justify-center rounded-[3px] border-neutral-700 bg-neutral-900 px-3 font-extrabold text-neutral-700 transition-all duration-1000 ease-in-out group-hover:text-white">
+						AI
+					</div>
+				</div>
+				<div className="group absolute right-0 top-0 flex h-full w-full rounded-md bg-gradient-to-br from-[#49CC5F] from-10% to-[#a3e635] opacity-0 transition-all duration-1000 ease-in-out group-hover:opacity-100"></div>
 			</div>
 		</div>
 	);

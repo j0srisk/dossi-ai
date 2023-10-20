@@ -84,7 +84,7 @@ export const generateContext = async (query, id, type) => {
 		data = await similaritySearch(query, id, type);
 	}
 
-	let maxTokens = 2048;
+	let maxTokens = 1024;
 	let tokenCount = 0;
 	let contextText = '---\n';
 
@@ -96,6 +96,9 @@ export const generateContext = async (query, id, type) => {
 		pageContent = 'Document: ' + document + '\n';
 		pageContent += 'Page: ' + pageNumbers + '\n';
 		pageContent += 'Content: ';
+		if (i === 0) {
+			console.log('first match --- document:', document, ' page:', pageNumbers);
+		}
 		const sanitizedMatch = sanitize(match.content);
 		const tokens = encode(sanitizedMatch);
 		tokenCount += tokens.length;
@@ -117,13 +120,15 @@ export const generateContext = async (query, id, type) => {
 export const generatePrompt = async (query, id, type) => {
 	const context = await generateContext(query, id, type);
 
-	const prompt = `You are a very enthusiastic document question answering representative who loves to help people! You are given the following context as relevant chunks from a specific document, answer the question using only that information.\nContext sections:\n${context}\nQuestion: \n"""${query}"""`;
+	const prompt = `You are a very enthusiastic document question answering representative who loves to help people! You are given the following context as relevant chunks from a specific document, answer the question using only that information. The current date is October 19th, 2023. \nContext sections:\n${context}\nQuestion: \n"""${query}"""`;
 
 	return prompt;
 };
 
-export const generateAnswer = async (prompt) => {
+export const generateAnswerChat = async (prompt) => {
 	const openAi = new OpenAI();
+
+	const start = Date.now();
 
 	const response = await openAi.chat.completions.create({
 		model: 'gpt-3.5-turbo',
@@ -133,21 +138,87 @@ export const generateAnswer = async (prompt) => {
 				content: prompt,
 			},
 		],
-		temperature: 1,
-		max_tokens: 256,
-		top_p: 1,
-		frequency_penalty: 0,
-		presence_penalty: 0,
 	});
+
+	const end = Date.now();
 
 	if (response.error) {
 		console.error(response.error);
 		return new NextResponse('Error generating answer', { status: 500 });
 	}
 
-	const answer = response.choices[0].message;
+	let { totalInputTokens, totalOutputTokens } = await getGptTokenCount();
 
-	return answer;
+	totalInputTokens += response.usage.prompt_tokens;
+
+	totalOutputTokens += response.usage.completion_tokens;
+
+	await updateGptTokenCount(totalInputTokens, totalOutputTokens);
+
+	console.log('Chat');
+
+	console.log('input tokens', response.usage.prompt_tokens);
+
+	console.log('output tokens', response.usage.completion_tokens);
+
+	console.log('total tokens', response.usage.prompt_tokens + response.usage.completion_tokens);
+
+	console.log('Time to generate answer: ' + (end - start) / 1000 + ' seconds');
+
+	const answer = response.choices[0].message.content;
+
+	const assistantMessage = { role: 'assistant', content: answer };
+
+	console.log('answer ' + answer);
+
+	return assistantMessage;
+};
+
+export const generateAnswerInstruct = async (prompt) => {
+	const openAi = new OpenAI();
+
+	const start = Date.now();
+
+	const response = await openAi.completions.create({
+		model: 'gpt-3.5-turbo-instruct',
+		prompt: prompt,
+		max_tokens: 150,
+	});
+
+	const end = Date.now();
+
+	if (response.error) {
+		console.error(response.error);
+		return new NextResponse('Error generating answer', { status: 500 });
+	}
+
+	let { totalInputTokens, totalOutputTokens } = await getGptTokenCount();
+
+	totalInputTokens += response.usage.prompt_tokens;
+
+	totalOutputTokens += response.usage.completion_tokens;
+
+	await updateGptTokenCount(totalInputTokens, totalOutputTokens);
+
+	console.log('Instruct');
+
+	console.log('input tokens', response.usage.prompt_tokens);
+
+	console.log('output tokens', response.usage.completion_tokens);
+
+	console.log('total tokens', response.usage.prompt_tokens + response.usage.completion_tokens);
+
+	console.log('Time to generate answer: ' + (end - start) / 1000 + ' seconds');
+
+	console.log('response', response);
+
+	const answer = response.choices[0].text;
+
+	const assistantMessage = { role: 'assistant', content: answer };
+
+	console.log('answer ' + answer);
+
+	return assistantMessage;
 };
 
 export const generateAnswerWithReference = async (prompt, type) => {
@@ -180,6 +251,8 @@ export const generateAnswerWithReference = async (prompt, type) => {
 		schema.parameters.required.push('document');
 	}
 
+	const start = Date.now();
+
 	const response = await openAi.chat.completions.create({
 		model: 'gpt-3.5-turbo',
 		messages: [
@@ -192,6 +265,8 @@ export const generateAnswerWithReference = async (prompt, type) => {
 		function_call: { name: 'answer_question' },
 	});
 
+	const end = Date.now();
+
 	let { totalInputTokens, totalOutputTokens } = await getGptTokenCount();
 
 	totalInputTokens += response.usage.prompt_tokens;
@@ -200,9 +275,15 @@ export const generateAnswerWithReference = async (prompt, type) => {
 
 	await updateGptTokenCount(totalInputTokens, totalOutputTokens);
 
+	console.log('Function call');
+
 	console.log('input tokens', response.usage.prompt_tokens);
 
 	console.log('output tokens', response.usage.completion_tokens);
+
+	console.log('total tokens', response.usage.prompt_tokens + response.usage.completion_tokens);
+
+	console.log('Time to generate answer: ' + (end - start) / 1000 + ' seconds');
 
 	if (response.error) {
 		console.error(response.error);
@@ -225,6 +306,8 @@ export const generateAnswerWithReference = async (prompt, type) => {
 	if (answerWithReferences.document !== 0) {
 		assistantMessage.referenceDocument = answerWithReferences.document;
 	}
+
+	console.log('answer ' + answerWithReferences.answer);
 
 	return assistantMessage;
 };

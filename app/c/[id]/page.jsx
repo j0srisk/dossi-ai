@@ -6,8 +6,6 @@ import { redirect } from 'next/navigation';
 const ChatPage = async ({ params }) => {
 	const newChatId = crypto.randomUUID();
 
-	console.log(newChatId);
-
 	redirect(`/c/${params.id}/${newChatId}`);
 
 	{

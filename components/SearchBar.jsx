@@ -51,7 +51,7 @@ export default function SearchBar({ setSearch, setSort, sort, setOrder, order })
 								}
 							}}
 						>
-							<div className="flex h-full w-4 items-center justify-center">
+							<div className="flex h-full w-5 items-center justify-center">
 								{sort === 'name' && (
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +80,7 @@ export default function SearchBar({ setSearch, setSort, sort, setOrder, order })
 								}
 							}}
 						>
-							<div className="flex h-full w-4 items-center justify-center">
+							<div className="flex h-full w-5 items-center justify-center">
 								{sort === 'date' && (
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
