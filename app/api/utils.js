@@ -4,6 +4,19 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
+export const getUser = async () => {
+	const supabase = createRouteHandlerClient({ cookies });
+	const { data: userData } = await supabase.auth.getUser();
+	let user = userData.user;
+
+	//default user for testing
+	if (!user) {
+		user = { id: 'aba5562e-f500-4f92-87c8-8e9a3bcb581a' };
+	}
+
+	return user;
+};
+
 export const sanitize = (text) => {
 	// replace newlines with spaces
 	const singleLineText = text.replace(/\n/g, ' ');

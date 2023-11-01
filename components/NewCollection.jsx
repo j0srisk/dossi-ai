@@ -9,7 +9,6 @@ import ItemMenuButton from '@/components/ItemMenuButton';
 import ItemText from '@/components/ItemText';
 import RenameModal from '@/components/RenameModal';
 import UploadModal from '@/components/UploadModal';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useState } from 'react';
 
 export default function NewCollection({ collection, documents }) {
@@ -19,26 +18,16 @@ export default function NewCollection({ collection, documents }) {
 	const [isUploading, setIsUploading] = useState(false);
 
 	const updateCollection = async (name) => {
-		const supabase = createClientComponentClient();
-		const { error } = await supabase
-			.from('collections')
-			.update({ name: name })
-			.eq('id', collection.id);
-
-		if (error) {
-			console.error(error);
-			return;
-		}
+		fetch(`/api/collection/${collection.id}`, {
+			method: 'PATCH',
+			body: JSON.stringify({ name }),
+		});
 	};
 
 	const deleteCollection = async () => {
-		const supabase = createClientComponentClient();
-		const { error } = await supabase.from('collections').delete().eq('id', collection.id);
-
-		if (error) {
-			console.error(error);
-			return;
-		}
+		fetch(`/api/collection/${collection.id}`, {
+			method: 'DELETE',
+		});
 	};
 
 	const handleFileUpload = (selectedFile) => {
