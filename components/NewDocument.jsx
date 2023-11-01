@@ -8,7 +8,6 @@ import ItemIcon from '@/components/ItemIcon';
 import ItemMenuButton from '@/components/ItemMenuButton';
 import ItemText from '@/components/ItemText';
 import RenameModal from '@/components/RenameModal';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useState } from 'react';
 
 export default function NewDocument({ document, collection }) {
@@ -18,23 +17,16 @@ export default function NewDocument({ document, collection }) {
 	const [isDeleting, setIsDeleting] = useState(false);
 
 	const updateDocument = async (name) => {
-		const supabase = createClientComponentClient();
-		const { error } = await supabase.from('documents').update({ name: name }).eq('id', document.id);
-
-		if (error) {
-			console.error(error);
-			return;
-		}
+		fetch(`/api/document/${document.id}`, {
+			method: 'PATCH',
+			body: JSON.stringify({ name }),
+		});
 	};
 
 	const deleteDocument = async () => {
-		const supabase = createClientComponentClient();
-		const { error } = await supabase.from('documents').delete().eq('id', document.id);
-
-		if (error) {
-			console.error(error);
-			return;
-		}
+		fetch(`/api/document/${document.id}`, {
+			method: 'DELETE',
+		});
 	};
 
 	return (

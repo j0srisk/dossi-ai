@@ -3,14 +3,25 @@ import {
 	generateEmbeddings,
 	getEmbeddingsTokenCount,
 	updateEmbeddingsTokenCount,
+	getUser,
+	isValidUUID,
 } from '@/app/api/utils';
+import db from '@/lib/index';
+import { documents } from '@/lib/schema';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { eq, and } from 'drizzle-orm';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { cookies } from 'next/headers';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function POST(request) {
+export async function POST(request, { params }) {
+	let id = params.id;
+
+	if (id) {
+		return new NextResponse('ID provided', { status: 400 });
+	}
+
 	const formData = await request.formData();
 	const file = formData.get('file');
 	const collectionId = formData.get('collectionId');
@@ -25,8 +36,8 @@ export async function POST(request) {
 	const blob = new Blob([buffer], { type: file.type });
 
 	const supabase = createRouteHandlerClient({ cookies });
-	const { data: userData } = await supabase.auth.getUser();
-	const user = userData.user;
+
+	const user = await getUser();
 
 	const documentId = crypto.randomUUID();
 	const documentUrl = `${user.id}/${documentId}`;
@@ -120,4 +131,83 @@ export async function POST(request) {
 	});
 
 	return new NextResponse('Document created', { status: 200 });
+}
+
+export async function GET(request, { params }) {
+	const id = params.id;
+
+	if (!id || !isValidUUID(id)) {
+		return new NextResponse('Invalid ID provided', { status: 400 });
+	}
+
+	const user = await getUser();
+
+	let document = await db
+		.select()
+		.from(documents)
+		.where(and(eq(documents.id, id), eq(documents.createdBy, user.id)));
+
+	document = document[0];
+
+	if (!document) {
+		return new NextResponse('Document not found', { status: 404 });
+	}
+
+	return new NextResponse(JSON.stringify(document), { status: 200 });
+}
+
+export async function PATCH(request, { params }) {
+	const id = params.id;
+
+	if (!id || !isValidUUID(id)) {
+		return new NextResponse('Invalid ID provided', { status: 400 });
+	}
+
+	const user = await getUser();
+
+	let document = await db
+		.select()
+		.from(documents)
+		.where(and(eq(documents.id, id), eq(documents.createdBy, user.id)));
+
+	document = document[0];
+
+	if (!document) {
+		return new NextResponse('Document not found', { status: 404 });
+	}
+
+	const body = await request.json();
+	const name = body.name;
+
+	await db
+		.update(documents)
+		.set({ name: name })
+		.where(and(eq(documents.id, id), eq(documents.createdBy, user.id)));
+
+	return new NextResponse('Document updated', { status: 200 });
+}
+
+export async function DELETE(request, { params }) {
+	const id = params.id;
+
+	if (!id || !isValidUUID(id)) {
+		return new NextResponse('Invalid ID provided', { status: 400 });
+	}
+
+	const user = await getUser();
+
+	let document = await db
+		.select()
+		.from(documents)
+		.where(and(eq(documents.id, id), eq(documents.createdBy, user.id)));
+
+	document = document[0];
+
+	if (!document) {
+		return new NextResponse('Document not found', { status: 404 });
+	}
+
+	await db.delete(documents).where(and(eq(documents.id, id), eq(documents.createdBy, user.id)));
+
+	return new NextResponse('Document deleted', { status: 200 });
 }

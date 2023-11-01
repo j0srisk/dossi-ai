@@ -17,6 +17,12 @@ export const getUser = async () => {
 	return user;
 };
 
+export const isValidUUID = (uuid) => {
+	// Regular expression to validate UUID format
+	const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+	return uuidRegex.test(uuid);
+};
+
 export const sanitize = (text) => {
 	// replace newlines with spaces
 	const singleLineText = text.replace(/\n/g, ' ');
