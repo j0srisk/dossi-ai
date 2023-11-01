@@ -27,6 +27,22 @@ export default function ChatContainer({ topic, messages, chatId }) {
 	}, [clientMessages]);
 
 	const getDocuments = async () => {
+		if (topic.id == 'demo') {
+			setDocuments([
+				{
+					id: 'demo',
+					name: 'Demo Document',
+					url: 'demo.pdf',
+				},
+				{
+					id: 'demo2',
+					name: 'Demo Document 2',
+					url: 'demo2.pdf',
+				},
+			]);
+			return;
+		}
+
 		const supabase = createClientComponentClient();
 		const { data, error } = await supabase.from('documents').select('*').eq('collection', topic.id);
 

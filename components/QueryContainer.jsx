@@ -53,8 +53,8 @@ export default function QueryContainer({ topic, updateMessages, setGenerating, c
 	};
 
 	return (
-		<div className="flex border-t border-neutral-300 p-4">
-			<div className="flex w-full max-w-screen-md rounded-md border border-neutral-300 text-zinc-900 shadow-sm outline-none">
+		<div className="flex w-full items-center justify-center border-t border-neutral-300 p-4">
+			<div className="flex w-full max-w-screen-md items-center justify-center rounded-md border border-neutral-300 text-zinc-900 shadow-sm outline-none">
 				<TextareaAutosize
 					className="w-full resize-none rounded-md p-2 outline-none "
 					rows={1}
@@ -70,7 +70,7 @@ export default function QueryContainer({ topic, updateMessages, setGenerating, c
 					}}
 				/>
 				<div
-					className="group flex h-full items-center rounded-r-md border-neutral-300 px-2 hover:cursor-pointer"
+					className="group flex h-full items-center justify-center rounded-r-md border-neutral-300 px-2 hover:cursor-pointer"
 					onClick={() => sendMessage(text)}
 				>
 					<svg

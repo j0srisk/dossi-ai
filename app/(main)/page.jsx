@@ -2,12 +2,13 @@ import Faq from '@/components/Faq';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default async function LandingPage() {
 	return (
 		<div className="flex w-screen flex-col gap-24">
 			<Navbar />
-			<section className="relative w-full bg-gradient-to-t from-zinc-50 from-15% to-transparent">
+			<section className="relative w-full bg-gradient-to-t from-zinc-50 from-15% to-transparent px-4">
 				<div className="mx-auto w-full max-w-screen-lg">
 					<div className="flex w-full flex-col items-center justify-center gap-8">
 						<div className="flex gap-1 rounded-full border border-neutral-300 bg-white px-4 py-2 text-xs shadow-sm">
@@ -27,11 +28,17 @@ export default async function LandingPage() {
 								Like ChatGPT for all of your personal documents
 							</p>
 							<div className="flex items-center justify-center gap-2 font-bold">
-								<button className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm shadow-sm">
+								<Link
+									href="/demo"
+									className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm shadow-sm"
+								>
+									Live Demo
+								</Link>
+								<Link
+									href="/collections"
+									className="flex items-center gap-1 rounded-lg border border-accent bg-accent px-4 py-2 text-sm text-white shadow-sm transition-all duration-300 ease-in-out hover:border-accent-hover hover:bg-accent-hover"
+								>
 									Get Started
-								</button>
-								<button className="flex items-center gap-1 rounded-lg border border-accent bg-accent px-4 py-2 text-sm text-white shadow-sm transition-all duration-300 ease-in-out hover:border-accent-hover hover:bg-accent-hover">
-									Learn More
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
 										fill="none"
@@ -46,7 +53,7 @@ export default async function LandingPage() {
 											d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
 										/>
 									</svg>
-								</button>
+								</Link>
 							</div>
 						</div>
 
@@ -59,9 +66,9 @@ export default async function LandingPage() {
 						/>
 					</div>
 				</div>
-				<div className="bg-topo absolute -top-24 -z-10 h-full w-full bg-repeat" />
+				<div className="absolute -top-24 -z-10 h-full w-full bg-topo bg-repeat" />
 			</section>
-			<section className="w-full">
+			<section className="w-full px-4">
 				<div className="mx-auto w-full max-w-screen-lg">
 					<div className="flex w-full flex-col items-center justify-center gap-8">
 						<div className="flex flex-col items-center justify-center gap-2">
@@ -72,8 +79,8 @@ export default async function LandingPage() {
 								Fundamentally different than other PDF chat tools
 							</h2>
 						</div>
-						<div className="flex items-start justify-center gap-8">
-							<div className="flex flex-1 flex-col items-center justify-center gap-4 rounded-xl bg-neutral-100 p-4">
+						<div className="flex flex-col items-start justify-center gap-8 md:flex-row">
+							<div className="flex w-full flex-1 flex-col items-center justify-center gap-4 rounded-xl bg-neutral-100 p-4">
 								<Image
 									src="/collections.png"
 									width={500}
@@ -87,7 +94,7 @@ export default async function LandingPage() {
 									multiple documents at once
 								</p>
 							</div>
-							<div className="flex flex-1 flex-col items-center justify-center gap-4 rounded-xl bg-neutral-100 p-4">
+							<div className="flex w-full flex-1 flex-col items-center justify-center gap-4 rounded-xl bg-neutral-100 p-4">
 								<Image
 									src="/references.png"
 									width={500}
@@ -100,7 +107,7 @@ export default async function LandingPage() {
 									Reference documents and chat with multiple documents at once
 								</p>
 							</div>
-							<div className="flex flex-1 flex-col items-center justify-center gap-4 rounded-xl bg-neutral-100 p-4">
+							<div className="flex w-full flex-1 flex-col items-center justify-center gap-4 rounded-xl bg-neutral-100 p-4">
 								<Image
 									src="/secure.png"
 									width={500}
@@ -117,7 +124,7 @@ export default async function LandingPage() {
 					</div>
 				</div>
 			</section>
-			<section className="w-full">
+			<section className="w-full px-4">
 				<div className="mx-auto w-full max-w-screen-md">
 					<div className="flex w-full flex-col items-center justify-center gap-8">
 						<div className="flex flex-col items-center justify-center gap-2">
@@ -132,18 +139,32 @@ export default async function LandingPage() {
 					</div>
 				</div>
 			</section>
-			<section className="w-full">
+			<section className="w-full px-4">
 				<div className="mx-auto w-full max-w-screen-lg">
 					<div className="flex w-full flex-col items-center justify-center gap-8">
 						<div className="flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-neutral-100 p-8">
-							<h2 className="text-center text-4xl font-semibold">Try Dossi AI for free today</h2>
+							<h2 className="flex items-start gap-2 text-center text-4xl font-semibold">
+								Try Dossi
+								<div className="group relative mt-1 flex h-6 rounded-md bg-neutral-900 from-[#49CC5F] from-10% to-[#a3e635] p-0.5">
+									<div className="flex h-full w-full items-center justify-center rounded-[4px] border-neutral-700 bg-neutral-100 px-2 text-sm font-bold">
+										AI
+									</div>
+								</div>
+								for free today
+							</h2>
 							<p className="text-center text-base text-neutral-500"> No credit card required</p>
 							<div className="flex items-center justify-center gap-2 font-bold">
-								<button className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm shadow-sm">
+								<Link
+									href="/demo"
+									className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm shadow-sm"
+								>
+									Live Demo
+								</Link>
+								<Link
+									href="/collections"
+									className="flex items-center gap-1 rounded-lg border border-accent bg-accent px-4 py-2 text-sm text-white shadow-sm transition-all duration-300 ease-in-out hover:border-accent-hover hover:bg-accent-hover"
+								>
 									Get Started
-								</button>
-								<button className="flex items-center gap-1 rounded-lg border border-accent bg-accent px-4 py-2 text-sm text-white shadow-sm transition-all duration-300 ease-in-out hover:border-accent-hover hover:bg-accent-hover">
-									Learn More
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
 										fill="none"
@@ -158,7 +179,7 @@ export default async function LandingPage() {
 											d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
 										/>
 									</svg>
-								</button>
+								</Link>
 							</div>
 						</div>
 					</div>

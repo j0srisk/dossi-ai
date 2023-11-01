@@ -1,6 +1,6 @@
 export default function Footer() {
 	return (
-		<footer className="w-full">
+		<footer className="w-full px-4">
 			<div className="mx-auto w-full max-w-screen-xl border-t border-neutral-300 py-8">
 				<div className="flex w-full justify-between">
 					<span>

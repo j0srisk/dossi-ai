@@ -14,7 +14,7 @@ export default async function LoginLayout({ children }) {
 	}
 
 	return (
-		<div className="flex h-screen w-screen items-center justify-center bg-unsplash bg-cover">
+		<div className="bg-topo flex h-screen w-screen items-center justify-center  bg-repeat">
 			<div className="group flex flex-col items-center justify-center gap-2 rounded-lg border border-neutral-700 bg-zinc-900 p-12 text-white shadow-lg">
 				<Logo />
 				{children}
