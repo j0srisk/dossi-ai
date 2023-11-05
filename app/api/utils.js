@@ -392,8 +392,7 @@ export const getEmbeddingsTokenCount = async () => {
 export const updateEmbeddingsTokenCount = async (totalTokens) => {
 	const supabase = createRouteHandlerClient({ cookies });
 
-	const { data: userData } = await supabase.auth.getUser();
-	const user = userData.user;
+	const user = await getUser();
 
 	const { data: profileData, error: profileDataError } = await supabase
 		.from('profiles')
@@ -431,8 +430,7 @@ export const getGptTokenCount = async () => {
 export const updateGptTokenCount = async (totalInputTokens, totalOutputTokens) => {
 	const supabase = createRouteHandlerClient({ cookies });
 
-	const { data: userData } = await supabase.auth.getUser();
-	const user = userData.user;
+	const user = await getUser();
 
 	const { data: profileData, error: profileDataError } = await supabase
 		.from('profiles')

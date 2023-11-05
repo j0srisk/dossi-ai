@@ -6,14 +6,8 @@ import TextareaAutosize from 'react-textarea-autosize';
 export default function QueryContainer({ topic, updateMessages, setGenerating, chatId }) {
 	const [text, setText] = useState('');
 
-	const sendMessage = async (text) => {
-		if (!text) {
-			return;
-		}
-
-		setText('');
-		setGenerating(true);
-		updateMessages({ role: 'user', content: text });
+	const getAssistantMessage = async (userMessage) => {
+		const text = userMessage.content;
 
 		let endpoint;
 
@@ -23,33 +17,65 @@ export default function QueryContainer({ topic, updateMessages, setGenerating, c
 			endpoint = 'collectionId';
 		}
 
-		console.log(chatId);
-
+		//creates the body of the request
 		const body = {
-			query: text,
+			messages: [userMessage],
 			[endpoint]: topic.id,
-			chatId: chatId,
 		};
 
-		fetch('/api/chat', {
+		//gets ai response
+		const res = await fetch('/api/generate', {
 			method: 'POST',
 			body: JSON.stringify(body),
-		})
-			.then((response) => {
-				if (response.status === 500) {
-					throw new Error('Internal Server Error');
-				}
+		});
 
-				return response.json();
-			})
-			.then((data) => updateMessages(data))
-			.then(() => {
-				setGenerating(false);
-			})
-			.catch((error) => {
-				updateMessages({ role: 'assistant', content: error.message });
-				console.error(error);
-			});
+		const data = await res.json();
+
+		return data.choices[0].message;
+	};
+
+	const getPreviousMessages = async () => {
+		const res = await fetch(`/api/chat/${chatId}`);
+
+		const data = await res.json();
+
+		return data.messages;
+	};
+
+	const sendMessage = async (text) => {
+		//don't send empty messages
+		if (!text) {
+			return;
+		}
+
+		//clear the input
+		setText('');
+		//show the loading indicator
+		setGenerating(true);
+		//adds the message to the local chat state
+		updateMessages({ role: 'user', content: text });
+
+		//creates array of previous messages from the database
+		const previousMessages = await getPreviousMessages();
+
+		//creates the user message object
+		const userMessage = { role: 'user', content: text };
+
+		//creates the ai message object
+		//TODO: modify this to provide context
+		const assistantMessage = await getAssistantMessage(userMessage);
+
+		//updates the database with the new messages
+
+		await fetch(`/api/chat/${chatId}`, {
+			method: 'PATCH',
+			body: JSON.stringify({
+				messages: [...previousMessages, userMessage, assistantMessage],
+			}),
+		});
+
+		updateMessages(assistantMessage);
+		setGenerating(false);
 	};
 
 	return (

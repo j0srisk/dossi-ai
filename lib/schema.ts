@@ -8,9 +8,28 @@ import {
 	text,
 	integer,
 	foreignKey,
-	jsonb,
 	boolean,
+	customType,
 } from 'drizzle-orm/pg-core';
+
+//custom jsonb to fix bug with drizzle converting jsonb to string
+//https://github.com/drizzle-team/drizzle-orm/pull/666#issuecomment-1602918513
+const jsonb = customType<{ data: any }>({
+	dataType() {
+		return 'jsonb';
+	},
+	toDriver(val) {
+		return val as any;
+	},
+	fromDriver(value) {
+		if (typeof value === 'string') {
+			try {
+				return JSON.parse(value) as any;
+			} catch {}
+		}
+		return value as any;
+	},
+});
 
 export const keyStatus = pgEnum('key_status', ['default', 'valid', 'invalid', 'expired']);
 export const keyType = pgEnum('key_type', [
