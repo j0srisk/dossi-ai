@@ -1,25 +1,43 @@
-import { getTopic } from '@/app/c/utils';
+import { getTopic, getMessages } from '@/app/c/utils';
+import BackButton from '@/components/BackButton';
 import ChatContainer from '@/components/ChatContainer';
+import Message from '@/components/Message';
+import Navbar from '@/components/Navbar';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-//page for new chats
+//page for existing chats
 const ChatPage = async ({ params }) => {
-	const newChatId = crypto.randomUUID();
-
-	redirect(`/c/${params.id}/${newChatId}`);
-
-	{
-		/*
 	const topic = await getTopic(params.id);
 
 	if (!topic) {
-		return <div>Topic not found</div>;
+		redirect('/404');
 	}
 
-
-	return <ChatContainer topic={topic} />;
-	*/
-	}
+	return (
+		<div className="flex h-screen w-screen flex-col">
+			<Navbar>
+				<div className="flex flex-1 items-center">
+					<div className="w-fit">
+						<BackButton />
+					</div>
+				</div>
+				<div className="flex gap-1 font-inter">
+					<p className="text-center text-base font-bold text-white">Chatting with</p>
+					<div className="flex">
+						<p className="bg-gradient-to-r from-accent to-lime-400 bg-clip-text text-center text-base font-bold text-transparent">
+							{topic.name}
+						</p>
+					</div>
+					{topic.type === 'collection' && (
+						<p className="text-center text-base font-bold text-white">Collection</p>
+					)}
+				</div>
+				<div className="flex flex-1 items-center justify-end"></div>
+			</Navbar>
+			<ChatContainer topic={topic} />
+		</div>
+	);
 };
 
 export default ChatPage;

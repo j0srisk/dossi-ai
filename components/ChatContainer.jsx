@@ -5,26 +5,53 @@ import FileContainer from '@/components/FileContainer';
 import Message from '@/components/Message';
 import QueryContainer from '@/components/QueryContainer';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useSearchParams } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 
-export default function ChatContainer({ topic, messages, chatId }) {
+export default function ChatContainer({ topic }) {
 	const containerRef = useRef(null);
-	const [clientMessages, setClientMessages] = useState(messages || []);
 	const [rendered, setRendered] = useState(false);
 	const [activePage, setActivePage] = useState(1);
 	const [generating, setGenerating] = useState(false);
+	const searchParams = useSearchParams();
+	const [messages, setMessages] = useState([]);
+	const [chatId, setChatId] = useState(searchParams.get('chat'));
 
 	//only used for collections
 	const [documents, setDocuments] = useState(null);
 	const [activeDocument, setActiveDocument] = useState(null);
 
+	useEffect(() => {
+		if (!chatId) {
+			return;
+		}
+
+		const getMessages = async () => {
+			const res = await fetch(`/api/chat/${chatId}`);
+
+			const data = await res.json();
+
+			console.log(data);
+
+			if (!(data.collection === topic.id || data.document === topic.id)) {
+				//todo: redirect to 404
+				console.log('not the right chat');
+				return;
+			}
+
+			setMessages(data.messages);
+		};
+
+		getMessages();
+	}, []);
+
 	const updateMessages = (message) => {
-		setClientMessages((prevMessages) => [...prevMessages, message]);
+		setMessages((prevMessages) => [...prevMessages, message]);
 	};
 
 	useEffect(() => {
 		containerRef.current.scrollTop = containerRef.current.scrollHeight;
-	}, [clientMessages]);
+	}, []);
 
 	const getDocuments = async () => {
 		if (topic.id == 'demo') {
@@ -135,20 +162,18 @@ export default function ChatContainer({ topic, messages, chatId }) {
 									}}
 								></Message>
 							)}
-							{clientMessages && (
-								<>
-									{clientMessages.map((message, index) => (
-										<div className="w-full" key={index}>
-											<Message
-												message={message}
-												setActiveDocument={setActiveDocument}
-												setReference={setReference}
-												documents={documents}
-											/>
-										</div>
-									))}
-								</>
-							)}
+
+							{messages.map((message, index) => (
+								<div className="w-full" key={index}>
+									<Message
+										message={message}
+										setActiveDocument={setActiveDocument}
+										setReference={setReference}
+										documents={documents}
+									/>
+								</div>
+							))}
+
 							{generating && (
 								<Message message={{ role: 'assistant' }}>
 									{' '}
@@ -175,6 +200,7 @@ export default function ChatContainer({ topic, messages, chatId }) {
 						updateMessages={updateMessages}
 						setGenerating={setGenerating}
 						chatId={chatId}
+						setChatId={setChatId}
 					/>
 				</div>
 			</div>

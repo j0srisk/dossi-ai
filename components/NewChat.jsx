@@ -39,7 +39,7 @@ export default function NewChat({ chat, topic }) {
 				/>
 				<ItemText text={chat.name} subtext={topic.name} />
 				<ItemButtonContainer menuOpen={menuOpen}>
-					<ItemChatButton text="Open Chat" href={'/c/' + topicId + '/' + chat.id} />
+					<ItemChatButton text="Open Chat" href={'/c/' + topicId + '?chat=' + chat.id} />
 					<ItemMenuButton menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 				</ItemButtonContainer>
 			</ItemContainer>

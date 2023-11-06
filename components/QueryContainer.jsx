@@ -3,7 +3,13 @@
 import { useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
-export default function QueryContainer({ topic, updateMessages, setGenerating, chatId }) {
+export default function QueryContainer({
+	topic,
+	updateMessages,
+	setGenerating,
+	chatId,
+	setChatId,
+}) {
 	const [text, setText] = useState('');
 
 	const getAssistantMessage = async (userMessage) => {
@@ -34,10 +40,12 @@ export default function QueryContainer({ topic, updateMessages, setGenerating, c
 		return data.choices[0].message;
 	};
 
-	const getPreviousMessages = async () => {
+	const getPreviousMessages = async (chatId) => {
 		const res = await fetch(`/api/chat/${chatId}`);
 
 		const data = await res.json();
+
+		console.log(data.messages);
 
 		return data.messages;
 	};
@@ -55,8 +63,28 @@ export default function QueryContainer({ topic, updateMessages, setGenerating, c
 		//adds the message to the local chat state
 		updateMessages({ role: 'user', content: text });
 
+		//uses var to handle state not updating durring this function
+		let currentChatId = chatId;
+
+		//creates a new chat if one doesn't exist
+		if (!currentChatId) {
+			const res = await fetch(`/api/chat`, {
+				method: 'POST',
+				body: JSON.stringify({
+					name: text.substring(0, 30),
+					collectionId: topic.type === 'collection' ? topic.id : null,
+					documentId: topic.type === 'document' ? topic.id : null,
+				}),
+			});
+
+			const data = await res.json();
+
+			setChatId(data.id);
+			currentChatId = data.id;
+		}
+
 		//creates array of previous messages from the database
-		const previousMessages = await getPreviousMessages();
+		const previousMessages = await getPreviousMessages(currentChatId);
 
 		//creates the user message object
 		const userMessage = { role: 'user', content: text };
@@ -67,7 +95,7 @@ export default function QueryContainer({ topic, updateMessages, setGenerating, c
 
 		//updates the database with the new messages
 
-		await fetch(`/api/chat/${chatId}`, {
+		await fetch(`/api/chat/${currentChatId}`, {
 			method: 'PATCH',
 			body: JSON.stringify({
 				messages: [...previousMessages, userMessage, assistantMessage],

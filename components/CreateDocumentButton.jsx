@@ -1,12 +1,14 @@
 'use client';
 
 import UploadModal from '@/components/UploadModal';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function CreateDocumentButton() {
+	const router = useRouter();
 	const [isUploading, setIsUploading] = useState(false);
 
-	const handleFileUpload = (selectedFile) => {
+	const handleFileUpload = async (selectedFile) => {
 		const file = selectedFile;
 
 		const formData = new FormData();
@@ -14,10 +16,18 @@ export default function CreateDocumentButton() {
 		formData.append('file', file);
 		formData.append('name', file.name);
 
-		fetch('/api/document', {
+		const res = await fetch('/api/document', {
 			method: 'POST',
 			body: formData,
 		});
+
+		const data = await res.json();
+
+		console.log(data.id);
+
+		router.push(`/c/${data.id}`);
+
+		setIsUploading(false);
 	};
 
 	return (

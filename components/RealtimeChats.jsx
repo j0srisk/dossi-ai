@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 export default function RealtimeChats({ chats, documents, collections }) {
 	const [search, setSearch] = useState('');
 	const [sort, setSort] = useState('date');
-	const [order, setOrder] = useState('asc');
+	const [order, setOrder] = useState('desc');
 	const supabase = createClientComponentClient();
 	const router = useRouter();
 
@@ -66,7 +66,7 @@ export default function RealtimeChats({ chats, documents, collections }) {
 
 			<div className="flex flex-col items-center justify-between">
 				{chats
-					?.filter((chat) => chat.name.toLowerCase().includes(search.toLowerCase()))
+					?.filter((chat) => chat.name && chat.name.toLowerCase().includes(search.toLowerCase()))
 					.sort((a, b) => {
 						if (sort === 'name') {
 							if (order === 'asc') {

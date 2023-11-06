@@ -130,7 +130,20 @@ export async function POST(request, { params }) {
 		}
 	});
 
-	return new NextResponse('Document created', { status: 200 });
+	let document = await db
+		.select()
+		.from(documents)
+		.where(and(eq(documents.id, documentId)));
+
+	document = document[0];
+
+	console.log('document', document);
+
+	if (!document) {
+		return new NextResponse('Document not found', { status: 404 });
+	}
+
+	return new NextResponse(JSON.stringify(document), { status: 200 });
 }
 
 export async function GET(request, { params }) {
