@@ -1,4 +1,4 @@
-import { getTopic, getMessages } from '@/app/c/utils';
+import { getTopic, getMessages, getDocuments } from '@/app/c/utils';
 import BackButton from '@/components/BackButton';
 import ChatContainer from '@/components/ChatContainer';
 import Message from '@/components/Message';
@@ -9,9 +9,14 @@ import { redirect } from 'next/navigation';
 //page for existing chats
 const ChatPage = async ({ params }) => {
 	const topic = await getTopic(params.id);
+	let documents = null;
 
 	if (!topic) {
 		redirect('/404');
+	}
+
+	if (topic.type === 'collection') {
+		documents = await getDocuments(topic.id);
 	}
 
 	return (
@@ -35,7 +40,7 @@ const ChatPage = async ({ params }) => {
 				</div>
 				<div className="flex flex-1 items-center justify-end"></div>
 			</Navbar>
-			<ChatContainer topic={topic} />
+			<ChatContainer topic={topic} documents={documents} />
 		</div>
 	);
 };

@@ -29,6 +29,18 @@ export const getTopic = async (id) => {
 	return topic;
 };
 
+export const getDocuments = async (id) => {
+	const supabase = createServerComponentClient({ cookies });
+
+	const { data: documents } = await supabase.from('documents').select().eq('collection', id);
+
+	if (!documents) {
+		return null;
+	}
+
+	return documents;
+};
+
 export const getMessages = async (id) => {
 	const supabase = createServerComponentClient({ cookies });
 

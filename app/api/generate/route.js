@@ -57,6 +57,8 @@ export async function POST(request) {
 
 	prompt = prompt + '/n Answer:';
 
+	console.log('prompt', prompt);
+
 	const assistantMessage = await generateAnswerInstruct(prompt);
 
 	const response = { choices: [{ message: assistantMessage }] };

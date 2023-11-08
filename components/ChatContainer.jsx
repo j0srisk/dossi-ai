@@ -8,7 +8,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useSearchParams } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 
-export default function ChatContainer({ topic }) {
+export default function ChatContainer({ topic, documents }) {
 	const containerRef = useRef(null);
 	const [rendered, setRendered] = useState(false);
 	const [activePage, setActivePage] = useState(1);
@@ -18,7 +18,6 @@ export default function ChatContainer({ topic }) {
 	const [chatId, setChatId] = useState(searchParams.get('chat'));
 
 	//only used for collections
-	const [documents, setDocuments] = useState(null);
 	const [activeDocument, setActiveDocument] = useState(null);
 
 	useEffect(() => {
@@ -51,40 +50,6 @@ export default function ChatContainer({ topic }) {
 
 	useEffect(() => {
 		containerRef.current.scrollTop = containerRef.current.scrollHeight;
-	}, []);
-
-	const getDocuments = async () => {
-		if (topic.id == 'demo') {
-			setDocuments([
-				{
-					id: 'demo',
-					name: 'Demo Document',
-					url: 'demo.pdf',
-				},
-				{
-					id: 'demo2',
-					name: 'Demo Document 2',
-					url: 'demo2.pdf',
-				},
-			]);
-			return;
-		}
-
-		const supabase = createClientComponentClient();
-		const { data, error } = await supabase.from('documents').select('*').eq('collection', topic.id);
-
-		if (error) {
-			console.error(error);
-			return;
-		}
-
-		setDocuments(data);
-	};
-
-	useEffect(() => {
-		if (topic.type === 'collection') {
-			getDocuments();
-		}
 	}, []);
 
 	const setReference = (document, page) => {

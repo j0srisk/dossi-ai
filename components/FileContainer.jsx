@@ -43,6 +43,16 @@ export default function FileContainer({ document, page, setPage, children }) {
 	};
 
 	const downloadFile = async () => {
+		//support for local files
+		if (document.url.startsWith('/')) {
+			const url = new URL(document.url, window.location.origin);
+			const response = await fetch(url);
+			const blob = await response.blob();
+			const blobUrl = URL.createObjectURL(blob);
+			setDocumentUrl(blobUrl);
+			return;
+		}
+
 		const { data, error } = await supabase.storage.from('documents').download(document.url);
 		if (error) {
 			console.error(error);
@@ -50,6 +60,8 @@ export default function FileContainer({ document, page, setPage, children }) {
 		}
 
 		const url = URL.createObjectURL(data);
+
+		console.log('url' + url);
 
 		setDocumentUrl(url);
 	};

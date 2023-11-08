@@ -6,9 +6,16 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 export default async function DemoPage() {
-	const topic = { type: 'collection', id: 'demo' };
+	const topic = { type: 'collection', id: 'b7ea4713-ab97-4bef-972e-dbc24deba6fa', name: 'Demo' };
 
-	const messages = [];
+	const documents = [
+		{
+			id: 'dfed3f37-f4e8-4179-8ef8-6245236b8279',
+			name: 'Somato Sensory',
+			url: '/somatosensory.pdf',
+		},
+		{ id: '66b31f0d-15f4-4842-be54-3cebeb939547', name: 'Sample', url: '/sample.pdf' },
+	];
 
 	return (
 		<div className="flex h-screen w-screen flex-col">
@@ -36,7 +43,7 @@ export default async function DemoPage() {
 						</div>
 					</div>
 				</Navbar>
-				<ChatContainer topic={topic} messages={messages} />
+				<ChatContainer topic={topic} documents={documents} />
 			</>
 		</div>
 	);
