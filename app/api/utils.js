@@ -38,7 +38,7 @@ export const sanitize = (text) => {
 	return trimmedText;
 };
 
-export const generateEmbeddings = async (text) => {
+export const generateEmbedding = async (text) => {
 	const openAi = new OpenAI();
 
 	const embeddingResponse = await openAi.embeddings.create({
@@ -72,7 +72,7 @@ export const ingestDocument = async (blob, documentId) => {
 	//forEach loop does not work with async/await
 	for (const doc of docs) {
 		const sanitizedDoc = sanitize(doc.pageContent);
-		const { embedding, tokens } = await generateEmbeddings(sanitizedDoc);
+		const { embedding, tokens } = await generateEmbedding(sanitizedDoc);
 
 		processedVectors.push({
 			content: sanitizedDoc,
@@ -87,7 +87,7 @@ export const ingestDocument = async (blob, documentId) => {
 };
 
 export const similaritySearch = async (query, id, type) => {
-	const { embedding, tokens } = await generateEmbeddings(query);
+	const { embedding, tokens } = await generateEmbedding(query);
 
 	let matchingVectors = null;
 
