@@ -1,8 +1,14 @@
+import db from '@/lib/index';
+import { vectors, documents } from '@/lib/schema';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { eq } from 'drizzle-orm';
 import { encode } from 'gpt-tokenizer';
+import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { maxInnerProduct } from 'pgvector/drizzle-orm';
 
 export const getUser = async () => {
 	const supabase = createRouteHandlerClient({ cookies });
@@ -40,58 +46,69 @@ export const generateEmbeddings = async (text) => {
 		input: text,
 	});
 
-	const embeddings = embeddingResponse.data[0].embedding;
+	const embedding = embeddingResponse.data[0].embedding;
 	const tokens = embeddingResponse.usage.total_tokens;
 
-	return { embeddings, tokens };
+	return { embedding, tokens };
+};
+
+export const ingestDocument = async (blob, documentId) => {
+	const loader = new PDFLoader(blob);
+
+	const rawDocs = await loader.load();
+
+	const textSplitter = new RecursiveCharacterTextSplitter({
+		chunkSize: 1000,
+		chunkOverlap: 100,
+	});
+
+	const docs = await textSplitter.splitDocuments(rawDocs);
+
+	let processedVectors = [];
+
+	const user = await getUser();
+
+	//for loop to process all documents before inserting into database
+	//forEach loop does not work with async/await
+	for (const doc of docs) {
+		const sanitizedDoc = sanitize(doc.pageContent);
+		const { embedding, tokens } = await generateEmbeddings(sanitizedDoc);
+
+		processedVectors.push({
+			content: sanitizedDoc,
+			embedding: embedding,
+			metadata: doc.metadata,
+			document: documentId,
+			createdBy: user.id,
+		});
+	}
+
+	await db.insert(vectors).values(processedVectors);
 };
 
 export const similaritySearch = async (query, id, type) => {
-	let totalTokens = await getEmbeddingsTokenCount();
+	const { embedding, tokens } = await generateEmbeddings(query);
 
-	const { embeddings, tokens } = await generateEmbeddings(query);
-
-	totalTokens += tokens;
-
-	await updateEmbeddingsTokenCount(totalTokens);
-
-	const supabase = createRouteHandlerClient({ cookies });
-
-	let result = null;
+	let matchingVectors = null;
 
 	if (type === 'document') {
-		const { data, error } = await supabase.rpc('match_document_vectors', {
-			document_id: id,
-			input_embedding: embeddings,
-			match_threshold: 0.0,
-			match_count: 10,
-			min_content_length: 0,
-		});
-
-		if (error) {
-			console.error(error);
-			return new NextResponse('Error searching for similar documents', { status: 500 });
-		}
-
-		result = data;
+		matchingVectors = await db
+			.select()
+			.from(vectors)
+			.where(eq(vectors.document, id))
+			.orderBy(maxInnerProduct(vectors.embedding, embedding))
+			.limit(5);
 	} else if (type === 'collection') {
-		const { data, error } = await supabase.rpc('match_collection_vectors', {
-			collection_id: id,
-			input_embedding: embeddings,
-			match_threshold: 0.0,
-			match_count: 10,
-			min_content_length: 0,
-		});
-
-		if (error) {
-			console.error(error);
-			return new NextResponse('Error searching for similar collections', { status: 500 });
-		}
-
-		result = data;
+		matchingVectors = await db
+			.select({ id: vectors.id, content: vectors.content, metadata: vectors.metadata })
+			.from(vectors)
+			.innerJoin(documents, eq(vectors.document, documents.id))
+			.where(eq(documents.collection, id))
+			.orderBy(maxInnerProduct(vectors.embedding, embedding))
+			.limit(5);
 	}
 
-	return result;
+	return matchingVectors;
 };
 
 export const generateContext = async (query, id, type) => {
@@ -111,12 +128,12 @@ export const generateContext = async (query, id, type) => {
 		let pageContent = '';
 		const match = data[i];
 		const pageNumbers = match.metadata.loc.pageNumber;
-		const document = match.document;
+		const document = match.id;
 		pageContent = 'Document: ' + document + '\n';
 		pageContent += 'Page: ' + pageNumbers + '\n';
 		pageContent += 'Content: ';
 		if (i === 0) {
-			console.log('first match --- document:', document, ' page:', pageNumbers);
+			//console.log('first match --- document:', document, ' page:', pageNumbers);
 		}
 		const sanitizedMatch = sanitize(match.content);
 		const tokens = encode(sanitizedMatch);
@@ -166,14 +183,6 @@ export const generateAnswerChat = async (prompt) => {
 		return new NextResponse('Error generating answer', { status: 500 });
 	}
 
-	let { totalInputTokens, totalOutputTokens } = await getGptTokenCount();
-
-	totalInputTokens += response.usage.prompt_tokens;
-
-	totalOutputTokens += response.usage.completion_tokens;
-
-	await updateGptTokenCount(totalInputTokens, totalOutputTokens);
-
 	console.log('Chat');
 
 	console.log('input tokens', response.usage.prompt_tokens);
@@ -211,14 +220,8 @@ export const generateAnswerInstruct = async (prompt) => {
 		return new NextResponse('Error generating answer', { status: 500 });
 	}
 
-	let { totalInputTokens, totalOutputTokens } = await getGptTokenCount();
-
-	totalInputTokens += response.usage.prompt_tokens;
-
-	totalOutputTokens += response.usage.completion_tokens;
-
-	await updateGptTokenCount(totalInputTokens, totalOutputTokens);
-
+	{
+		/*
 	console.log('Instruct');
 
 	console.log('input tokens', response.usage.prompt_tokens);
@@ -230,6 +233,8 @@ export const generateAnswerInstruct = async (prompt) => {
 	console.log('Time to generate answer: ' + (end - start) / 1000 + ' seconds');
 
 	console.log('response', response);
+	*/
+	}
 
 	const answer = response.choices[0].text;
 
@@ -286,14 +291,6 @@ export const generateAnswerWithReference = async (prompt, type) => {
 
 	const end = Date.now();
 
-	let { totalInputTokens, totalOutputTokens } = await getGptTokenCount();
-
-	totalInputTokens += response.usage.prompt_tokens;
-
-	totalOutputTokens += response.usage.completion_tokens;
-
-	await updateGptTokenCount(totalInputTokens, totalOutputTokens);
-
 	console.log('Function call');
 
 	console.log('input tokens', response.usage.prompt_tokens);
@@ -329,120 +326,4 @@ export const generateAnswerWithReference = async (prompt, type) => {
 	console.log('answer ' + answerWithReferences.answer);
 
 	return assistantMessage;
-};
-
-export const getChatData = async (id) => {
-	const supabase = createRouteHandlerClient({ cookies });
-
-	let chatData = null;
-
-	let { data: retrieveChatData, error: retrieveChatError } = await supabase
-		.from('chats')
-		.select('*')
-		.eq('id', id);
-
-	if (retrieveChatError) {
-		console.error(retrieveChatError);
-		return new NextResponse('Error retrieving past chats', { status: 500 });
-	}
-
-	chatData = retrieveChatData[0];
-
-	return chatData;
-};
-
-export const createChatData = async (id, topic, name) => {
-	const supabase = createRouteHandlerClient({ cookies });
-	console.log('chat does not exist, creating new chat');
-	console.log('name', name);
-	const { data: userData } = await supabase.auth.getUser();
-	const user = userData.user;
-
-	const { data: createChatData, error: createChatError } = await supabase.from('chats').insert([
-		{
-			id: id,
-			[topic.type]: topic.id,
-			messages: [],
-			created_by: user.id,
-			name: name,
-		},
-	]);
-
-	if (createChatError) {
-		console.error(createChatError);
-		return new NextResponse('Error creating chat', { status: 500 });
-	}
-};
-
-export const getEmbeddingsTokenCount = async () => {
-	const supabase = createRouteHandlerClient({ cookies });
-
-	const { data: profileData, error: profileDataError } = await supabase
-		.from('profiles')
-		.select('*')
-		.single();
-
-	if (profileDataError) {
-		console.error(profileDataError);
-		return new NextResponse('Error retrieving profile embedding token count', { status: 500 });
-	}
-	return profileData.ada_v2_tokens;
-};
-
-export const updateEmbeddingsTokenCount = async (totalTokens) => {
-	const supabase = createRouteHandlerClient({ cookies });
-
-	const user = await getUser();
-
-	const { data: profileData, error: profileDataError } = await supabase
-		.from('profiles')
-		.update({
-			ada_v2_tokens: totalTokens,
-		})
-		.eq('id', user.id)
-		.single();
-
-	if (profileDataError) {
-		console.error(profileDataError);
-		return new NextResponse('Error updating profile embedding token count', { status: 500 });
-	}
-};
-
-export const getGptTokenCount = async () => {
-	const supabase = createRouteHandlerClient({ cookies });
-
-	const { data: profileData, error: profileDataError } = await supabase
-		.from('profiles')
-		.select('*')
-		.single();
-
-	if (profileDataError) {
-		console.error(profileDataError);
-		return new NextResponse('Error retrieving profile GPT token count', { status: 500 });
-	}
-
-	return {
-		totalInputTokens: profileData.gpt_3_turbo_4k_input_tokens,
-		totalOutputTokens: profileData.gpt_3_turbo_4k_output_tokens,
-	};
-};
-
-export const updateGptTokenCount = async (totalInputTokens, totalOutputTokens) => {
-	const supabase = createRouteHandlerClient({ cookies });
-
-	const user = await getUser();
-
-	const { data: profileData, error: profileDataError } = await supabase
-		.from('profiles')
-		.update({
-			gpt_3_turbo_4k_input_tokens: totalInputTokens,
-			gpt_3_turbo_4k_output_tokens: totalOutputTokens,
-		})
-		.eq('id', user.id)
-		.single();
-
-	if (profileDataError) {
-		console.error(profileDataError);
-		return new NextResponse('Error updating profile GPT token count', { status: 500 });
-	}
 };

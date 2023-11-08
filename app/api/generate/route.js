@@ -45,8 +45,6 @@ export async function POST(request) {
 
 	const lastQuestion = messages[messages.length - 1].content;
 
-	console.log(lastQuestion);
-
 	const sanitizedQuestion = sanitize(lastQuestion);
 
 	let prompt = await generatePrompt(sanitizedQuestion, documentId || collectionId, type);
@@ -56,8 +54,6 @@ export async function POST(request) {
 	//const assistantMessage = await generateAnswerWithReference(prompt, type);
 
 	prompt = prompt + '/n Answer:';
-
-	console.log('prompt', prompt);
 
 	const assistantMessage = await generateAnswerInstruct(prompt);
 

@@ -11,6 +11,7 @@ import {
 	jsonb,
 	boolean,
 } from 'drizzle-orm/pg-core';
+import { vector } from 'pgvector/drizzle-orm';
 
 export const keyStatus = pgEnum('key_status', ['default', 'valid', 'invalid', 'expired']);
 export const keyType = pgEnum('key_type', [
@@ -64,7 +65,7 @@ export const vectors = pgTable('vectors', {
 	content: text('content'),
 	metadata: jsonb('metadata'),
 	// TODO: failed to parse database type 'vector(1536)'
-	embedding: unknown('embedding'),
+	embedding: vector('embedding', { dimensions: 1536 }),
 	document: uuid('document')
 		.notNull()
 		.references(() => documents.id, { onDelete: 'cascade', onUpdate: 'cascade' }),

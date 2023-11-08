@@ -1,17 +1,8 @@
-import {
-	sanitize,
-	generateEmbeddings,
-	getEmbeddingsTokenCount,
-	updateEmbeddingsTokenCount,
-	getUser,
-	isValidUUID,
-} from '@/app/api/utils';
+import { getUser, isValidUUID, ingestDocument } from '@/app/api/utils';
 import db from '@/lib/index';
 import { documents } from '@/lib/schema';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { eq, and } from 'drizzle-orm';
-import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
@@ -42,21 +33,13 @@ export async function POST(request, { params }) {
 	const documentId = crypto.randomUUID();
 	const documentUrl = `${user.id}/${documentId}`;
 
-	const { error: databaseError } = await supabase.from('documents').insert([
-		{
-			id: documentId,
-			name: name,
-			collection: collectionId,
-			created_by: user.id,
-			url: documentUrl,
-			ingesting: true,
-		},
-	]);
-
-	if (databaseError) {
-		console.error('databaseError', databaseError);
-		return new NextResponse('Error creating document in database', { status: 500 });
-	}
+	await db.insert(documents).values({
+		id: documentId,
+		name: name,
+		collection: collectionId,
+		createdBy: user.id,
+		url: documentUrl,
+	});
 
 	const { error: storageError } = await supabase.storage
 		.from('documents')
@@ -69,66 +52,7 @@ export async function POST(request, { params }) {
 		return new NextResponse('Error uploading document to storage', { status: 500 });
 	}
 
-	const loader = new PDFLoader(blob);
-
-	const rawDocs = await loader.load();
-
-	const textSplitter = new RecursiveCharacterTextSplitter({
-		chunkSize: 1000,
-		chunkOverlap: 100,
-	});
-
-	const docs = await textSplitter.splitDocuments(rawDocs);
-
-	let docsIngested = 0;
-	let ingestProgress = 0;
-	let totalTokens = await getEmbeddingsTokenCount();
-
-	docs.forEach(async (doc) => {
-		const sanitizedDoc = sanitize(doc.pageContent);
-		console.log('sanitizedDoc', sanitizedDoc);
-
-		const { embeddings, tokens } = await generateEmbeddings(doc.pageContent);
-
-		totalTokens += tokens;
-		console.log('totalTokens', totalTokens);
-
-		const { error: ingestError } = await supabase.from('vectors').insert([
-			{
-				content: doc.pageContent,
-				embedding: embeddings,
-				metadata: doc.metadata,
-				document: documentId,
-				created_by: user.id,
-			},
-		]);
-
-		if (ingestError) {
-			console.error('ingestError', ingestError);
-			return new NextResponse('Error ingesting document', { status: 500 });
-		}
-
-		docsIngested++;
-		ingestProgress = (docsIngested / docs.length) * 100;
-
-		console.log(ingestProgress + '% complete');
-
-		if (docsIngested === docs.length) {
-			const { error: ingestCompleteError } = await supabase
-				.from('documents')
-				.update({
-					ingesting: false,
-				})
-				.match({ id: documentId });
-
-			if (ingestCompleteError) {
-				console.error('ingestCompleteError', ingestCompleteError);
-				return new NextResponse('Error completing document ingestion', { status: 500 });
-			}
-			await updateEmbeddingsTokenCount(totalTokens);
-			console.log('Ingestion complete');
-		}
-	});
+	await ingestDocument(blob, documentId);
 
 	let document = await db
 		.select()
@@ -136,8 +60,6 @@ export async function POST(request, { params }) {
 		.where(and(eq(documents.id, documentId)));
 
 	document = document[0];
-
-	console.log('document', document);
 
 	if (!document) {
 		return new NextResponse('Document not found', { status: 404 });

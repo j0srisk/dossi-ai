@@ -23,6 +23,7 @@
 		"node-fetch": "^3.3.2",
 		"openai": "^4.12.0",
 		"pdf-parse": "^1.1.1",
+		"pgvector": "^0.1.5",
 		"postgres": "^3.4.2",
 		"react": "^18",
 		"react-dom": "^18",

@@ -11,6 +11,7 @@ import {
 	boolean,
 	customType,
 } from 'drizzle-orm/pg-core';
+import { vector } from 'pgvector/drizzle-orm';
 
 //custom jsonb to fix bug with drizzle converting jsonb to string
 //https://github.com/drizzle-team/drizzle-orm/pull/666#issuecomment-1602918513
@@ -75,8 +76,6 @@ export const profiles = pgTable(
 	},
 );
 
-{
-	/*
 export const vectors = pgTable('vectors', {
 	id: uuid('id')
 		.default(sql`uuid_generate_v4()`)
@@ -85,14 +84,12 @@ export const vectors = pgTable('vectors', {
 	content: text('content'),
 	metadata: jsonb('metadata'),
 	// TODO: failed to parse database type 'vector(1536)'
-	embedding: unknown('embedding'),
+	embedding: vector('embedding', { dimensions: 1536 }),
 	document: uuid('document')
 		.notNull()
 		.references(() => documents.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 	createdBy: uuid('created_by').notNull(),
 });
-*/
-}
 
 export const chats = pgTable('chats', {
 	id: uuid('id').defaultRandom().primaryKey().notNull(),
