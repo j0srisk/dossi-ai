@@ -83,22 +83,13 @@ export default async function Navbar({ children }) {
 							<div className="flex items-center justify-center gap-2">
 								<Link
 									href="/auth/login"
-									className="group relative hidden rounded-lg bg-neutral-700 p-0.5"
-								>
-									<div className="z-20 rounded-[6px] bg-neutral-900 p-1 px-2 text-center transition-all duration-300 ease-in-out group-hover:text-white">
-										Log In
-									</div>
-									<div className="absolute right-0 top-0 h-full w-full rounded-lg bg-gradient-to-br from-[#49CC5F] from-10% to-[#a3e635] opacity-0 transition-all duration-500 ease-in-out group-hover:opacity-100" />
-								</Link>
-								<Link
-									href="/auth/login"
 									className="flex h-full items-center justify-center gap-2 rounded-lg border border-neutral-700 px-4 py-2 text-white shadow-md transition-all duration-300 ease-in-out hover:bg-neutral-600 hover:bg-opacity-10"
 								>
 									<p className="text-center text-base font-bold text-white">Log In</p>
 								</Link>
 								<Link
-									href="/auth/login"
-									className="flex h-full items-center justify-center gap-2 rounded-lg border border-accent bg-accent px-2 py-2 text-white shadow-md transition-all duration-300 ease-in-out hover:border-accent-hover hover:bg-accent-hover"
+									href="/auth/signup"
+									className="flex h-full  items-center justify-center gap-2 rounded-lg border border-accent bg-accent px-4 py-2 text-white shadow-md transition-all duration-300 ease-in-out hover:border-accent-hover hover:bg-accent-hover"
 								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +97,7 @@ export default async function Navbar({ children }) {
 										viewBox="0 0 24 24"
 										strokeWidth={1.5}
 										stroke="currentColor"
-										className="h-5 w-5"
+										className="hidden h-5 w-5"
 									>
 										<path
 											strokeLinecap="round"
