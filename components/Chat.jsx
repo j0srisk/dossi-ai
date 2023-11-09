@@ -26,6 +26,8 @@ export default function Chat({ chat, topic }) {
 		});
 
 		router.refresh();
+
+		setIsRenaming(false);
 	};
 
 	const deleteChat = async () => {
@@ -34,6 +36,8 @@ export default function Chat({ chat, topic }) {
 		});
 
 		router.refresh();
+
+		setIsDeleting(false);
 	};
 
 	return (

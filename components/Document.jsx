@@ -26,6 +26,8 @@ export default function Document({ document, collection }) {
 		});
 
 		router.refresh();
+
+		setIsRenaming(false);
 	};
 
 	const deleteDocument = async () => {
@@ -34,6 +36,8 @@ export default function Document({ document, collection }) {
 		});
 
 		router.refresh();
+
+		setIsDeleting(false);
 	};
 
 	return (

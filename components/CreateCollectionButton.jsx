@@ -1,15 +1,23 @@
 'use client';
 
 import CreateCollectionModal from './CreateCollectionModal';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function CreateCollectionButton() {
 	const [isCreating, setIsCreating] = useState(false);
+
+	const router = useRouter();
+
 	const createCollection = async (name) => {
-		fetch('/api/collection', {
+		await fetch('/api/collection', {
 			method: 'POST',
 			body: JSON.stringify({ name }),
 		});
+
+		setIsCreating(false);
+
+		router.refresh();
 	};
 
 	return (

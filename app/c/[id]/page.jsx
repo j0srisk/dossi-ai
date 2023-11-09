@@ -1,5 +1,6 @@
 import { getTopic, getDocuments } from '@/app/c/utils';
 import BackButton from '@/components/BackButton';
+import ChatContainer from '@/components/ChatContainer';
 import Navbar from '@/components/Navbar';
 import { redirect } from 'next/navigation';
 

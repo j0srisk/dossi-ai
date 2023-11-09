@@ -27,6 +27,8 @@ export default function Collection({ collection, documents }) {
 		});
 
 		router.refresh();
+
+		setIsRenaming(false);
 	};
 
 	const deleteCollection = async () => {
@@ -35,6 +37,8 @@ export default function Collection({ collection, documents }) {
 		});
 
 		router.refresh();
+
+		setIsDeleting(false);
 	};
 
 	const handleFileUpload = (selectedFile) => {
@@ -51,6 +55,10 @@ export default function Collection({ collection, documents }) {
 			method: 'POST',
 			body: formData,
 		});
+
+		router.refresh();
+
+		setIsUploading(false);
 	};
 
 	return (

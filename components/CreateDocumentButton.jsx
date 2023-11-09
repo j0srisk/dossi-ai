@@ -23,8 +23,6 @@ export default function CreateDocumentButton() {
 
 		const data = await res.json();
 
-		console.log(data.id);
-
 		router.push(`/c/${data.id}`);
 
 		setIsUploading(false);
