@@ -1,43 +1,13 @@
 'use client';
 
-import NewChat from '@/components/NewChat';
+import Chat from '@/components/Chat';
 import SearchBar from '@/components/SearchBar';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-export default function RealtimeChats({ chats, documents, collections }) {
+export default function Chats({ chats, documents, collections }) {
 	const [search, setSearch] = useState('');
 	const [sort, setSort] = useState('date');
 	const [order, setOrder] = useState('desc');
-	const supabase = createClientComponentClient();
-	const router = useRouter();
-
-	useEffect(() => {
-		const channel = supabase
-			.channel('realtime-collections')
-			.on('postgres_changes', { event: '*', schema: 'public', table: 'collections' }, (payload) => {
-				router.refresh();
-			})
-			.subscribe();
-
-		return () => {
-			supabase.removeChannel(channel);
-		};
-	}, [supabase, router]);
-
-	useEffect(() => {
-		const channel = supabase
-			.channel('realtime-documents')
-			.on('postgres_changes', { event: '*', schema: 'public', table: 'documents' }, () => {
-				router.refresh();
-			})
-			.subscribe();
-
-		return () => {
-			supabase.removeChannel(channel);
-		};
-	}, [supabase, router]);
 
 	function findMatchingTopic(chat) {
 		for (const document of documents) {
@@ -75,15 +45,15 @@ export default function RealtimeChats({ chats, documents, collections }) {
 								return b.name.localeCompare(a.name);
 							}
 						} else if (sort === 'date') {
-							if (order === 'asc') return a.created_at.localeCompare(b.created_at);
+							if (order === 'asc') return String(a.createdAt).localeCompare(String(b.createdAt));
 							else if (order === 'desc') {
-								return b.created_at.localeCompare(a.created_at);
+								return String(b.createdAt).localeCompare(String(b.createdAt));
 							}
 						}
 						return 0;
 					})
 					.map((chat) => (
-						<NewChat key={chat.id} chat={chat} topic={findMatchingTopic(chat)} />
+						<Chat key={chat.id} chat={chat} topic={findMatchingTopic(chat)} />
 					))}
 			</div>
 		</div>

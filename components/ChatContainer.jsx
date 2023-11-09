@@ -4,7 +4,6 @@ import DocumentList from '@/components/DocumentList';
 import FileContainer from '@/components/FileContainer';
 import Message from '@/components/Message';
 import QueryContainer from '@/components/QueryContainer';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useSearchParams } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 

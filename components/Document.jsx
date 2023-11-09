@@ -8,42 +8,32 @@ import ItemIcon from '@/components/ItemIcon';
 import ItemMenuButton from '@/components/ItemMenuButton';
 import ItemText from '@/components/ItemText';
 import RenameModal from '@/components/RenameModal';
-import UploadModal from '@/components/UploadModal';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function NewCollection({ collection, documents }) {
+export default function Document({ document, collection }) {
 	const [menuOpen, setMenuOpen] = useState(false);
+
 	const [isRenaming, setIsRenaming] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
-	const [isUploading, setIsUploading] = useState(false);
 
-	const updateCollection = async (name) => {
-		fetch(`/api/collection/${collection.id}`, {
+	const router = useRouter();
+
+	const updateDocument = async (name) => {
+		await fetch(`/api/document/${document.id}`, {
 			method: 'PATCH',
 			body: JSON.stringify({ name }),
 		});
+
+		router.refresh();
 	};
 
-	const deleteCollection = async () => {
-		fetch(`/api/collection/${collection.id}`, {
+	const deleteDocument = async () => {
+		await fetch(`/api/document/${document.id}`, {
 			method: 'DELETE',
 		});
-	};
 
-	const handleFileUpload = (selectedFile) => {
-		const file = selectedFile;
-
-		const formData = new FormData();
-
-		console.log(collection.id);
-		formData.append('file', file);
-		formData.append('name', file.name);
-		formData.append('collectionId', collection.id);
-
-		fetch('/api/document', {
-			method: 'POST',
-			body: formData,
-		});
+		router.refresh();
 	};
 
 	return (
@@ -62,25 +52,14 @@ export default function NewCollection({ collection, documents }) {
 							<path
 								strokeLinecap="round"
 								strokeLinejoin="round"
-								d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
+								d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
 							/>
 						</svg>
 					}
 				/>
-				<ItemText
-					text={collection.name}
-					subtext={
-						documents.filter((document) => document.collection === collection.id).length +
-						' ' +
-						(documents.filter((document) => document.collection === collection.id).length === 1
-							? 'document'
-							: 'documents')
-					}
-				/>
+				<ItemText text={document.name} subtext={collection ? collection.name : 'No Collection'} />
 				<ItemButtonContainer menuOpen={menuOpen}>
-					{documents.filter((document) => document.collection === collection.id).length > 0 && (
-						<ItemChatButton text="Chat with Collection" href={'/c/' + collection.id} />
-					)}
+					<ItemChatButton text="Chat with Document" href={'/c/' + document.id} />
 					<ItemMenuButton menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 				</ItemButtonContainer>
 			</ItemContainer>
@@ -100,38 +79,24 @@ export default function NewCollection({ collection, documents }) {
 					>
 						Delete
 					</p>
-					<p
-						className="whitespace-nowrap rounded-md p-1 px-4 text-xs font-bold hover:cursor-pointer hover:bg-accent hover:text-white"
-						onClick={() => setIsUploading(true)}
-					>
-						Upload Document
-					</p>
 				</DropdownMenu>
 			)}
 
 			{isRenaming && (
 				<RenameModal
-					text="Rename Collection"
-					name={collection.name}
+					text="Rename Chat"
+					name={document.name}
 					setIsRenaming={setIsRenaming}
-					updateFunction={updateCollection}
+					updateFunction={updateDocument}
 				/>
 			)}
 
 			{isDeleting && (
 				<DeleteModal
 					text="Delete Chat"
-					name={collection.name}
+					name={document.name}
 					setIsDeleting={setIsDeleting}
-					deleteFunction={deleteCollection}
-				/>
-			)}
-
-			{isUploading && (
-				<UploadModal
-					text="Upload Document"
-					setIsUploading={setIsUploading}
-					uploadFunction={handleFileUpload}
+					deleteFunction={deleteDocument}
 				/>
 			)}
 		</Item>

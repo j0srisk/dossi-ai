@@ -1,7 +1,10 @@
 import CreateDocumentButton from '@/components/CreateDocumentButton';
+import Documents from '@/components/Documents';
 import Navbar from '@/components/Navbar';
-import RealtimeDocuments from '@/components/RealtimeDocuments';
+import db from '@/lib/index';
+import { collections, documents } from '@/lib/schema';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -21,8 +24,14 @@ export default async function Page({ params }) {
 		redirect('/auth');
 	}
 
-	const { data: collections } = await supabase.from('collections').select();
-	const { data: documents } = await supabase.from('documents').select();
+	const userCollections = await db
+		.select()
+		.from(collections)
+		.where(eq(collections.createdBy, session.user.id));
+	const userDocuments = await db
+		.select()
+		.from(documents)
+		.where(eq(documents.createdBy, session.user.id));
 
 	return (
 		<div className="h-screen w-screen">
@@ -38,7 +47,7 @@ export default async function Page({ params }) {
 						<CreateDocumentButton />
 					</div>
 					<div className="flex w-full flex-1 flex-col gap-2 overflow-visible font-inter">
-						<RealtimeDocuments collections={collections} documents={documents} />
+						<Documents collections={userCollections} documents={userDocuments} />
 					</div>
 				</div>
 			</div>

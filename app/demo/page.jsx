@@ -1,9 +1,6 @@
-import { getTopic } from '@/app/c/utils';
 import BackButton from '@/components/BackButton';
 import ChatContainer from '@/components/ChatContainer';
 import Navbar from '@/components/Navbar';
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 export default async function DemoPage() {
 	const topic = { type: 'collection', id: 'b7ea4713-ab97-4bef-972e-dbc24deba6fa', name: 'Demo' };

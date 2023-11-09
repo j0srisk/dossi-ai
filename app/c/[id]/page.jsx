@@ -1,9 +1,6 @@
-import { getTopic, getMessages, getDocuments } from '@/app/c/utils';
+import { getTopic, getDocuments } from '@/app/c/utils';
 import BackButton from '@/components/BackButton';
-import ChatContainer from '@/components/ChatContainer';
-import Message from '@/components/Message';
 import Navbar from '@/components/Navbar';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 //page for existing chats

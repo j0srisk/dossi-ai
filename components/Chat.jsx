@@ -8,13 +8,33 @@ import ItemIcon from '@/components/ItemIcon';
 import ItemMenuButton from '@/components/ItemMenuButton';
 import ItemText from '@/components/ItemText';
 import RenameModal from '@/components/RenameModal';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function NewChat({ chat, topic }) {
+export default function Chat({ chat, topic }) {
 	const [topicId] = useState(chat.document || chat.collection);
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [isRenaming, setIsRenaming] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
+
+	const router = useRouter();
+
+	const updateChat = async (name) => {
+		await fetch(`/api/chat/${chat.id}`, {
+			method: 'PATCH',
+			body: JSON.stringify({ name }),
+		});
+
+		router.refresh();
+	};
+
+	const deleteChat = async () => {
+		await fetch(`/api/chat/${chat.id}`, {
+			method: 'DELETE',
+		});
+
+		router.refresh();
+	};
 
 	return (
 		<Item menuOpen={menuOpen}>
@@ -67,7 +87,7 @@ export default function NewChat({ chat, topic }) {
 					text="Rename Chat"
 					name={chat.name}
 					setIsRenaming={setIsRenaming}
-					updateFunction={null}
+					updateFunction={updateChat}
 				/>
 			)}
 
@@ -76,7 +96,7 @@ export default function NewChat({ chat, topic }) {
 					text="Delete Chat"
 					name={chat.name}
 					setIsDeleting={setIsDeleting}
-					deleteFunction={null}
+					deleteFunction={deleteChat}
 				/>
 			)}
 		</Item>

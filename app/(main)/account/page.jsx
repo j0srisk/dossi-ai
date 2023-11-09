@@ -19,12 +19,6 @@ export default async function Page() {
 		redirect('/auth');
 	}
 
-	const { data } = await supabase.from('profiles').select().single();
-
-	const embeddingCost = data.ada_v2_tokens * 0.0000001;
-	const gptInputCost = data.gpt_3_turbo_4k_input_tokens * 0.0000015;
-	const gptOutputCost = data.gpt_3_turbo_4k_output_tokens * 0.000002;
-
 	return (
 		<div className="h-screen w-screen">
 			<Navbar />
@@ -40,23 +34,6 @@ export default async function Page() {
 							<p className="text-2xl font-bold">Profile</p>
 							<p className="font-bold">Email</p>
 							<p className="">{data.email}</p>
-						</div>
-						<div className="flex flex-col gap-1">
-							<p className="text-2xl font-bold">Usage</p>
-							<p className="font-bold">Embedding</p>
-							<p className="">
-								{data.ada_v2_tokens} tokens / ${embeddingCost.toFixed(6)} USD
-							</p>
-							<p className="font-bold">Input</p>
-							<p className="">
-								{data.gpt_3_turbo_4k_input_tokens} tokens / ${gptInputCost.toFixed(6)} USD
-							</p>
-							<p className="font-bold">Output</p>
-							<p className="">
-								{data.gpt_3_turbo_4k_output_tokens} tokens / ${gptOutputCost.toFixed(6)} USD
-							</p>
-							<p className="font-bold">Total Cost</p>
-							<p className="">${(embeddingCost + gptInputCost + gptOutputCost).toFixed(6)}</p>
 						</div>
 					</div>
 				</div>

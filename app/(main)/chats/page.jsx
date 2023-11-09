@@ -1,6 +1,9 @@
+import Chats from '@/components/Chats';
 import Navbar from '@/components/Navbar';
-import RealtimeChats from '@/components/RealtimeChats';
+import db from '@/lib/index';
+import { collections, documents, chats } from '@/lib/schema';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -9,8 +12,7 @@ export const metadata = {
 };
 
 export default async function Page() {
-	const cookieStore = cookies();
-	const supabase = createServerComponentClient({ cookies: () => cookieStore });
+	const supabase = createServerComponentClient({ cookies });
 
 	const {
 		data: { session },
@@ -20,9 +22,15 @@ export default async function Page() {
 		redirect('/auth');
 	}
 
-	const { data: collections } = await supabase.from('collections').select();
-	const { data: documents } = await supabase.from('documents').select();
-	const { data: chats } = await supabase.from('chats').select();
+	const userCollections = await db
+		.select()
+		.from(collections)
+		.where(eq(collections.createdBy, session.user.id));
+	const userDocuments = await db
+		.select()
+		.from(documents)
+		.where(eq(documents.createdBy, session.user.id));
+	const userChats = await db.select().from(chats).where(eq(chats.createdBy, session.user.id));
 
 	return (
 		<div className="h-screen w-screen">
@@ -33,7 +41,7 @@ export default async function Page() {
 						<p className="text-2xl font-bold">Previous Chats</p>
 					</div>
 					<div className="flex w-full flex-1 flex-col gap-2 overflow-visible font-inter">
-						<RealtimeChats chats={chats} documents={documents} collections={collections} />
+						<Chats chats={userChats} documents={userDocuments} collections={userCollections} />
 					</div>
 				</div>
 			</div>

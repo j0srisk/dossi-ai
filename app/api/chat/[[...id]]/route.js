@@ -128,7 +128,7 @@ export async function DELETE(request, { params }) {
 		return new NextResponse('Chat not found', { status: 404 });
 	}
 
-	await db.deleteFrom(chats).where(and(eq(chats.id, id), eq(chats.createdBy, user.id)));
+	await db.delete(chats).where(and(eq(chats.id, id), eq(chats.createdBy, user.id)));
 
 	return new NextResponse('Chat deleted', { status: 200 });
 }
