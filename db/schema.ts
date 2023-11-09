@@ -32,6 +32,9 @@ const jsonb = customType<{ data: any }>({
 	},
 });
 
+{
+	/*
+
 export const keyStatus = pgEnum('key_status', ['default', 'valid', 'invalid', 'expired']);
 export const keyType = pgEnum('key_type', [
 	'aead-ietf',
@@ -52,6 +55,9 @@ export const aalLevel = pgEnum('aal_level', ['aal1', 'aal2', 'aal3']);
 export const codeChallengeMethod = pgEnum('code_challenge_method', ['s256', 'plain']);
 export const equalityOp = pgEnum('equality_op', ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'in']);
 export const action = pgEnum('action', ['INSERT', 'UPDATE', 'DELETE', 'TRUNCATE', 'ERROR']);
+
+*/
+}
 
 export const profiles = pgTable(
 	'profiles',
@@ -83,7 +89,6 @@ export const vectors = pgTable('vectors', {
 		.notNull(),
 	content: text('content'),
 	metadata: jsonb('metadata'),
-	// TODO: failed to parse database type 'vector(1536)'
 	embedding: vector('embedding', { dimensions: 1536 }),
 	document: uuid('document')
 		.notNull()

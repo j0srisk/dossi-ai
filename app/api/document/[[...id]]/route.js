@@ -1,6 +1,6 @@
 import { getUser, isValidUUID, ingestDocument } from '@/app/api/utils';
-import db from '@/lib/index';
-import { documents } from '@/lib/schema';
+import db from '@/db/index';
+import { documents } from '@/db/schema';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { eq, and } from 'drizzle-orm';
 import { cookies } from 'next/headers';

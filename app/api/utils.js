@@ -1,5 +1,5 @@
-import db from '@/lib/index';
-import { vectors, documents } from '@/lib/schema';
+import db from '@/db/index';
+import { vectors, documents } from '@/db/schema';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { eq } from 'drizzle-orm';
 import { encode } from 'gpt-tokenizer';

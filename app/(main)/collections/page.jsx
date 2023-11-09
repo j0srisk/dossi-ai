@@ -1,8 +1,8 @@
 import Collections from '@/components/Collections';
 import CreateCollectionButton from '@/components/CreateCollectionButton';
 import Navbar from '@/components/Navbar';
-import db from '@/lib/index';
-import { collections, documents } from '@/lib/schema';
+import db from '@/db/index';
+import { collections, documents } from '@/db/schema';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
