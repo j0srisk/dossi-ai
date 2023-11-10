@@ -1,10 +1,10 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import Chats from '@/components/Chats';
 import Navbar from '@/components/Navbar';
 import db from '@/db/index';
 import { collections, documents, chats } from '@/db/schema';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { eq } from 'drizzle-orm';
-import { cookies } from 'next/headers';
+import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
 export const metadata = {
@@ -12,11 +12,7 @@ export const metadata = {
 };
 
 export default async function Page() {
-	const supabase = createServerComponentClient({ cookies });
-
-	const {
-		data: { session },
-	} = await supabase.auth.getSession();
+	const session = await getServerSession(authOptions);
 
 	if (!session) {
 		redirect('/auth');

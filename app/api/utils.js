@@ -1,19 +1,19 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import db from '@/db/index';
 import { vectors, documents } from '@/db/schema';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { eq } from 'drizzle-orm';
 import { encode } from 'gpt-tokenizer';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { cookies } from 'next/headers';
+import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { maxInnerProduct } from 'pgvector/drizzle-orm';
 
 export const getUser = async () => {
-	const supabase = createRouteHandlerClient({ cookies });
-	const { data: userData } = await supabase.auth.getUser();
-	let user = userData.user;
+	const session = await getServerSession(authOptions);
+
+	let user = session.user;
 
 	//default user for testing
 	if (!user) {

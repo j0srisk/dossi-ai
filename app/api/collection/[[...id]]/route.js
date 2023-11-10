@@ -19,6 +19,8 @@ export async function POST(request, { params }) {
 
 	const user = await getUser();
 
+	console.log(user);
+
 	await db.insert(collections).values({ id: id, name: name, createdBy: user.id });
 
 	// looks up the collection that was just created

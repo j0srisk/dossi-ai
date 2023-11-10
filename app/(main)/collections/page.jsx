@@ -1,11 +1,11 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import Collections from '@/components/Collections';
 import CreateCollectionButton from '@/components/CreateCollectionButton';
 import Navbar from '@/components/Navbar';
 import db from '@/db/index';
 import { collections, documents } from '@/db/schema';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { eq } from 'drizzle-orm';
-import { cookies } from 'next/headers';
+import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
 export const metadata = {
@@ -13,12 +13,7 @@ export const metadata = {
 };
 
 export default async function Page() {
-	const cookieStore = cookies();
-	const supabase = createServerComponentClient({ cookies: () => cookieStore });
-
-	const {
-		data: { session },
-	} = await supabase.auth.getSession();
+	const session = await getServerSession(authOptions);
 
 	if (!session) {
 		redirect('/auth');

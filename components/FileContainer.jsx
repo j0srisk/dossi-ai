@@ -1,6 +1,5 @@
 'use client';
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useState, useEffect, useRef } from 'react';
 import { pdfjs, Document, Page } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
@@ -19,8 +18,6 @@ export default function FileContainer({ document, page, setPage, children }) {
 	const [rendered, setRendered] = useState(false);
 	const [zoom, setZoom] = useState(1);
 	const [newPage, setNewPage] = useState(page);
-
-	const supabase = createClientComponentClient();
 
 	useEffect(() => {
 		if (refContainer.current) {
@@ -53,15 +50,13 @@ export default function FileContainer({ document, page, setPage, children }) {
 			return;
 		}
 
-		const { data, error } = await supabase.storage.from('documents').download(document.url);
-		if (error) {
-			console.error(error);
-			return;
-		}
+		const res = await fetch(`/api/file/${document.id}`, {
+			method: 'GET',
+		});
+
+		const data = await res.blob();
 
 		const url = URL.createObjectURL(data);
-
-		console.log('url' + url);
 
 		setDocumentUrl(url);
 	};

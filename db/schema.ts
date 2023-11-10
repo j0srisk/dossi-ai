@@ -151,7 +151,7 @@ export const vectors = pgTable('vectors', {
 	document: uuid('document')
 		.notNull()
 		.references(() => documents.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-	createdBy: uuid('created_by').references(() => users.id, {
+	createdBy: text('created_by').references(() => users.id, {
 		onDelete: 'cascade',
 		onUpdate: 'cascade',
 	}),
@@ -160,7 +160,7 @@ export const vectors = pgTable('vectors', {
 export const chats = pgTable('chats', {
 	id: uuid('id').defaultRandom().primaryKey().notNull(),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-	createdBy: uuid('created_by').references(() => users.id, {
+	createdBy: text('created_by').references(() => users.id, {
 		onDelete: 'cascade',
 		onUpdate: 'cascade',
 	}),
@@ -179,7 +179,7 @@ export const chats = pgTable('chats', {
 export const collections = pgTable('collections', {
 	id: uuid('id').defaultRandom().primaryKey().notNull(),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-	createdBy: uuid('created_by').references(() => users.id, {
+	createdBy: text('created_by').references(() => users.id, {
 		onDelete: 'cascade',
 		onUpdate: 'cascade',
 	}),
@@ -189,7 +189,7 @@ export const collections = pgTable('collections', {
 export const documents = pgTable('documents', {
 	id: uuid('id').defaultRandom().primaryKey().notNull(),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-	createdBy: uuid('created_by').references(() => users.id, {
+	createdBy: text('created_by').references(() => users.id, {
 		onDelete: 'cascade',
 		onUpdate: 'cascade',
 	}),

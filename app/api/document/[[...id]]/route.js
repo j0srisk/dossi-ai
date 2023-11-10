@@ -1,7 +1,6 @@
-import { getUser, isValidUUID, ingestDocument } from '@/app/api/utils';
+import { getUser, isValidUUID, uploadFile, ingestDocument } from '@/app/api/utils';
 import db from '@/db/index';
 import { documents } from '@/db/schema';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { eq, and } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
@@ -26,13 +25,13 @@ export async function POST(request, { params }) {
 	const buffer = Buffer.from(await file.arrayBuffer());
 	const blob = new Blob([buffer], { type: file.type });
 
-	const supabase = createRouteHandlerClient({ cookies });
-
 	const user = await getUser();
 
+	//generate document id and storage url
 	const documentId = crypto.randomUUID();
 	const documentUrl = `${user.id}/${documentId}`;
 
+	//insert document into database
 	await db.insert(documents).values({
 		id: documentId,
 		name: name,
@@ -41,19 +40,23 @@ export async function POST(request, { params }) {
 		url: documentUrl,
 	});
 
-	const { error: storageError } = await supabase.storage
-		.from('documents')
-		.upload(documentUrl, buffer, {
-			contentType: 'application/pdf',
-		});
+	//upload file to storage
+	const fileFormData = new FormData();
 
-	if (storageError) {
-		console.error('storageError', storageError);
-		return new NextResponse('Error uploading document to storage', { status: 500 });
-	}
+	fileFormData.append('file', file);
 
+	await fetch(process.env.NEXTAUTH_URL + `/api/file/${documentId}`, {
+		method: 'POST',
+		headers: {
+			cookie: cookies(request.headers.get('Cookie')),
+		},
+		body: fileFormData,
+	});
+
+	//vectorize document
 	await ingestDocument(blob, documentId);
 
+	// looks up the document that was just created
 	let document = await db
 		.select()
 		.from(documents)
@@ -143,6 +146,14 @@ export async function DELETE(request, { params }) {
 	}
 
 	await db.delete(documents).where(and(eq(documents.id, id), eq(documents.createdBy, user.id)));
+
+	//remove document from storage
+	await fetch(process.env.NEXTAUTH_URL + `/api/file/${id}`, {
+		method: 'DELETE',
+		headers: {
+			cookie: cookies(request.headers.get('Cookie')),
+		},
+	});
 
 	return new NextResponse('Document deleted', { status: 200 });
 }

@@ -1,24 +1,22 @@
 'use client';
 
 import DropdownMenu from '@/components/DropdownMenu';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function AccountIcon() {
 	const [menuOpen, setMenuOpen] = useState(false);
-	const supabase = createClientComponentClient();
+
 	const router = useRouter();
 
-	const signOut = async () => {
+	const { data: session } = useSession();
+
+	const handleSignOut = async () => {
 		console.log('signing out');
-		const { error } = await supabase.auth.signOut();
-		if (error) {
-			console.error(error);
-			return;
-		}
-		router.refresh();
+		router.push('/');
+		signOut();
 	};
 
 	return (
@@ -46,6 +44,11 @@ export default function AccountIcon() {
 			<div className="absolute right-0 top-0 h-full w-full rounded-full bg-gradient-to-br from-[#49CC5F] from-10% to-[#a3e635] opacity-0 transition-all duration-500 ease-in-out group-hover:opacity-100" />
 			{menuOpen && (
 				<DropdownMenu top={'top-10'} setMenuOpen={setMenuOpen}>
+					{session?.user?.name && (
+						<p className="whitespace-nowrap p-1 px-4 text-left font-inter text-xs font-bold text-neutral-900">
+							{session.user.name}
+						</p>
+					)}
 					<Link
 						href="/account"
 						className="whitespace-nowrap rounded-md p-1 px-4 text-left font-inter text-xs font-bold text-neutral-900 hover:cursor-pointer hover:bg-accent hover:text-white"
@@ -54,7 +57,7 @@ export default function AccountIcon() {
 					</Link>
 					<p
 						className="whitespace-nowrap rounded-md p-1 px-4 text-left font-inter text-xs font-bold text-neutral-900 hover:cursor-pointer hover:bg-accent hover:text-white"
-						onClick={signOut}
+						onClick={handleSignOut}
 					>
 						Sign Out
 					</p>
