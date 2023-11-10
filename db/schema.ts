@@ -7,10 +7,12 @@ import {
 	timestamp,
 	text,
 	integer,
+	primaryKey,
 	foreignKey,
 	boolean,
 	customType,
 } from 'drizzle-orm/pg-core';
+import { AdapterAccount } from 'next-auth/adapters';
 import { vector } from 'pgvector/drizzle-orm';
 
 //custom jsonb to fix bug with drizzle converting jsonb to string
@@ -31,6 +33,57 @@ const jsonb = customType<{ data: any }>({
 		return value as any;
 	},
 });
+
+//auth stuff
+export const users = pgTable('user', {
+	id: text('id').notNull().primaryKey(),
+	name: text('name'),
+	email: text('email').notNull(),
+	emailVerified: timestamp('emailVerified', { mode: 'date' }),
+	image: text('image'),
+});
+
+export const accounts = pgTable(
+	'account',
+	{
+		userId: text('userId')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		type: text('type').$type<AdapterAccount['type']>().notNull(),
+		provider: text('provider').notNull(),
+		providerAccountId: text('providerAccountId').notNull(),
+		refresh_token: text('refresh_token'),
+		access_token: text('access_token'),
+		expires_at: integer('expires_at'),
+		token_type: text('token_type'),
+		scope: text('scope'),
+		id_token: text('id_token'),
+		session_state: text('session_state'),
+	},
+	(account) => ({
+		compoundKey: primaryKey(account.provider, account.providerAccountId),
+	}),
+);
+
+export const sessions = pgTable('session', {
+	sessionToken: text('sessionToken').notNull().primaryKey(),
+	userId: text('userId')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
+	expires: timestamp('expires', { mode: 'date' }).notNull(),
+});
+
+export const verificationTokens = pgTable(
+	'verificationToken',
+	{
+		identifier: text('identifier').notNull(),
+		token: text('token').notNull(),
+		expires: timestamp('expires', { mode: 'date' }).notNull(),
+	},
+	(vt) => ({
+		compoundKey: primaryKey(vt.identifier, vt.token),
+	}),
+);
 
 {
 	/*
@@ -59,6 +112,8 @@ export const action = pgEnum('action', ['INSERT', 'UPDATE', 'DELETE', 'TRUNCATE'
 */
 }
 
+{
+	/*
 export const profiles = pgTable(
 	'profiles',
 	{
@@ -81,8 +136,11 @@ export const profiles = pgTable(
 		};
 	},
 );
+*/
+}
 
 export const vectors = pgTable('vectors', {
+	//todo change this to defaultRandom
 	id: uuid('id')
 		.default(sql`uuid_generate_v4()`)
 		.primaryKey()
@@ -93,13 +151,19 @@ export const vectors = pgTable('vectors', {
 	document: uuid('document')
 		.notNull()
 		.references(() => documents.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-	createdBy: uuid('created_by').notNull(),
+	createdBy: uuid('created_by').references(() => users.id, {
+		onDelete: 'cascade',
+		onUpdate: 'cascade',
+	}),
 });
 
 export const chats = pgTable('chats', {
 	id: uuid('id').defaultRandom().primaryKey().notNull(),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-	createdBy: uuid('created_by'),
+	createdBy: uuid('created_by').references(() => users.id, {
+		onDelete: 'cascade',
+		onUpdate: 'cascade',
+	}),
 	document: uuid('document').references(() => documents.id, {
 		onDelete: 'cascade',
 		onUpdate: 'cascade',
@@ -115,14 +179,20 @@ export const chats = pgTable('chats', {
 export const collections = pgTable('collections', {
 	id: uuid('id').defaultRandom().primaryKey().notNull(),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-	createdBy: uuid('created_by'),
+	createdBy: uuid('created_by').references(() => users.id, {
+		onDelete: 'cascade',
+		onUpdate: 'cascade',
+	}),
 	name: text('name'),
 });
 
 export const documents = pgTable('documents', {
 	id: uuid('id').defaultRandom().primaryKey().notNull(),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-	createdBy: uuid('created_by'),
+	createdBy: uuid('created_by').references(() => users.id, {
+		onDelete: 'cascade',
+		onUpdate: 'cascade',
+	}),
 	name: text('name'),
 	url: text('url'),
 	collection: uuid('collection').references(() => collections.id, {
