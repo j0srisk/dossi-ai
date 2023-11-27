@@ -1,6 +1,6 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import db from '@/db/index';
-import { collections, documents, vectors } from '@/db/schema';
+import { collections, documents, vectors, users } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { encode } from 'gpt-tokenizer';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
@@ -94,7 +94,21 @@ export const getUser = async () => {
 
 	let user = session.user;
 
-	return user;
+	const dbUser = await db.select().from(users).where(eq(users.id, user.id));
+
+	return dbUser[0];
+};
+
+export const getUsers = async () => {
+	let session = await getServerSession(authOptions);
+
+	if (!session) {
+		return null;
+	}
+
+	let allUsers = await db.select().from(users);
+
+	return allUsers;
 };
 
 export const isValidUUID = (uuid) => {

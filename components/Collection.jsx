@@ -1,3 +1,5 @@
+'use client';
+
 import ItemContainer from './ItemContainer';
 import DeleteModal from '@/components/DeleteModal';
 import DropdownMenu from '@/components/DropdownMenu';

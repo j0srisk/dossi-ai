@@ -6,12 +6,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function AccountIcon() {
+export default function AccountIcon({ user }) {
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	const router = useRouter();
-
-	const { data: session } = useSession();
 
 	const handleSignOut = async () => {
 		console.log('signing out');
@@ -39,15 +37,26 @@ export default function AccountIcon() {
 							d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
 						/>
 					</svg>
+					{user.image && (
+						<img src={user.image} alt="profile-picture" className=" h-full w-full rounded-full" />
+					)}
 				</div>
 			</button>
 			<div className="absolute right-0 top-0 h-full w-full rounded-full bg-gradient-to-br from-[#49CC5F] from-10% to-[#a3e635] opacity-0 transition-all duration-500 ease-in-out group-hover:opacity-100" />
 			{menuOpen && (
 				<DropdownMenu top={'top-10'} setMenuOpen={setMenuOpen}>
-					{session?.user?.name && (
-						<p className="whitespace-nowrap p-1 px-4 text-left font-inter text-xs font-bold text-neutral-900">
-							{session.user.name}
+					{user.name && (
+						<p className="mb-1 whitespace-nowrap rounded-md bg-neutral-900 p-1 px-8 text-center font-inter text-sm  text-white">
+							{user.name}
 						</p>
+					)}
+					{user.admin && (
+						<Link
+							href="/admin"
+							className="whitespace-nowrap rounded-md p-1 px-4 text-left font-inter text-xs font-bold text-neutral-900 hover:cursor-pointer hover:bg-accent hover:text-white"
+						>
+							Admin Panel
+						</Link>
 					)}
 					<Link
 						href="/account"

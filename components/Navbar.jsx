@@ -1,10 +1,15 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getUser } from '@/app/utils';
 import AccountIcon from '@/components/AccountIcon';
 import { getServerSession } from 'next-auth';
 import Link from 'next/link';
 
 export default async function Navbar({ children }) {
 	const session = await getServerSession(authOptions);
+
+	const user = await getUser();
+
+	console.log(user);
 
 	return (
 		<div className="z-40 flex h-[72px] items-center justify-between border-b border-neutral-700 bg-neutral-900 px-4 shadow-md">
@@ -49,7 +54,7 @@ export default async function Navbar({ children }) {
 								>
 									Chats
 								</Link>
-								<AccountIcon />
+								<AccountIcon user={user} />
 							</>
 						) : (
 							<div className="flex items-center justify-center gap-2">
