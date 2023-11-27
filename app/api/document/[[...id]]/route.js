@@ -1,4 +1,4 @@
-import { getUser, isValidUUID, uploadFile, ingestDocument } from '@/app/api/utils';
+import { getUser, isValidUUID, ingestDocument } from '@/app/utils';
 import db from '@/db/index';
 import { documents } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';

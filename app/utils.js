@@ -1,7 +1,7 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import db from '@/db/index';
-import { vectors, documents } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { collections, documents, vectors } from '@/db/schema';
+import { eq, and } from 'drizzle-orm';
 import { encode } from 'gpt-tokenizer';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
@@ -10,15 +10,89 @@ import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { maxInnerProduct } from 'pgvector/drizzle-orm';
 
-export const getUser = async () => {
-	const session = await getServerSession(authOptions);
+export const getTopic = async (id) => {
+	let topic = null;
+	if (id === '280b8974-866a-49ea-86d9-1feb83702806') {
+		console.log('demo collection');
+		let collection = await db.select().from(collections).where(eq(collections.id, id));
+
+		collection = collection[0];
+
+		topic = collection;
+
+		topic.type = 'collection';
+
+		return topic;
+	}
+
+	let session = await getServerSession(authOptions);
 
 	let user = session.user;
 
-	//default user for testing
-	if (!user) {
-		user = { id: 'aba5562e-f500-4f92-87c8-8e9a3bcb581a' };
+	let collection = await db
+		.select()
+		.from(collections)
+		.where(and(eq(collections.id, id), eq(collections.createdBy, user.id)));
+
+	collection = collection[0];
+
+	if (!collection) {
+		let document = await db
+			.select()
+			.from(documents)
+			.where(and(eq(documents.id, id), eq(documents.createdBy, user.id)));
+
+		document = document[0];
+
+		if (!document) {
+			return null;
+		} else {
+			topic = document;
+			topic.type = 'document';
+		}
+	} else {
+		topic = collection;
+		topic.type = 'collection';
 	}
+
+	if (!topic) {
+		return null;
+	}
+
+	return topic;
+};
+
+export const getDocuments = async (id) => {
+	if (id === '280b8974-866a-49ea-86d9-1feb83702806') {
+		const demoDocuments = await db.select().from(documents).where(eq(documents.collection, id));
+
+		return demoDocuments;
+	}
+
+	let session = await getServerSession(authOptions);
+
+	const user = session.user;
+
+	const colectionDocuments = await db
+		.select()
+		.from(documents)
+		.where(and(eq(documents.collection, id), eq(documents.createdBy, user.id)));
+
+	if (!colectionDocuments) {
+		return null;
+	}
+
+	return colectionDocuments;
+};
+
+export const getUser = async () => {
+	let session = await getServerSession(authOptions);
+
+	if (!session) {
+		return null;
+	}
+
+	let user = session.user;
 
 	return user;
 };
@@ -53,6 +127,7 @@ export const generateEmbedding = async (text) => {
 };
 
 export const ingestDocument = async (blob, documentId) => {
+	console.log('ingesting document');
 	const loader = new PDFLoader(blob);
 
 	const rawDocs = await loader.load();

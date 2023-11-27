@@ -1,4 +1,4 @@
-import { getUser } from '@/app/api/utils';
+import { getUser } from '@/app/utils';
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 

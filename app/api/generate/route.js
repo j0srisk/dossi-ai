@@ -5,7 +5,7 @@ import {
 	generateAnswerChat,
 	generateAnswerInstruct,
 	generateAnswerWithReference,
-} from '@/app/api/utils';
+} from '@/app/utils';
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {
@@ -49,13 +49,13 @@ export async function POST(request) {
 
 	let prompt = await generatePrompt(sanitizedQuestion, documentId || collectionId, type);
 
-	//await generateAnswerChat(prompt);
+	const assistantMessage = await generateAnswerChat(prompt);
 
 	//const assistantMessage = await generateAnswerWithReference(prompt, type);
 
-	prompt = prompt + '/n Answer:';
+	//prompt = prompt + '/n Answer:';
 
-	const assistantMessage = await generateAnswerInstruct(prompt);
+	//const assistantMessage = await generateAnswerInstruct(prompt);
 
 	const response = { choices: [{ message: assistantMessage }] };
 

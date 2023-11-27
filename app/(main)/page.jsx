@@ -17,11 +17,11 @@ export default async function LandingPage() {
 						<div className="flex max-w-screen-md flex-col items-center justify-center gap-4">
 							<div className="text-center text-6xl font-semibold">
 								<h1>
-									Begin chatting with your data in just{' '}
+									Open source{' '}
 									<span className="bg-gradient-to-br from-[#49CC5F] from-40% to-[#a3e635] bg-clip-text text-transparent">
-										minutes
-									</span>
-									.
+										Next.js
+									</span>{' '}
+									powered AI chat tool for PDFs
 								</h1>
 							</div>
 							<p className="text-center text-xl text-neutral-500">
@@ -107,6 +107,21 @@ export default async function LandingPage() {
 									Reference documents and chat with multiple documents at once
 								</p>
 							</div>
+						</div>
+						<div className="flex flex-col items-start justify-center gap-8 md:flex-row">
+							<div className="flex w-full flex-1 flex-col items-center justify-center gap-4 rounded-xl bg-neutral-100 p-4">
+								<Image
+									src="/references.png"
+									width={500}
+									height={500}
+									className="rounded-lg border border-neutral-300 shadow-sm"
+									alt="collections"
+								/>
+								<h3 className="text-center text-2xl font-semibold">Deploy with Docker</h3>
+								<p className="text-center text-base text-neutral-500">
+									Deploy with Docker and Docker Compose for easy deployment and scaling
+								</p>
+							</div>
 							<div className="flex w-full flex-1 flex-col items-center justify-center gap-4 rounded-xl bg-neutral-100 p-4">
 								<Image
 									src="/secure.png"
@@ -115,9 +130,24 @@ export default async function LandingPage() {
 									className="rounded-lg border border-neutral-300 shadow-sm"
 									alt="collections"
 								/>
-								<h3 className="text-center text-2xl font-semibold">Safe and Secure</h3>
+								<h3 className="text-center text-2xl font-semibold">NextAuth Integration</h3>
 								<p className="text-center text-base text-neutral-500">
-									Create collections of documents and chat with multiple documents at once
+									Uses NextAuth for authentication and authorization to secure your documents and
+									support multiple users
+								</p>
+							</div>
+							<div className="flex w-full flex-1 flex-col items-center justify-center gap-4 rounded-xl bg-neutral-100 p-4">
+								<Image
+									src="/secure.png"
+									width={500}
+									height={500}
+									className="rounded-lg border border-neutral-300 shadow-sm"
+									alt="collections"
+								/>
+								<h3 className="text-center text-2xl font-semibold">PostgreSQL Based</h3>
+								<p className="text-center text-base text-neutral-500">
+									Uses only one database for authentication, document metadata, and chat history for
+									easy deployment
 								</p>
 							</div>
 						</div>

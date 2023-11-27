@@ -1,4 +1,4 @@
-import { getTopic, getDocuments } from '@/app/c/utils';
+import { getTopic, getDocuments } from '@/app/utils';
 import BackButton from '@/components/BackButton';
 import ChatContainer from '@/components/ChatContainer';
 import Navbar from '@/components/Navbar';

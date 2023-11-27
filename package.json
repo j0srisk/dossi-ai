@@ -8,7 +8,8 @@
 		"start": "next start",
 		"lint": "next lint",
 		"db:generate": "drizzle-kit generate:pg",
-		"db:migrate": "dotenv -c -- tsx db/migrate.ts"
+		"db:migrate": "dotenv -c -- tsx db/migrate.ts",
+		"db:seed": "dotenv -c -- tsx scripts/seed.ts"
 	},
 	"dependencies": {
 		"@auth/drizzle-adapter": "^0.3.5",

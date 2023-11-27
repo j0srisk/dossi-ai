@@ -1,4 +1,4 @@
-import { getUser, isValidUUID } from '@/app/api/utils';
+import { getUser, isValidUUID } from '@/app/utils';
 import db from '@/db/index';
 import { collections } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
@@ -18,8 +18,6 @@ export async function POST(request, { params }) {
 	id = crypto.randomUUID();
 
 	const user = await getUser();
-
-	console.log(user);
 
 	await db.insert(collections).values({ id: id, name: name, createdBy: user.id });
 

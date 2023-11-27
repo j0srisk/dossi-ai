@@ -1,4 +1,4 @@
-import { getUser, isValidUUID } from '@/app/api/utils';
+import { getUser, isValidUUID } from '@/app/utils';
 import db from '@/db/index';
 import { chats } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
@@ -22,7 +22,14 @@ export async function POST(request, { params }) {
 
 	id = crypto.randomUUID();
 
-	const user = await getUser();
+	let user;
+
+	if (collectionId === '280b8974-866a-49ea-86d9-1feb83702806') {
+		//demo collection
+		user = { id: 'demo' };
+	} else {
+		user = await getUser();
+	}
 
 	await db.insert(chats).values({
 		id: id,
@@ -54,12 +61,15 @@ export async function GET(request, { params }) {
 
 	const user = await getUser();
 
-	let chat = await db
-		.select()
-		.from(chats)
-		.where(and(eq(chats.id, id), eq(chats.createdBy, user.id)));
+	let chat = await db.select().from(chats).where(eq(chats.id, id));
 
 	chat = chat[0];
+
+	if (user) {
+		if (chat.createdBy !== user.id && chat.createdBy !== 'demo') {
+			return new NextResponse('Chat not found', { status: 404 });
+		}
+	}
 
 	if (!chat) {
 		return new NextResponse('Chat not found', { status: 404 });
@@ -77,12 +87,15 @@ export async function PATCH(request, { params }) {
 
 	const user = await getUser();
 
-	let chat = await db
-		.select()
-		.from(chats)
-		.where(and(eq(chats.id, id), eq(chats.createdBy, user.id)));
+	let chat = await db.select().from(chats).where(eq(chats.id, id));
 
 	chat = chat[0];
+
+	if (user) {
+		if (chat.createdBy !== user.id && chat.createdBy !== 'demo') {
+			return new NextResponse('Chat not found', { status: 404 });
+		}
+	}
 
 	if (!chat) {
 		return new NextResponse('Chat not found', { status: 404 });
@@ -100,10 +113,7 @@ export async function PATCH(request, { params }) {
 
 	console.log(messages);
 
-	await db
-		.update(chats)
-		.set({ name: name, messages: messages })
-		.where(and(eq(chats.id, id), eq(chats.createdBy, user.id)));
+	await db.update(chats).set({ name: name, messages: messages }).where(eq(chats.id, id));
 
 	return new NextResponse('Chat updated', { status: 200 });
 }
@@ -115,7 +125,7 @@ export async function DELETE(request, { params }) {
 		return new NextResponse('Invalid ID provided', { status: 400 });
 	}
 
-	const user = await getUser();
+	let user = await getUser();
 
 	let chat = await db
 		.select()
