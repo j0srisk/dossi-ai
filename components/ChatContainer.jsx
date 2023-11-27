@@ -49,7 +49,7 @@ export default function ChatContainer({ topic, documents }) {
 
 	useEffect(() => {
 		containerRef.current.scrollTop = containerRef.current.scrollHeight;
-	}, []);
+	}, [messages]);
 
 	const setReference = (document, page) => {
 		setActiveDocument(document);
@@ -108,8 +108,8 @@ export default function ChatContainer({ topic, documents }) {
 				</>
 			)}
 			<div className="z-30 flex w-full flex-1 border-l border-neutral-300">
-				<div className="flex w-full flex-col">
-					<div className="flex h-full flex-1 flex-col overflow-scroll bg-white" ref={containerRef}>
+				<div className="flex w-full flex-col ">
+					<div className="flex h-full flex-1 flex-col overflow-auto" ref={containerRef}>
 						<>
 							{topic.type === 'document' ? (
 								<Message

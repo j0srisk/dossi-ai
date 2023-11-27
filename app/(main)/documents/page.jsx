@@ -29,7 +29,7 @@ export default async function Page({ params }) {
 		.where(eq(documents.createdBy, session.user.id));
 
 	return (
-		<div className="h-screen w-screen">
+		<div className="h-screen w-full">
 			<Navbar />
 			<div className="mx-auto max-w-screen-md px-4 py-8">
 				<div className="flex flex-col gap-4 text-neutral-900">

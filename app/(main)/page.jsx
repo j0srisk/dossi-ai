@@ -1,3 +1,4 @@
+import Card from '@/components/Card';
 import Faq from '@/components/Faq';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
@@ -6,7 +7,7 @@ import Link from 'next/link';
 
 export default async function LandingPage() {
 	return (
-		<div className="flex w-screen flex-col gap-24">
+		<div className="flex w-full flex-col gap-24 overflow-x-hidden">
 			<Navbar />
 			<section className="relative w-full bg-gradient-to-t from-zinc-50 from-15% to-transparent px-4">
 				<div className="mx-auto w-full max-w-screen-lg">
@@ -66,7 +67,7 @@ export default async function LandingPage() {
 						/>
 					</div>
 				</div>
-				<div className="absolute -top-24 -z-10 h-full w-full bg-topo bg-repeat" />
+				<div className="absolute -top-24 -z-10 h-full w-full overflow-hidden  bg-topo bg-repeat" />
 			</section>
 			<section className="w-full px-4">
 				<div className="mx-auto w-full max-w-screen-lg">
@@ -79,77 +80,48 @@ export default async function LandingPage() {
 								Fundamentally different than other PDF chat tools
 							</h2>
 						</div>
-						<div className="flex flex-col items-start justify-center gap-8 md:flex-row">
-							<div className="flex w-full flex-1 flex-col items-center justify-center gap-4 rounded-xl bg-neutral-100 p-4">
-								<Image
-									src="/collections.png"
-									width={500}
-									height={500}
-									className="rounded-lg border border-neutral-300 shadow-sm"
-									alt="collections"
-								/>
-								<h3 className="text-center text-2xl font-semibold">Multiple Documents</h3>
-								<p className="text-center text-base text-neutral-500">
-									Not sure where the answer lies? The collections system allows you to chat with
-									multiple documents at once
-								</p>
-							</div>
-							<div className="flex w-full flex-1 flex-col items-center justify-center gap-4 rounded-xl bg-neutral-100 p-4">
-								<Image
-									src="/references.png"
-									width={500}
-									height={500}
-									className="rounded-lg border border-neutral-300 shadow-sm"
-									alt="collections"
-								/>
-								<h3 className="text-center text-2xl font-semibold">References Included</h3>
-								<p className="text-center text-base text-neutral-500">
-									Reference documents and chat with multiple documents at once
-								</p>
-							</div>
+
+						<div className="grid auto-rows-fr grid-cols-2 gap-8">
+							<Card
+								src={'/references.png'}
+								alt={'collections'}
+								title={'Multiple Documents'}
+								description={
+									'Not sure where the answer lies? The collections system allows you to chat with multiple documents at once'
+								}
+							/>
+							<Card
+								src={'/references.png'}
+								alt={'collections'}
+								title={'References Included'}
+								description={'Reference documents and chat with multiple documents at once'}
+							/>
 						</div>
-						<div className="flex flex-col items-start justify-center gap-8 md:flex-row">
-							<div className="flex w-full flex-1 flex-col items-center justify-center gap-4 rounded-xl bg-neutral-100 p-4">
-								<Image
-									src="/references.png"
-									width={500}
-									height={500}
-									className="rounded-lg border border-neutral-300 shadow-sm"
-									alt="collections"
-								/>
-								<h3 className="text-center text-2xl font-semibold">Deploy with Docker</h3>
-								<p className="text-center text-base text-neutral-500">
-									Deploy with Docker and Docker Compose for easy deployment and scaling
-								</p>
-							</div>
-							<div className="flex w-full flex-1 flex-col items-center justify-center gap-4 rounded-xl bg-neutral-100 p-4">
-								<Image
-									src="/secure.png"
-									width={500}
-									height={500}
-									className="rounded-lg border border-neutral-300 shadow-sm"
-									alt="collections"
-								/>
-								<h3 className="text-center text-2xl font-semibold">NextAuth Integration</h3>
-								<p className="text-center text-base text-neutral-500">
-									Uses NextAuth for authentication and authorization to secure your documents and
-									support multiple users
-								</p>
-							</div>
-							<div className="flex w-full flex-1 flex-col items-center justify-center gap-4 rounded-xl bg-neutral-100 p-4">
-								<Image
-									src="/secure.png"
-									width={500}
-									height={500}
-									className="rounded-lg border border-neutral-300 shadow-sm"
-									alt="collections"
-								/>
-								<h3 className="text-center text-2xl font-semibold">PostgreSQL Based</h3>
-								<p className="text-center text-base text-neutral-500">
-									Uses only one database for authentication, document metadata, and chat history for
-									easy deployment
-								</p>
-							</div>
+						<div className="grid auto-rows-fr grid-cols-3 gap-8">
+							<Card
+								src={'/references.png'}
+								alt={'collections'}
+								title={'Deploy with Docker'}
+								description={
+									'Deploy with Docker and Docker Compose for easy deployment and scaling'
+								}
+							/>
+							<Card
+								src={'/references.png'}
+								alt={'collections'}
+								title={'NextAuth Integration'}
+								description={
+									'Support for multiple users from a single deployment with NextAuth and PostgreSQL'
+								}
+							/>
+							<Card
+								src={'/references.png'}
+								alt={'collections'}
+								title={'PostgreSQL Based'}
+								description={
+									'Uses a single database for authentication, document vectors, and chat history for easy deployment'
+								}
+							/>
 						</div>
 					</div>
 				</div>
