@@ -47,7 +47,12 @@ export async function GET(request, { params }) {
 		return new NextResponse('No ID provided', { status: 400 });
 	}
 
-	const user = await getUser();
+	let user = await getUser();
+
+	if (id[0] === '20a24315-aee1-412e-8b74-6fa1060df727') {
+		//demo document
+		user = { id: 'demo' };
+	}
 
 	const documentUrl = `${user.id}/${id}`;
 
