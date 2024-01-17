@@ -22,7 +22,7 @@ export default async function LandingPage() {
 									<span className="bg-gradient-to-br from-[#49CC5F] from-40% to-[#a3e635] bg-clip-text text-transparent">
 										Next.js
 									</span>{' '}
-									powered AI chat tool for PDFs
+									based AI chat tool for PDFs
 								</h1>
 							</div>
 							<p className="text-center text-xl text-neutral-500">

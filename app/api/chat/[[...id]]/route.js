@@ -111,8 +111,6 @@ export async function PATCH(request, { params }) {
 
 	const messages = body.messages;
 
-	console.log(messages);
-
 	await db.update(chats).set({ name: name, messages: messages }).where(eq(chats.id, id));
 
 	return new NextResponse('Chat updated', { status: 200 });

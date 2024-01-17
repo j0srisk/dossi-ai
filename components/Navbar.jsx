@@ -9,8 +9,6 @@ export default async function Navbar({ children }) {
 
 	const user = await getUser();
 
-	console.log(user);
-
 	return (
 		<div className="z-40 flex h-[72px] items-center justify-between border-b border-neutral-700 bg-neutral-900 px-4 shadow-md">
 			{children ? (

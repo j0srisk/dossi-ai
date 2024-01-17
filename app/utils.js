@@ -8,6 +8,7 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import OpenOllama from 'openollama';
 import { maxInnerProduct } from 'pgvector/drizzle-orm';
 
 export const getTopic = async (id) => {
@@ -251,12 +252,16 @@ export const generatePrompt = async (query, id, type) => {
 };
 
 export const generateAnswerChat = async (prompt) => {
-	const openAi = new OpenAI();
+	const openai = new OpenAI();
+
+	const openollama = new OpenOllama({
+		baseUrl: 'http://ubuntu-server:11434/api',
+	});
 
 	const start = Date.now();
 
-	const response = await openAi.chat.completions.create({
-		model: 'gpt-3.5-turbo',
+	const response = await openai.chat.completions.create({
+		model: 'gpt-3.5-turbo-1106',
 		messages: [
 			{
 				role: 'user',
@@ -274,11 +279,11 @@ export const generateAnswerChat = async (prompt) => {
 
 	console.log('Chat');
 
-	console.log('input tokens', response.usage.prompt_tokens);
+	console.log('input tokens: ', response.usage.prompt_tokens);
 
-	console.log('output tokens', response.usage.completion_tokens);
+	console.log('output tokens: ', response.usage.completion_tokens);
 
-	console.log('total tokens', response.usage.prompt_tokens + response.usage.completion_tokens);
+	console.log('total tokens: ', response.usage.total_tokens);
 
 	console.log('Time to generate answer: ' + (end - start) / 1000 + ' seconds');
 
@@ -286,7 +291,7 @@ export const generateAnswerChat = async (prompt) => {
 
 	const assistantMessage = { role: 'assistant', content: answer };
 
-	console.log('answer ' + answer);
+	console.log('Answer: ' + answer);
 
 	return assistantMessage;
 };
