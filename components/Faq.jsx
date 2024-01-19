@@ -21,7 +21,7 @@ export default function Faq() {
 				setActive={setActive}
 				index={1}
 				question="How does Dossi work?"
-				answer="Dossi uses the power of AI to automatically tag and categorize your documents. You can then search for documents by tag or category."
+				answer="Dossi uses the power of AI to automatically process your documents and make them AI searchable."
 			/>
 			<div className="border-b border-neutral-300" />
 			<FaqItem

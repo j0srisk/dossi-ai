@@ -49,7 +49,11 @@ export async function GET(request, { params }) {
 
 	let user = await getUser();
 
-	if (id[0] === '20a24315-aee1-412e-8b74-6fa1060df727') {
+	if (
+		id[0] === '0902f324-c464-4fb0-b0e3-43eea1851e60' ||
+		id[0] === '281d03ef-3447-405c-87f5-a730ede066ef' ||
+		id[0] === '5e2af1d8-f335-47fc-8db8-1c0344c44e68'
+	) {
 		//demo document
 		user = { id: 'demo' };
 	}

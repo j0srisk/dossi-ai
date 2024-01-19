@@ -83,7 +83,7 @@ export default async function LandingPage() {
 
 						<div className="grid auto-rows-fr grid-cols-2 gap-8">
 							<Card
-								src={'/references.png'}
+								src={'/demo.png'}
 								alt={'collections'}
 								title={'Multiple Documents'}
 								description={
@@ -99,7 +99,6 @@ export default async function LandingPage() {
 						</div>
 						<div className="grid auto-rows-fr grid-cols-3 gap-8">
 							<Card
-								src={'/references.png'}
 								alt={'collections'}
 								title={'Deploy with Docker'}
 								description={
@@ -107,7 +106,6 @@ export default async function LandingPage() {
 								}
 							/>
 							<Card
-								src={'/references.png'}
 								alt={'collections'}
 								title={'NextAuth Integration'}
 								description={
@@ -115,7 +113,6 @@ export default async function LandingPage() {
 								}
 							/>
 							<Card
-								src={'/references.png'}
 								alt={'collections'}
 								title={'PostgreSQL Based'}
 								description={
