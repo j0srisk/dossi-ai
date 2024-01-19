@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<h1 align="center" id="title">Dossi AI</h1>
 
-## Getting Started
+<p id="description">Dossi AI is an open source Next.js based AI chat tool for PDFs. Utilizes Retrieval-Augmented Generation to generate answers from provided documents. Documents are vectorized using OpenAI ada-002 or other local embedding models and then stored on a PostgreSQL database using pgvector connected by Drizzle ORM. Database schema and query functions allow users to chat with just one or multiple documents at a time.</p>
 
-First, run the development server:
+<h2>🚀 Demo</h2>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+[Live Link](https://dossi-ai.josephrisk.com/)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<h2>Project Screenshots:</h2>
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+<img src="https://github.com/j0srisk/personal-site/blob/main/src/assets/projects/dossi-ai.png?raw=true" alt="project-screenshot" width="400" height="auto">
+  
+<h2>🧐 Features</h2>
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Here're some of the project's best features:
 
-## Learn More
+*   Retrieval-Augmented Generation
+*   Entirely PostgreSQL based
+  
+<h2>💻 Built with</h2>
 
-To learn more about Next.js, take a look at the following resources:
+Technologies used in the project:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+*   Next.js
+*   PostgreSQL
+*   NextAuth
+*   TailwindCSS
+*   Ollama
+*   Demo Deployed on Vercel
